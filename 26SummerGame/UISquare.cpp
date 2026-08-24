@@ -9,11 +9,6 @@ UISquare::UISquare(const Vector& position, const Vector& size, unsigned int colo
 
 }
 
-void UISquare::Update(float deltaTime)
-{
-	m_isPressedLastFrame = m_isPressed;
-}
-
 void UISquare::Draw() const
 {
 	if (!m_isVisible) return;
@@ -36,40 +31,31 @@ void UISquare::Draw() const
 
 }
 
-bool UISquare::OnPointerDown(const Vector& screenPos)
-{
-	m_isPressed = true;
-	return false;
-}
-
-bool UISquare::OnPointerUp(const Vector& screenPos)
-{
-	m_isPressed = false;
-	return false;
-}
-
 bool UISquare::OnClick(const Vector& screenPos)
 {
-	if (m_onClick) m_onClick();
+	m_onClick.Invoke();
 	return true;
 }
 
 bool UISquare::OnDrop(const Vector& screenPos)
 {
-	if (m_onDrop)
-		m_onDrop();
+	m_onDrop.Invoke();
 	return true;
 }
 
 bool UISquare::OnDragBegin(const Vector& screenPos)
 {
-	if (m_onDragBegin)
-		m_onDragBegin();
+	m_onDragBegin.Invoke();
 	return true;
 }
 
 void UISquare::OnDrag(const Vector& screenPos, const Vector& delta)
 {
-	const int size = 50;
-	DrawBox(screenPos.m_x - size, screenPos.m_y - size, screenPos.m_y + size, screenPos.m_y + size,0xd3d3d3,true);
+	m_onDrag.Invoke(screenPos);
+}
+
+bool UISquare::OnDragEnd(const Vector& screenPos)
+{
+	m_onDragEnd.Invoke();
+	return true;
 }

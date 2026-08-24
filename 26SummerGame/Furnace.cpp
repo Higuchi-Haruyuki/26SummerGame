@@ -27,6 +27,7 @@
 #include "ItemType.h"
 #include "UIItemBox.h"
 #include "ItemSlot.h"
+#include "UIPanel.h"
 
 namespace
 {
@@ -194,4 +195,6 @@ void Furnace::BuildUIPanel()
 	m_fuelItemUI->SetFilterItem(kFuelItemType);
 	m_fuelItemUI->SetOnSelectItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 	m_fuelItemUI->SetOnMoveItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
+
+	m_uiPanel->AddChild(m_manufacturingSystem.lock()->GetOrBuidUIPanel());
 }

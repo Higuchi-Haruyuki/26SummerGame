@@ -21,6 +21,8 @@ public:
 
     void Draw() const override;
 
+    void SetVisible(bool isVisible) override;
+
     bool HitTest(const Vector& screenPos) const override;
 
     std::shared_ptr<Base_UIElement> HitTestTopMost(const Vector& screenPos);

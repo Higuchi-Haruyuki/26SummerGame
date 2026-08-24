@@ -62,6 +62,8 @@ enum class GraphicId
 	kMouseLeft,
 
 	kUIClose,
+	kArrow,
+	kPlus,
 
 	kCount
 };

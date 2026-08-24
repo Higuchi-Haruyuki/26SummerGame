@@ -89,6 +89,11 @@ void UIItemBox::SetGraphicID(GraphicId graphicId)
 	m_previewImage.lock()->SetGraphicID(graphicId);
 }
 
+void UIItemBox::SetImageAlpha(int alpha)
+{
+	m_image.lock()->SetAlpha(alpha);
+}
+
 void UIItemBox::SetText(const std::string & text)
 {
 	m_text.lock()->SetText(text);
@@ -121,7 +126,7 @@ void UIItemBox::SetOnMoveItem(std::weak_ptr<ItemSlot> itemSlot, int index)
 
 void UIItemBox::SetOnClickEvent(const std::function<void()>& onClick)
 {
-	m_square.lock()->SetOnClick(onClick);
+	m_square.lock()->SubscribeOnClick(onClick);
 	m_image.lock()->SubscribeOnClick(onClick);
 
 }
@@ -133,6 +138,6 @@ void UIItemBox::SetOnDragBeginEvent(const std::function<void()>& onDragBegin)
 
 void UIItemBox::SetOnDropEvent(const std::function<void()>& onDrop)
 {
-	m_square.lock()->SetOnDrop(onDrop);
+	m_square.lock()->SubscribeOnDrop(onDrop);
 	m_image.lock()->SubscribeOnDrop(onDrop);
 }

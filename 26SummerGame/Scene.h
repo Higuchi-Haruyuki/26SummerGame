@@ -135,6 +135,11 @@ public:
 protected:
 	void DrawStringCenter(const Vector& pos, std::string text, const int& size, const unsigned int& color, const int& fontHandle) const;
 
+	/// <summary>
+	/// グリッドを描画する
+	/// </summary>
+	void DrawGrid() const;
+
 protected:
 	//そのシーン内に存在するすべてのShapeが格納されている配列
 	std::vector<std::shared_ptr<Shape>> m_sceneShapes;
@@ -158,10 +163,6 @@ private:
 	/// <param name="shape">移動させたいShapeのスマートポインタ</param>
 	void MoveSceneShape(const int& targetIndex, const std::shared_ptr<Shape>& shape);
 
-	/// <summary>
-	/// グリッドを描画する
-	/// </summary>
-	void DrawGrid() const;
 
 private:
 	//そのシーン内に存在するすべてのObjectが格納されている配列

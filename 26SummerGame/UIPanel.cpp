@@ -25,6 +25,17 @@ void UIPanel::Draw() const
 	}
 }
 
+void UIPanel::SetVisible(bool isVisible)
+{
+	m_isVisible = isVisible;
+
+	for (const auto& child : m_children)
+	{
+		child->SetVisible(isVisible);
+	}
+
+}
+
 bool UIPanel::HitTest(const Vector & screenPos) const
 {
 	if (!m_isVisible) return false;

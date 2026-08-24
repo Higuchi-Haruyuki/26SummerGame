@@ -3,6 +3,8 @@
 #include <string>
 #include <algorithm>
 #include <functional>
+#include "Event.h"
+
 
 class UISquare :
     public Base_UIElement
@@ -11,19 +13,14 @@ public:
 	UISquare(const Vector& position, const Vector& size, unsigned int color, int alpha = 255);
 	virtual ~UISquare() = default;
 
-	void Update(float deltaTime) override;
 	void Draw() const override;
-
-	bool OnPointerDown(const Vector& screenPos) override;
-	bool OnPointerUp(const Vector& screenPos) override;
-	void OnPointerEnter() override { m_isHovered = true; }
-	void OnPointerExit() override { m_isHovered = false; }
 
 	bool OnClick(const Vector& screenPos) override;
 	bool OnDrop(const Vector& screenPos) override;
 
 	bool OnDragBegin(const Vector& screenPos) override;
 	void OnDrag(const Vector& screenPos, const Vector& delta) override;
+	bool OnDragEnd(const Vector& screenPos) override;
 
 	//SETTER
 	void SetColor(unsigned int color) { m_color = color; }
@@ -34,25 +31,41 @@ public:
 	}
 
 	/// <summary>
-	/// 押され始めたときに呼び出される
-	/// </summary>
-	/// <param name="onBegin"></param>
-	void SetOnDragBegin(const std::function<void()>& onBegin) { m_onDragBegin = onBegin; }
+		/// 押され始めたときに呼び出される
+		/// </summary>
+		/// <param name="onBegin"></param>
+	void SubscribeOnDragBegin(const std::function<void()>& onBegin)
+	{
+		m_onDragBeginConnections.emplace_back(m_onDragBegin.AddListener(onBegin));
+	}
 
 	/// <summary>
 	/// はなされたときによびだされる
 	/// </summary>
 	/// <param name="onBegin"></param>
-	void SetOnDrop(const std::function<void()>& onDrop) { m_onDrop = onDrop; }
+	void SubscribeOnDrop(const std::function<void()>& onDrop)
+	{
+		m_onDropConnections.emplace_back(m_onDrop.AddListener(onDrop));
+	}
 
-	void SetOnClick(const std::function<void()>& onClick) { m_onClick = onClick; }
+	/// <summary>
+	/// ドラッグ中に呼び出される
+	/// </summary>
+	/// <param name="onClick"></param>
+	void SubscribeOnDrag(const std::function<void(const Vector& screenPos)>& onDrag)
+	{
+		m_onDragConnections.emplace_back(m_onDrag.AddListener(onDrag));
+	}
 
-private:
-	bool IsPressed() const { return m_isPressed; }
+	void SubscribeOnDragEnd(const std::function<void()>& onDragEnd)
+	{
+		m_onDragEndConnections.emplace_back(m_onDragEnd.AddListener(onDragEnd));
+	}
 
-	bool IsTrigger() const { return !m_isPressedLastFrame && m_isPressed; }
-
-	bool IsReleased() const { return m_isPressedLastFrame && !m_isPressed; }
+	void SubscribeOnClick(const std::function<void()>& onClick)
+	{
+		m_onClickConnections.emplace_back(m_onClick.AddListener(onClick));
+	}
 
 private:
 
@@ -60,13 +73,19 @@ private:
 
 	int m_alpha = 255; // 透明度(0-255)
 
-	std::function<void()> m_onDragBegin;
-	std::function<void()> m_onDrop;
+	std::vector<Event<>::Connection> m_onDragBeginConnections;
+	Event<> m_onDragBegin;
 
-	std::function<void()> m_onClick;
+	std::vector<Event<const Vector&>::Connection> m_onDragConnections;
+	Event<const Vector&> m_onDrag;
 
-	bool m_isHovered = false;  // カーソルが乗っているか(見た目のハイライト用)
-	bool m_isPressed = false;  // このボタンの上で押下されたか(離した瞬間の判定に使う)
-	bool m_isPressedLastFrame = false;
+	std::vector<Event<>::Connection> m_onDragEndConnections;
+	Event<> m_onDragEnd;
+
+	std::vector<Event<>::Connection> m_onDropConnections;
+	Event<> m_onDrop;
+
+	std::vector<Event<>::Connection> m_onClickConnections;
+	Event<> m_onClick;
 };
 

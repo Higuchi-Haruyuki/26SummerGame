@@ -18,7 +18,7 @@
 #include "vector.h"
 namespace
 {
-	constexpr int kGridNum = 33;
+	constexpr int kGridNum = 159;
 }
 void Scene::Init()
 {
@@ -82,22 +82,22 @@ void Scene::Draw() const
 		}
 	}
 
-#if _DEBUG
-	if (m_sceneColliders.size() != 0)
-	{
-		//ステージコライダーの描画処理
-		for (const auto& collider : m_sceneColliders)
-		{
-			if (IsRemoveReserved(collider))  continue;
-			collider->Draw(cameraPos, 0x00ffff);
-		}
-	}
-
-	DrawGrid();
-
-	//デバック用のログを描画
-	Debug::Draw();
-#endif
+//#if _DEBUG
+//	if (m_sceneColliders.size() != 0)
+//	{
+//		//ステージコライダーの描画処理
+//		for (const auto& collider : m_sceneColliders)
+//		{
+//			if (IsRemoveReserved(collider))  continue;
+//			collider->Draw(cameraPos, 0x00ffff);
+//		}
+//	}
+//
+//	DrawGrid();
+//
+//	//デバック用のログを描画
+//	Debug::Draw();
+//#endif
 }
 void Scene::Finalize()
 {
@@ -329,7 +329,7 @@ void Scene::DrawGrid() const
 	for (int z = 0; z <= kGridNum; z++)
 	{
 		const float lineZ = Game::kGridSize * z - Game::kGridSize * kGridNum * 0.5f;
-		DrawLine3D(VGet(lineStartX, 0, lineZ), VGet(lineEndX, 0, lineZ),0xffffff);
+		DrawLine3D(VGet(lineStartX, 5, lineZ), VGet(lineEndX, 5, lineZ),0xffffff);
 	}
 
 	//X軸方向の線
@@ -338,6 +338,6 @@ void Scene::DrawGrid() const
 	for (int x = 0; x <= kGridNum; x++)
 	{
 		const float lineX = Game::kGridSize * x - Game::kGridSize * kGridNum * 0.5f;
-		DrawLine3D(VGet(lineX, 0, lineStartZ), VGet(lineX, 0, lineEndZ), 0xffffff);
+		DrawLine3D(VGet(lineX, 5, lineStartZ), VGet(lineX, 5, lineEndZ), 0xffffff);
 	}
 }

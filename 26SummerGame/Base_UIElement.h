@@ -95,7 +95,7 @@ public:
 	bool IsHitTarget() const { return m_isHitTarget; }
 
 	//SETTER
-	void SetVisible(bool isVisible) { m_isVisible = isVisible; }
+	virtual void SetVisible(bool isVisible) { m_isVisible = isVisible; }
 	void SetPosition(const Vector& position) { m_position = position; }
 	void SetSize(const Vector& size) { m_size = size; }
 	void SetIsHitTarget(bool isHitTarget) { m_isHitTarget = isHitTarget; }

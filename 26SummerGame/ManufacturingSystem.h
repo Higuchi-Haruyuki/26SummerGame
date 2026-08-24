@@ -4,12 +4,14 @@
 #include "Recipe.h"
 #include <unordered_map>
 
+class Vector;
 class Recipe;
 class RecipeManager;
 class FactoryManager;
 class ItemManager;
 class ItemSlot;
 class UIPanel;
+class UIItemBox;
 
 /// <summary>
 /// 工業オブジェクトのアイテムの加工をするコンポーネント
@@ -45,7 +47,7 @@ private:
 
     void UpdateUIPanel();
 
-    void BuildRecipeUI(int index, std::weak_ptr<Recipe> recipe);
+    void BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe);
 
 private:
     //シングルトンへの参照
@@ -61,5 +63,7 @@ private:
     std::shared_ptr<UIPanel> m_uiPanel;
 
     std::unordered_map<RecipeName, std::shared_ptr<Recipe>> m_recipeList;
+
+    std::shared_ptr<UIItemBox> m_completionItemBox;
 };
 

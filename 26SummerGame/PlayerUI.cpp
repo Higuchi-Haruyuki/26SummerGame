@@ -98,6 +98,9 @@ void PlayerUI::Init()
 {
 	GetComponentReference();
 
+	//クラフト可能なレシピタイプを設定する。
+	m_manufacturing.lock()->SetAllowRecipeType(RecipeType::kPlayerCraft);
+
 	CreatePanel();
 
 	//ステートと有効なパネルの配列を初期化する。

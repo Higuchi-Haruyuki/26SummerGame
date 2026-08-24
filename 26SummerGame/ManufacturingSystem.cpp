@@ -18,21 +18,28 @@ namespace
 {
 	/*UI*/
 	//windowの定数
-	const Vector kWindowPos = Game::kDisplaySize * 0.5f;
-	const Vector kWindowSize = { 400,800,0 };
+	const Vector kWindowPos = { Game::kDisplaySize.m_x * 0.75f , Game::kDisplaySize.m_y * 0.5f };
+	const Vector kWindowSize = { 600,800,0 };
 	constexpr unsigned int kWindowColor = 0xd3d3d3;
 	constexpr int kWindowAlpha = 200;
 
 	//1レシピあたりの四角
-	const Vector kRecipePos = Game::kDisplaySize * 0.5f;
-	const Vector kRecipeSize = { 100,200,0 };
+	const Vector kRecipeSize = { 580,100,0 };
 	constexpr unsigned int kRecipeColor = 0xffffff;
 	constexpr int kRecipeAlpha = 255;
 
+	//レシピ間のオフセット
+	const Vector kRecipeOffset = { 0,10 };
+
 	//アイテムボックスの定数
-	const Vector kItemBoxPos = Game::kDisplaySize * 0.5f;
 	const Vector kItemBoxSize = { 50,50,0 };
 	constexpr int kItemBoxAlpha = 255;
+
+	//アイテムボックス間のオフセット
+	const Vector kItemBoxOffset = { 100,0 };
+
+	//完成品のアイテムボックス
+	const Vector kCompletionItemBoxSize = { 80,80 };
 }
 
 ManufacturingSystem::ManufacturingSystem(std::shared_ptr<Object> parentObject):
@@ -53,6 +60,7 @@ void ManufacturingSystem::Update(float deltaTime)
 	if (!m_isEnable) return;
 	if(m_recipeList.empty())
 		m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
+	UpdateUIPanel();
 }
 
 void ManufacturingSystem::Finalize()
@@ -63,7 +71,10 @@ void ManufacturingSystem::Finalize()
 std::shared_ptr<UIPanel> ManufacturingSystem::GetOrBuidUIPanel()
 {
 	if (!m_uiPanel)
+	{
+		m_uiPanel = std::make_shared<UIPanel>();
 		BuildUIPanel();
+	}
 	return m_uiPanel;
 }
 
@@ -110,32 +121,79 @@ void ManufacturingSystem::BuildUIPanel()
 	//Windowの生成
 	UIFactory::MakeUIToPanel<UISquare>(m_uiPanel, kWindowPos, kWindowSize, kWindowColor, kWindowAlpha);
 
-	int index = 0;
+	const auto closeSize = Vector{ 30,30 };
+	const auto closeOffset = Vector{ -10,10 };
+	const auto closePos = kWindowPos + Vector{ kWindowSize.m_x * 0.5f , -kWindowSize.m_y * 0.5f } + Vector{ -closeSize.m_x * 0.5f, closeSize.m_y * 0.5f} + closeOffset;
+
+	const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_uiPanel, closePos, closeSize, GraphicId::kUIClose);
+	close.lock()->SubscribeOnClick([this]() {m_uiPanel->SetVisible(false); });
+
+	auto index = 0;
+
+	const auto startOffset = Vector{ 10,100 };
+
+	const auto firstpos = kWindowPos - kWindowSize * 0.5f + kRecipeSize * 0.5f + kRecipeOffset + startOffset;
+
+	if (m_recipeList.empty())
+		m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
 
 	for (const auto& recipe : m_recipeList)
 	{
+		const auto pos = firstpos + (Vector{ 0, kRecipeSize.m_y } + kRecipeOffset) * index;
+		const auto leftUpPos = pos - kRecipeSize * 0.5f;
+
 		const auto& recipeSquare = UIFactory::MakeUIToPanel<UISquare>(
-			m_uiPanel, kWindowPos, kWindowSize, kWindowColor, kWindowAlpha
+			m_uiPanel, pos, kRecipeSize, kRecipeColor, kRecipeAlpha
 		);
-		recipeSquare.lock()->SetOnClick(
-			[this,recipe]() 
+		recipeSquare.lock()->SubscribeOnClick(
+			[this,&recipe]() 
 			{
 				m_currentRecipe = recipe.second;
 			});
 
-		BuildRecipeUI(index,recipe.second);
+		BuildRecipeUI(leftUpPos, recipe.second);
 		index++;
 	}
 
+	const auto leftDown = kWindowPos + Vector{ -kWindowSize.m_x * 0.5f , kWindowSize.m_y * 0.5f };
+
+	const auto completionOffset = Vector{ 0,10 };
+
+	const auto completionPos = Vector{ kWindowPos.m_x,leftDown.m_y } - Vector{0,kCompletionItemBoxSize.m_y *0.5f} - completionOffset;
+
+	m_completionItemBox = std::make_shared<UIItemBox>(
+		m_uiPanel, completionPos, kCompletionItemBoxSize);
+	m_completionItemBox->SetImageAlpha(100);
 }
 
-void ManufacturingSystem::BuildRecipeUI(int index, std::weak_ptr<Recipe> recipe)
+void ManufacturingSystem::UpdateUIPanel()
+{
+	const auto& safeRecipe = m_currentRecipe.lock();
+	if (!safeRecipe) return;
+
+	const auto& outputs = safeRecipe->GetRecipeOutput();
+
+	const auto& output = outputs.at((0));
+	
+	m_completionItemBox->SetGraphicID(ItemTable::GetGraphicID(output.first));
+
+}
+
+void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe)
 {
 	const auto& safeRecipe = recipe.lock();
 	const auto& outputs = safeRecipe->GetRecipeOutput();
+	const auto& inputs = safeRecipe->GetRecipeInput();
+
+	auto startOffset = Vector{10,kRecipeSize.m_y * 0.25f };
+
+	auto startPos = leftUpDrawPos + kItemBoxSize * 0.5f + startOffset;
+
+	auto pos = Vector{};
+
 	for (int i = 0; i < outputs.size(); i++)
 	{
-		Vector pos = { 0,0,0 };
+		pos = startPos + (Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * i;
 
 		const auto& itemBox = std::make_shared<UIItemBox>(
 		m_uiPanel, pos,kItemBoxSize);
@@ -143,6 +201,40 @@ void ManufacturingSystem::BuildRecipeUI(int index, std::weak_ptr<Recipe> recipe)
 
 		itemBox->SetGraphicID(graphicID);
 		itemBox->SetText(StringUtil::IntToString(outputs.at(i).second));
+
+		if ((i + 1) < outputs.size())
+		{
+			auto plusPos = pos + Vector{ kItemBoxOffset * 0.75f };
+			UIFactory::MakeUIToPanel<UIImage>(
+				m_uiPanel, plusPos, kItemBoxSize * 0.9f, GraphicId::kPlus, kRecipeAlpha
+			);
+		}
+	}
+
+	auto arrowPos = pos + Vector{ kItemBoxOffset * 0.75f };
+
+	UIFactory::MakeUIToPanel<UIImage>(
+		m_uiPanel, arrowPos, kItemBoxSize * 1.5f, GraphicId::kArrow,kRecipeAlpha
+	);
+
+	for (int i = 0; i < inputs.size(); i++)
+	{
+		pos = startPos + ( Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * (i + outputs.size());
+
+		const auto& itemBox = std::make_shared<UIItemBox>(
+			m_uiPanel, pos, kItemBoxSize);
+		auto graphicID = ItemTable::GetGraphicID(inputs.at(i).first);
+
+		itemBox->SetGraphicID(graphicID);
+		itemBox->SetText(StringUtil::IntToString(inputs.at(i).second));
+
+		if ((i + 1) < inputs.size())
+		{
+			auto plusPos = pos + Vector{ kItemBoxOffset * 0.75f };
+			UIFactory::MakeUIToPanel<UIImage>(
+				m_uiPanel, plusPos, kItemBoxSize * 0.9f, GraphicId::kPlus, kRecipeAlpha
+			);
+		}
 	}
 }
 

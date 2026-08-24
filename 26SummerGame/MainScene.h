@@ -4,6 +4,8 @@
 #include "vector.h"
 class Animation3D;
 class Model;
+class CharactorStateManager;
+
 class MainScene : public Scene
 {
 public:
@@ -16,4 +18,6 @@ private:
 	std::shared_ptr<Collider> m_playerCollider;
 
 	std::weak_ptr<Object> m_skyDome;
+
+	std::weak_ptr<CharactorStateManager> m_stateManager;
 };

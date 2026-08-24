@@ -31,6 +31,7 @@ public:
 	void SetColor(unsigned int color);
 	void SetDefaultColor();
 	void SetGraphicID(GraphicId graphicId);
+	void SetImageAlpha(int alpha);
 	void SetFilterItem(Item item) { m_filterItem = item; }
 	void SetEnableFilterItem(bool filter) { m_isEnableFilterItem = filter; }
 

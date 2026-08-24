@@ -43,7 +43,7 @@ void MainScene::Init()
 	m_playerCollider->SetOffset({ 0,0,0 });
 	m_playerCollider->IsTrigger(true);
 
-	m_player->AddComponent<CharactorStateManager>();
+	m_stateManager = m_player->AddComponent<CharactorStateManager>();
 
 	m_player->AddComponent<PlayerController>();
 
@@ -69,6 +69,9 @@ void MainScene::Update(float deltaTime)
 	{
 		m_player->SetPosition(Game::GridPosToWorldPos(kPlayerStartGridPos));
 	}
+
+	if (m_stateManager.lock()->CheckCurrentState(CharactorState::INSTALLATION))
+		DrawGrid();
 
 	MapManager::GetInstance().Draw();
 

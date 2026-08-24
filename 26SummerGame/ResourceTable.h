@@ -83,6 +83,8 @@ namespace ResourceTable
 		{ GraphicId::kKeyboardX, "image/icon/key/keyboard_x.png" },
 
 		{ GraphicId::kUIClose, "image/icon/close.png" },
+		{ GraphicId::kArrow, "image/icon/arrow.png" },
+		{ GraphicId::kPlus, "image/icon/plus.png" },
 
 		{ GraphicId::kMouseLeft, ResourceName::kMouseLeft.c_str() },
 	} };
