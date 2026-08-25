@@ -95,9 +95,10 @@ void Scene::Draw() const
 //
 //	DrawGrid();
 //
-//	//デバック用のログを描画
-//	Debug::Draw();
 //#endif
+
+	//デバック用のログを描画
+	Debug::Draw();
 }
 void Scene::Finalize()
 {

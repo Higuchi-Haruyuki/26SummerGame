@@ -60,6 +60,14 @@ UIItemBox::UIItemBox(std::weak_ptr<UIPanel> addPanel, const Vector& position, co
 		});
 }
 
+void UIItemBox::SetVisible(bool isVisible)
+{
+	m_square.lock()->SetVisible(isVisible);
+	m_image.lock()->SetVisible(isVisible);
+	m_text.lock()->SetVisible(isVisible);
+	if (!isVisible) m_previewImage.lock()->SetVisible(false);
+}
+
 void UIItemBox::SetPosition(const Vector & pos)
 {
 	m_square.lock()->SetPosition(pos);

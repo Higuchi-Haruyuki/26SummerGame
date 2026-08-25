@@ -60,7 +60,7 @@ namespace RecipeList
 			std::make_shared<Recipe>(
 			RecipeName::kMakeInserter,
 			ItemTypeAndCount{{Item::kIronPlate,3},{Item::kCopperPlate,5}},
-			ItemTypeAndCount{{Item::kFurnace,1}},
+			ItemTypeAndCount{{Item::kInserter,1}},
 				2)
 		},
 	};

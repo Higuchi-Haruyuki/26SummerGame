@@ -35,23 +35,33 @@ std::unique_ptr<ItemStack> ItemSlot::GetItemOwnership(int index)
 std::unique_ptr<ItemStack> ItemSlot::AddItemStack(std::unique_ptr<ItemStack> item, int count)
 {
 	if (!item) return nullptr;
+	if (count <= 0) return item;
+
 	const auto itemType = item->GetItemType();
 
-	//そのアイテムを持っているなら
-	if (const auto& itemStack = GetItem(itemType))
+	int remainMoveCount = count;
+
+	//同じ種類のスタックに入るだけ入れていく
+	for (const auto& itemStack : m_items)
 	{
-		itemStack->MoveItemStack(item.get(), count);
-		
-		int currentItemCount = item->GetItemCount();
-		if (currentItemCount) return AddItemStack(std::move(item), currentItemCount);
-		return item;
+		if (remainMoveCount <= 0) break;
+		if (item->GetItemCount() <= 0) break;
+
+		if (!itemStack) continue;
+		if (itemStack->GetItemType() != itemType) continue;
+
+		const int beforeCount = item->GetItemCount();
+		itemStack->MoveItemStack(item.get(), remainMoveCount);
+
+		//満杯のスタックは0個しか移動しないので、そのまま次のスタックへ進む
+		remainMoveCount -= (beforeCount - item->GetItemCount());
 	}
-	//もっていないなら
-	else
-	{
-		if (!item->GetItemCount()) return nullptr;
-		return AddItemStack(std::move(item));
-	}
+
+	//すべて移動できた
+	if (item->GetItemCount() <= 0) return nullptr;
+
+	//余った分は空きスロットへ
+	return AddItemStack(std::move(item));
 }
 
 std::unique_ptr<ItemStack> ItemSlot::AddItemStack(std::unique_ptr<ItemStack> item)

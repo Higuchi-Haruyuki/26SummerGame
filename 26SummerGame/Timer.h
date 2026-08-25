@@ -48,6 +48,8 @@ public:
 	/// <returns></returns>
 	Second GetElapsedTime() const;
 
+	Second GetDuration() const;
+
 	void SubscribeOnFinished(const std::function<void()>& onBegin)
 	{
 		m_onFinishedConnection.emplace_back(m_onFinished.AddListener(onBegin));

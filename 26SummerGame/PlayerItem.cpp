@@ -60,17 +60,15 @@ void PlayerItem::Init()
 
 	m_inventory = std::make_shared<ItemSlot>(kInventoryWidthCount * kInventoryHeightCount);
 
-	m_completionCraft = std::make_shared<ItemSlot>(1);
-
 	m_itemSlot->AddItemStack(0, ItemStack::MakeItemStack<MiningMachine>("MiningMachine", Item::kMiningMachine, 100));
 	m_itemSlot->AddItemStack(1, ItemStack::MakeItemStack<BeltConveyor>("BeltConveyor", Item::kBeltconveyor, 100));
 	m_itemSlot->AddItemStack(2, ItemStack::MakeItemStack<Furnace>("Furnace", Item::kFurnace, 100));
 	m_itemSlot->AddItemStack(3, ItemStack::MakeItemStack<Inserter>("Inserter", Item::kInserter, 100));
-	m_itemSlot->AddItemStack(4, ItemStack::MakeItemStack(Item::kIronOre, 30));
-	m_itemSlot->AddItemStack(5, ItemStack::MakeItemStack(Item::kIronOre, 50));
-	m_itemSlot->AddItemStack(6, ItemStack::MakeItemStack(Item::kIronOre, 30));
-	m_itemSlot->AddItemStack(7, ItemStack::MakeItemStack(Item::kIronOre, 4));
-	m_itemSlot->AddItemStack(8, ItemStack::MakeItemStack(Item::kIronOre, 4));
+	m_itemSlot->AddItemStack(4, ItemStack::MakeItemStack(Item::kIronPlate, 30));
+	m_itemSlot->AddItemStack(5, ItemStack::MakeItemStack(Item::kCopperPlate, 50));
+	m_itemSlot->AddItemStack(6, ItemStack::MakeItemStack(Item::kIronOre, 100));
+	m_itemSlot->AddItemStack(7, ItemStack::MakeItemStack(Item::kRockOre, 100));
+	m_itemSlot->AddItemStack(8, ItemStack::MakeItemStack(Item::kCopperOre, 100));
 	m_itemSlot->AddItemStack(9, ItemStack::MakeItemStack(Item::kCoalOre, 50));
 }
 
@@ -99,12 +97,27 @@ std::unique_ptr<ItemStack> PlayerItem::AddItem(std::unique_ptr<ItemStack> item, 
 	auto remainItem = AddItemToItemBar(std::move(item), count);
 	if (!remainItem) return nullptr;
 
-	return AddItemToInventory(std::move(remainItem), count);
+	//アイテムバーに入りきらなかった残りだけをインベントリへ
+	const int remainCount = remainItem->GetItemCount();
+
+	return AddItemToInventory(std::move(remainItem), remainCount);
+}
+
+bool PlayerItem::CanAddItem(Item itemType, int count) const
+{
+	if (CanAddToItemBar(itemType,count)) return true;
+	if (CanAddToInventory(itemType, count)) return true;
+	return false;
 }
 
 std::unique_ptr<ItemStack> PlayerItem::AddItemToItemBar(std::unique_ptr<ItemStack> item, int count)
 {
 	return m_itemSlot->AddItemStack(std::move(item), count);
+}
+
+bool PlayerItem::CanAddToItemBar(Item itemType, int count) const
+{
+	return CanAddToItemSlot(m_itemSlot, itemType, count);
 }
 
 ItemStack* PlayerItem::GetItemFromInventory(int idx) const
@@ -140,6 +153,11 @@ std::unique_ptr<ItemStack> PlayerItem::AddItemToInventory(std::unique_ptr<ItemSt
 	return m_inventory->AddItemStack(std::move(item), count);
 }
 
+bool PlayerItem::CanAddToInventory(Item itemType, int count) const
+{
+	return CanAddToItemSlot(m_inventory, itemType, count);
+}
+
 void PlayerItem::ChoiceItemSlot()
 {
 	m_selectedItemBar = m_itemSlot->GetItem(m_itemBarChoiceIndex);
@@ -152,4 +170,30 @@ void PlayerItem::ChoiceInventorySlot()
 	m_selectedInventoryItem = m_inventory->GetItem(m_inventoryChoiceIndex);
 
 	Debug::Log(std::format("選択中のインベントリのインデックス: {}", m_inventoryChoiceIndex));
+}
+
+bool PlayerItem::CanAddToItemSlot(const std::weak_ptr<ItemSlot> itemSlot, Item itemType, int count) const
+{
+	const auto& safeItemSlot = itemSlot.lock();
+	if (!safeItemSlot) return false;
+
+	//空いているスロットがあるならtrueを返す。
+	if (safeItemSlot->FindEmptyItemSlot() != -1) return true;
+
+	int remainCount = count;
+
+	for (int i = 0; i < safeItemSlot->GetSlotCount(); i++)
+	{
+		const auto* item = safeItemSlot->GetItem(i);
+		if (!item) continue;
+
+		if (item->GetItemType() != itemType) continue;
+
+		auto canAddCount = item->CheckAddItemCount(remainCount);
+		remainCount -= canAddCount;
+
+		if (remainCount <= 0) break;
+	}
+
+	return remainCount <= 0;
 }

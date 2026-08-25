@@ -38,3 +38,8 @@ Second Timer::GetElapsedTime() const
 	const MiliSecond erapsedMiliSec = currentTime - m_startTime;
 	return ToSecond(erapsedMiliSec);
 }
+
+Second Timer::GetDuration() const
+{
+	return ToSecond(m_duration);
+}

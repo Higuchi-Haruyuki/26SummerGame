@@ -11,12 +11,19 @@
 #include "ItemManager.h"
 #include "ItemSlot.h"
 #include "UIManager.h"
+#include "Debug.h"
 #include "StringUtil.h"
 #include "Timer.h"
 #include <numeric>
+#include <format>
+#include "ItemStackFactory.h"
+#include "UIProgressBar.h"
+#include "PlayerItem.h"
+#include "UIText.h"
 
 namespace
 {
+
 	/*UI*/
 	//windowの定数
 	const Vector kWindowPos = { Game::kDisplaySize.m_x * 0.75f , Game::kDisplaySize.m_y * 0.4f };
@@ -24,13 +31,25 @@ namespace
 	constexpr unsigned int kWindowColor = 0xd3d3d3;
 	constexpr int kWindowAlpha = 200;
 
+	inline Vector GetWindowRightUp() { return kWindowPos + Vector{ +kWindowSize.m_x * 0.5f,-kWindowSize.m_y * 0.5f }; }
+	inline Vector GetWindowLeftDown() { return kWindowPos + Vector{ -kWindowSize.m_x * 0.5f,kWindowSize.m_y * 0.5f}; }
+
+	//ウィンドウを消すボタンのUI
+	const Vector kCloseSize = { 30,30 };
+	const Vector kCloseOffset = { -10,10 };
+	const Vector kClosePos = GetWindowRightUp() + Vector{-kCloseSize.m_x * 0.5f, kCloseSize.m_y * 0.5f} + kCloseOffset;
+
 	//1レシピあたりの四角
 	const Vector kRecipeSize = { 580,100,0 };
-	constexpr unsigned int kRecipeColor = 0xffffff;
+	constexpr unsigned int kRecipeColor = 0xf5f5f5;
 	constexpr int kRecipeAlpha = 255;
 
 	//レシピ間のオフセット
 	const Vector kRecipeOffset = { 0,10 };
+
+	//レシピリスト表示位置
+	const Vector kRecipeListStartOffset = { 10,5 };
+	const Vector kRecipeListFirstpos = kWindowPos - kWindowSize * 0.5f + kRecipeSize * 0.5f + kRecipeOffset + kRecipeListStartOffset;
 
 	//アイテムボックスの定数
 	const Vector kItemBoxSize = { 50,50,0 };
@@ -39,8 +58,17 @@ namespace
 	//アイテムボックス間のオフセット
 	const Vector kItemBoxOffset = { 100,0 };
 
-	//完成品のアイテムボックス
-	const Vector kCompletionItemBoxSize = { 80,80 };
+	//レシピキューの最大表示数
+	constexpr int kMaxDisplayCraftQueue = 8;
+
+	//レシピキューの表示位置
+	const Vector kCraftQueueOffset = { 10, 0 };
+	const Vector kCraftQueueFirstPos = GetWindowLeftDown() + Vector{ kItemBoxSize.m_x, -kItemBoxSize.m_y } + kCraftQueueOffset;
+
+	//クラフト進捗のUI
+	const auto kProgressBarSize = Vector{ kItemBoxSize.m_x,10 };
+	const auto kProgressBarOffset = Vector{ 0,10 };
+	const auto kProgressBarPos = kCraftQueueFirstPos + Vector{ 0,kItemBoxSize.m_y * 0.5f } + kProgressBarOffset;
 }
 
 PlayerCraft::PlayerCraft(std::shared_ptr<Object> parent) :
@@ -58,17 +86,15 @@ void PlayerCraft::Init()
 {
 	Component::Init();
 	if (!m_isEnable) return;
-	m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
-	m_completionItemSlot = std::make_shared<ItemSlot>(1);
 
-	m_craftTimer.SubscribeOnFinished([this]()
-		{
-			if (HasRequiredItems(m_craftConsumeSlots)) 
-			{
-				Craft();
-			}
-			m_craftTimer.ResetStartTime();
-		});
+	m_playerItem = GetParentObject()->GetComponent<PlayerItem>();
+
+	m_craftQueueUI.resize(kMaxDisplayCraftQueue);
+
+	m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
+
+	m_craftTimer.SetEnable(false);   //レシピが選ばれるまで動かさない
+	m_craftTimer.SubscribeOnFinished([this]() { Craft();});
 
 }
 
@@ -76,12 +102,38 @@ void PlayerCraft::Update(float deltaTime)
 {
 	Component::Update(deltaTime);
 	if (!m_isEnable) return;
+
 	if (m_recipeList.empty())
 		m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
 
+	//製作していないときだけ、開始できるか判定する
+	if (m_craftQueue.size())
+	{
+		const auto& safeRecipe = m_craftQueue.at(0).lock();
+
+		const bool isTimerEnable = m_craftTimer.IsEnable();
+
+		const bool isEnoughItem = HasRequiredItems(m_craftConsumeSlots);
+
+		const bool canStoreOutput = CanStoreOutput();
+
+		if (safeRecipe && !isTimerEnable
+			&& isEnoughItem && canStoreOutput)
+		{
+			m_craftTimer.SetDuration(static_cast<Second>(safeRecipe->GetRecipeProcessTime()));
+			m_craftTimer.SetEnable(true);
+		}
+	}
+
+	//Timerはポーリングしないと完了コールバックが呼ばれない
 	m_craftTimer.IsTimeOver();
 
 	UpdateUIPanel();
+
+	for (const auto& recipe : m_craftQueue)	
+	{
+		Debug::Log(std::format("RecipeName: {}", static_cast<int>(recipe.lock()->GetRecipeName())));
+	}
 }
 
 void PlayerCraft::Finalize()
@@ -103,11 +155,13 @@ std::shared_ptr<UIPanel> PlayerCraft::GetOrBuidUIPanel()
 bool PlayerCraft::HasRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots) const
 {
 
-	if (!m_currentRecipe.lock()) return false;
+	if (!m_craftQueue.size())return false;
 
-	for (const auto& [needItem, needCount] : m_currentRecipe.lock()->GetRecipeInput())
+	const auto& safeRecipe = m_craftQueue.at(0).lock();
+
+	for (const auto& [needItem, needCount] : safeRecipe->GetRecipeInput())
 	{
-		if (needCount < CountItem(itemSlots, needItem)) return false;
+		if (needCount > CountItem(itemSlots, needItem)) return false;
 	}
 
 	return true;
@@ -123,10 +177,15 @@ int PlayerCraft::CountItem(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots
 
 		if (!safeItemSlot) continue;
 
-		const auto findItem = safeItemSlot->GetItem(item);
+		for (int i = 0; i < safeItemSlot->GetSlotCount(); i++)
+		{
+			const auto* itemStack = safeItemSlot->GetItem(i);
+			if (!itemStack) continue;
+			if (itemStack->GetItemType() != item) continue;
 
-		if (!findItem) continue;
-		count += findItem->GetItemCount();
+			count += itemStack->GetItemCount();
+		}
+
 	}
 
 	return count;
@@ -134,28 +193,42 @@ int PlayerCraft::CountItem(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots
 
 bool PlayerCraft::CanStoreOutput() const
 {
-	const auto& safeRecipe = m_currentRecipe.lock();
+	if (!m_craftQueue.size())return false;
+
+	const auto& safeRecipe = m_craftQueue.at(0).lock();
 	if (!safeRecipe) return false;
 
 	for (const auto& [outItem, outCount] : safeRecipe->GetRecipeOutput())
 	{
-		const auto* stored = m_completionItemSlot->GetItem(0);
-
-		if (stored)
-		{
-			if (stored->CheckAddItemCount(outCount) < outCount) return false;
-			continue;
-		}
-
-		if (m_completionItemSlot->FindEmptyItemSlot() == -1) return false;
+		if(!m_playerItem.lock()->CanAddItem(outItem, outCount)) return false;
 	}
 
 	return true;
 }
 
+void PlayerCraft::StoreOutput()
+{
+	if (!m_craftQueue.size())return;
+
+	const auto& safeRecipe = m_craftQueue.at(0).lock();
+	if (!safeRecipe) return;
+
+	for (const auto& [outItem, outCount] : safeRecipe->GetRecipeOutput())
+	{
+		auto item = ItemStackFactory::Make(outItem, outCount);
+
+		if(m_playerItem.lock()->CanAddItem(outItem, outCount)) 
+			m_playerItem.lock()->AddItem(std::move(item), outCount);
+
+	}
+
+}
+
 void PlayerCraft::ConsumeRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots)
 {
-	const auto& safeRecipe = m_currentRecipe.lock();
+	if (!m_craftQueue.size())return;
+
+	const auto& safeRecipe = m_craftQueue.at(0).lock();
 	if (!safeRecipe) return;
 
 	for (const auto& [needItem, needCount] : safeRecipe->GetRecipeInput())
@@ -190,34 +263,26 @@ void PlayerCraft::BuildUIPanel()
 	//Windowの生成
 	UIFactory::MakeUIToPanel<UISquare>(m_uiPanel, kWindowPos, kWindowSize, kWindowColor, kWindowAlpha);
 
-	const auto closeSize = Vector{ 30,30 };
-	const auto closeOffset = Vector{ -10,10 };
-	const auto closePos = kWindowPos + Vector{ kWindowSize.m_x * 0.5f , -kWindowSize.m_y * 0.5f } + Vector{ -closeSize.m_x * 0.5f, closeSize.m_y * 0.5f } + closeOffset;
-
-	const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_uiPanel, closePos, closeSize, GraphicId::kUIClose);
-	close.lock()->SubscribeOnClick([this]() {m_uiPanel->SetVisible(false); });
+	//const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_uiPanel, kClosePos, kCloseSize, GraphicId::kUIClose);
+	//close.lock()->SubscribeOnClick([this]() {m_uiPanel->SetVisible(false); });
 
 	auto index = 0;
-
-	const auto startOffset = Vector{ 10,100 };
-
-	const auto firstpos = kWindowPos - kWindowSize * 0.5f + kRecipeSize * 0.5f + kRecipeOffset + startOffset;
 
 	if (m_recipeList.empty())
 		m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
 
 	for (const auto& recipe : m_recipeList)
 	{
-		const auto pos = firstpos + (Vector{ 0, kRecipeSize.m_y } + kRecipeOffset) * index;
+		const auto pos = kRecipeListFirstpos + (Vector{ 0, kRecipeSize.m_y } + kRecipeOffset) * index;
 		const auto leftUpPos = pos - kRecipeSize * 0.5f;
 
 		const auto& recipeSquare = UIFactory::MakeUIToPanel<UISquare>(
 			m_uiPanel, pos, kRecipeSize, kRecipeColor, kRecipeAlpha
 		);
 		recipeSquare.lock()->SubscribeOnClick(
-			[this, &recipe]()
+			[this, recipe]()
 			{
-				m_currentRecipe = recipe.second;
+				m_craftQueue.push_back(recipe.second);
 			});
 
 		BuildRecipeUI(leftUpPos, recipe.second);
@@ -226,29 +291,93 @@ void PlayerCraft::BuildUIPanel()
 
 	const auto leftDown = kWindowPos + Vector{ -kWindowSize.m_x * 0.5f , kWindowSize.m_y * 0.5f };
 
-	const auto completionOffset = Vector{ 0,10 };
+	//完成するまでのバーを表示
 
-	const auto completionPos = Vector{ kWindowPos.m_x,leftDown.m_y } - Vector{ 0,kCompletionItemBoxSize.m_y * 0.5f } - completionOffset;
 
-	m_completionItemBox = std::make_shared<UIItemBox>(
-		m_uiPanel, completionPos, kCompletionItemBoxSize);
-	m_completionItemBox->SetImageAlpha(100);
-	m_completionItemBox->SetOnDragBeginEvent([this]()
-		{
-			m_uiManager.ItemSelect(m_completionItemSlot, 0);
-		});
+	m_craftProgressBar = UIFactory::MakeUIToPanel<UIProgressBar>(m_uiPanel, kProgressBarPos, kProgressBarSize,0xff0000,150);
+	m_craftProgressBar.lock()->SetProgress(0.0f);
+
+	BuildCraftQueueUI();
 }
 
 void PlayerCraft::UpdateUIPanel()
 {
-	const auto& safeRecipe = m_currentRecipe.lock();
-	if (!safeRecipe) return;
+	for (const auto& ui : m_craftQueueUI)
+	{
+		ui->SetVisible(false);
+		ui->SetGraphicID(GraphicId::kNone);
+		ui->SetText("");
+	}
 
-	const auto& outputs = safeRecipe->GetRecipeOutput();
+	m_craftProgressText.lock()->SetVisible(false);
 
-	const auto& output = outputs.at((0));
+	if (m_craftQueue.size())
+	{
+		const auto& safeRecipe = m_craftQueue.at(0).lock();
+		if (!safeRecipe) return;
 
-	m_completionItemBox->SetGraphicID(ItemTable::GetGraphicID(output.first));
+		const auto& outputs = safeRecipe->GetRecipeOutput();
+
+		const auto& output = outputs.at((0));
+
+		int overflowCount = 0;
+
+		for (int i = 0; i < m_craftQueue.size(); i++)
+		{
+			if (i >= m_craftQueueUI.size())
+			{
+				overflowCount++;
+				continue;
+			}
+
+			const auto& ui = m_craftQueueUI.at(i);
+			ui->SetVisible(true);
+
+			const auto& craft = m_craftQueue.at(i).lock();
+			const auto& [item, count] = craft->GetRecipeOutput().at(0);
+
+			auto graphicID = ItemTable::GetGraphicID(item);
+			ui->SetGraphicID(graphicID);
+			ui->SetText("x" + StringUtil::IntToString(count));
+
+		}
+
+		if (overflowCount)
+		{
+			m_craftProgressText.lock()->SetVisible(true);
+			m_craftProgressText.lock()->SetText("...x" + StringUtil::IntToString(overflowCount));
+		}
+	}
+
+	if(m_craftTimer.IsEnable())
+		m_craftProgressBar.lock()->SetProgress(m_craftTimer.GetElapsedTime(),0.0f,m_craftTimer.GetDuration());
+	else
+		m_craftProgressBar.lock()->SetProgress(0.0f);
+}
+
+void PlayerCraft::BuildCraftQueueUI()
+{
+	auto pos = kCraftQueueFirstPos;
+	for (int i = 0; i < m_craftQueueUI.size(); i++)
+	{
+		const auto& itemBoxUI = std::make_shared<UIItemBox>
+			(m_uiPanel, pos, kItemBoxSize);
+		itemBoxUI->SetVisible(false);
+		m_craftQueueUI.at(i) = itemBoxUI;
+
+		pos += Vector{ kCraftQueueOffset.m_x + kItemBoxSize.m_x };
+	}
+	
+	m_craftProgressText = UIFactory::MakeUIToPanel<UIText>
+		(
+			m_uiPanel, 
+			TextArgs{
+				pos,
+				TextPivot::CenterTop,
+			}
+		);
+	m_craftProgressText.lock()->SetVisible(false);
+
 }
 
 void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe)
@@ -312,60 +441,18 @@ void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> reci
 
 void PlayerCraft::Craft()
 {
-	const auto& safeRecipe = m_currentRecipe.lock();
-	if (!safeRecipe) return;
-
-	//出力用スロットを取得
-	const auto& outputItem = m_completionItemSlot->GetItem(0);
-
-	//入力用スロットを取得
-	const auto& inputSlots = m_craftConsumeSlots;
-
-	//レシピの出力する素材と個数を取得
-	const auto& output = safeRecipe->GetRecipeOutput();
-
-	//出力可能かのフラグ
-	bool isOk = false;
-
-	//レシピが出力する個数の取得
-	int recipeOutputCount = 0;
-
-	//何かアイテムが入っている
-	if (outputItem)
+	//製作中に素材が抜かれた／完成品が埋まった可能性があるので再確認する
+	if (!HasRequiredItems(m_craftConsumeSlots) || !CanStoreOutput())
 	{
-		for (const auto& recipeOutputItem : output)
-		{
-			if (recipeOutputItem.first != outputItem->GetItemType()) continue;
-			recipeOutputCount = recipeOutputItem.second;
-			//出力用スロットにちゃんとレシピでついかされるぶんが追加できるかを確認する。
-			if (recipeOutputCount != outputItem->CheckAddItemCount(recipeOutputCount)) continue;
-			isOk = true;
-		}
-		if (!isOk) return;
-
-		inputSlots->MinusItemCount(needItemCount);
-		outputItem->AddItemCount(recipeOutputCount);
-	}
-	//出力用スロットが空の時
-	else
-	{
-		Item recipeOutputType;
-		for (const auto& outputItem : output)
-		{
-			recipeOutputType = outputItem.first;
-			recipeOutputCount = outputItem.second;
-		}
-
-		inputSlots->MinusItemCount(needItemCount);
-		outputItemSlot->AddItemStack(0, std::make_unique<ItemStack>(recipeOutputType, recipeOutputCount));
+		m_craftTimer.SetEnable(false);
+		return;
 	}
 
-	for (const auto& outputItem : output)
-	{
-		m_factoryManager.OnMakeItem(outputItem.first, outputItem.second);
-	}
+	ConsumeRequiredItems(m_craftConsumeSlots);
+	StoreOutput();
 
-	if (!inputSlots->GetItemCount()) inputItems->RemoveItem(0);
+	m_craftQueue.pop_front();
 
-	return true;
+	//次の製作はUpdateが条件を見て開始する
+	m_craftTimer.SetEnable(false);
 }

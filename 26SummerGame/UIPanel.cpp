@@ -29,10 +29,10 @@ void UIPanel::SetVisible(bool isVisible)
 {
 	m_isVisible = isVisible;
 
-	for (const auto& child : m_children)
+	/*for (const auto& child : m_children)
 	{
 		child->SetVisible(isVisible);
-	}
+	}*/
 
 }
 

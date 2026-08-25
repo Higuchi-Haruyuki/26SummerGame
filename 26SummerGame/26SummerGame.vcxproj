@@ -197,6 +197,7 @@
     <ClCompile Include="UIManager.cpp" />
     <ClCompile Include="UIPanel.cpp" />
     <ClCompile Include="UIPointer.cpp" />
+    <ClCompile Include="UIProgressBar.cpp" />
     <ClCompile Include="UISquare.cpp" />
     <ClCompile Include="UIText.cpp" />
     <ClCompile Include="VectorInt.cpp" />
@@ -276,6 +277,7 @@
     <ClInclude Include="UIManager.h" />
     <ClInclude Include="UIPanel.h" />
     <ClInclude Include="UIPointer.h" />
+    <ClInclude Include="UIProgressBar.h" />
     <ClInclude Include="UISquare.h" />
     <ClInclude Include="UIText.h" />
     <ClInclude Include="vector.h" />

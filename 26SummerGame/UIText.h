@@ -30,11 +30,11 @@ struct TextArgs
 	//使用するフォント
 	FontId FontHandleName = FontId::kFactoryUIText;
 	//テキスト
-	std::string Text;
+	std::string Text = "";
 	//文字列の色
 	unsigned int MainColor = 0xffffff;
 	//文字列の縁色
-	unsigned int EdgeColor = -1;
+	unsigned int EdgeColor = 0x000000;
 	//透明度
 	unsigned int Alpha = 255;
 

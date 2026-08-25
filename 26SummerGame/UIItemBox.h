@@ -26,6 +26,7 @@ public:
 	UIItemBox(std::weak_ptr<UIPanel> addPanel, const Vector& position, const Vector& size);
 	~UIItemBox() = default;
 
+	void SetVisible(bool visible);
 	void SetPosition(const Vector& pos);
 	void SetSize(const Vector& size);
 	void SetColor(unsigned int color);

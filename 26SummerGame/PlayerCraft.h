@@ -4,6 +4,7 @@
 #include "Timer.h"
 #include <unordered_map>
 #include <memory>
+#include <deque>
 
 class UIPanel;
 class UIItemBox;
@@ -12,6 +13,9 @@ class RecipeManager;
 class ItemSlot;
 class UIManager;
 class ItemStack;
+class UIProgressBar;
+class PlayerItem;
+class UIText;
 
 enum class RecipeType;
 enum class RecipeName;
@@ -41,11 +45,15 @@ private:
 
     bool CanStoreOutput() const;
 
+    void StoreOutput();
+
     void ConsumeRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots);
 
     void BuildUIPanel();
 
     void UpdateUIPanel();
+
+    void BuildCraftQueueUI();
 
     void BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe);
 
@@ -56,11 +64,10 @@ private:
     RecipeManager& m_recipeManager;
     UIManager& m_uiManager;
 
+    std::weak_ptr<PlayerItem> m_playerItem;
+
     //制作時にアイテムを消費する場所
     std::vector<std::weak_ptr<ItemSlot>> m_craftConsumeSlots;
-
-    //現在設定されているレシピ
-    std::weak_ptr<Recipe> m_currentRecipe;
 
     RecipeType m_allowRecipeType = RecipeType::kNone;
 
@@ -69,11 +76,16 @@ private:
 
     std::unordered_map<RecipeName, std::shared_ptr<Recipe>> m_recipeList;
 
-    std::shared_ptr<UIItemBox> m_completionItemBox;
-
-    std::shared_ptr<ItemSlot> m_completionItemSlot;
-
     Timer m_craftTimer{0};
+
+    std::deque<std::weak_ptr<Recipe>> m_craftQueue;
+
+    //UI要素
+    std::weak_ptr<UIProgressBar> m_craftProgressBar;
+
+    std::vector<std::shared_ptr<UIItemBox>> m_craftQueueUI;
+
+    std::weak_ptr<UIText> m_craftProgressText;
 
 };
 

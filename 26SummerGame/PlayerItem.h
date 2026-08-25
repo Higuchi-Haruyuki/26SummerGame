@@ -67,14 +67,6 @@ public:
 	/// <param name="index"></param>
 	void SetItemBarChoiceIndex(int index);
 
-	/// <summary>
-	/// プレイヤーにアイテムを追加する。
-	/// アイテムバー優先で、溢れたらインベントリに追加する。
-	/// </summary>
-	/// <param name="item"></param>
-	/// <param name="count"></param>
-	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItem(std::unique_ptr<ItemStack> item, int count);
 
 	/// <summary>
 	/// アイテムバーにアイテムをcount個追加する。
@@ -86,6 +78,7 @@ public:
 	/// <returns></returns>
 	std::unique_ptr<ItemStack> AddItemToItemBar(std::unique_ptr<ItemStack> item, int count);
 
+	bool CanAddToItemBar(Item itemType, int count) const;
 	/*Inventory関連関数*/
 
 	std::weak_ptr<ItemSlot> GetInventory() const { return m_inventory; }
@@ -129,6 +122,18 @@ public:
 	/// <returns></returns>
 	std::unique_ptr<ItemStack> AddItemToInventory(std::unique_ptr<ItemStack> item, int count);
 
+	bool CanAddToInventory(Item itemType, int count) const;
+
+	/// <summary>
+	/// プレイヤーにアイテムを追加する。
+	/// アイテムバー優先で、溢れたらインベントリに追加する。
+	/// </summary>
+	/// <param name="item"></param>
+	/// <param name="count"></param>
+	/// <returns></returns>
+	std::unique_ptr<ItemStack> AddItem(std::unique_ptr<ItemStack> item, int count);
+
+	bool CanAddItem(Item itemType, int count) const;
 private:
 
 	/// <summary>
@@ -137,6 +142,8 @@ private:
 	void ChoiceItemSlot();
 
 	void ChoiceInventorySlot();
+
+	bool CanAddToItemSlot(const std::weak_ptr<ItemSlot> itemSlot, Item itemType, int count) const;
 private:
 	//シングルトンへの参照
 	PlayerInput& m_input;
