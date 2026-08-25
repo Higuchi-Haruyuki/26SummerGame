@@ -91,7 +91,7 @@ namespace component
 
 		if (!inputItemSlot) return;
 
-		for (int i = 0; i < inputItemSlot->GetItemCount(); i++)
+		for (int i = 0; i < inputItemSlot->GetSlotCount(); i++)
 		{
 			auto item = inputItemSlot->GetItemOwnership(i);
 			if (!item) continue;
@@ -101,7 +101,7 @@ namespace component
 
 		const auto& outputItemSlot = factoryCom->GetOutputItemSlot().lock();
 
-		for (int i = 0; i < outputItemSlot->GetItemCount(); i++)
+		for (int i = 0; i < outputItemSlot->GetSlotCount(); i++)
 		{
 			auto item = outputItemSlot->GetItemOwnership(i);
 			if (!item) continue;

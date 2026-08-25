@@ -1,4 +1,5 @@
 ﻿#pragma once
+#include "Event.h"
 
 using Second = float;
 using MiliSecond = int;
@@ -9,7 +10,7 @@ public:
 	Timer(Second durationSec);
 	~Timer() {};
 
-	bool IsTimeOver() const;
+	bool IsTimeOver();
 
 	MiliSecond ToMiliSecond(Second sec) const
 	{
@@ -28,6 +29,7 @@ public:
 	void SetDuration(Second sec)
 	{
 		m_duration = ToMiliSecond(sec);
+		ResetStartTime();
 	}
 
 	void SetEnable(bool isEnable) 
@@ -46,10 +48,21 @@ public:
 	/// <returns></returns>
 	Second GetElapsedTime() const;
 
+	void SubscribeOnFinished(const std::function<void()>& onBegin)
+	{
+		m_onFinishedConnection.emplace_back(m_onFinished.AddListener(onBegin));
+	}
 
 private:
 	bool m_isEnable = true;
 	MiliSecond m_startTime = 0;
 	MiliSecond m_duration = 0;
+
+	bool m_isTimerOverLastFrame = false;
+
+	//終了時のコールバック
+	std::vector<Event<>::Connection> m_onFinishedConnection;
+	Event<> m_onFinished;
+
 };
 

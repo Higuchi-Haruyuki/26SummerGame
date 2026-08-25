@@ -51,12 +51,12 @@ public :
 		return m_recipeName;
 	}
 
-	ItemTypeAndCount GetRecipeInput() const
+	const ItemTypeAndCount& GetRecipeInput() const
 	{
 		return m_inputItemTypeAndCount;
 	}
 
-	ItemTypeAndCount GetRecipeOutput() const
+	const ItemTypeAndCount& GetRecipeOutput() const
 	{
 		return m_outputItemTypeAndCount;
 	}

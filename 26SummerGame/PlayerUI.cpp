@@ -32,7 +32,7 @@
 #include <string>
 #include "ItemManager.h"
 #include "UIItemBox.h"
-#include "ManufacturingSystem.h"
+#include "PlayerCraft.h"
 #include "ItemSlot.h"
 
 namespace
@@ -99,7 +99,7 @@ void PlayerUI::Init()
 	GetComponentReference();
 
 	//クラフト可能なレシピタイプを設定する。
-	m_manufacturing.lock()->SetAllowRecipeType(RecipeType::kPlayerCraft);
+	m_playerCraft.lock()->SetAllowRecipeType(RecipeType::kPlayerCraft);
 
 	CreatePanel();
 
@@ -148,8 +148,8 @@ void PlayerUI::GetComponentReference()
 		m_playerItem = GetParentObject()->GetComponent<PlayerItem>();
 	if (!m_state)
 		m_state = GetParentObject()->GetComponent<CharactorStateManager>();
-	if (!m_manufacturing.lock())
-		m_manufacturing = GetParentObject()->AddComponent<ManufacturingSystem>();
+	if (!m_playerCraft.lock())
+		m_playerCraft = GetParentObject()->GetComponent<PlayerCraft>();
 }
 
 void PlayerUI::CreatePanel()
@@ -343,7 +343,7 @@ void PlayerUI::InitInventoryItemPanel()
 	UIFactory::MakeUIToPanel<UISquare>(m_inventoryUIPanel, kInventoryPos, kInventorySize, kInventoryColor, kInventoryAlpha);
 
 	const auto& inventory = m_playerItem->GetInventory();
-	for (int i = 0; i < inventory.lock()->GetItemCount(); i++)
+	for (int i = 0; i < inventory.lock()->GetSlotCount(); i++)
 	{
 		const auto& itemBox = std::make_shared<UIItemBox>(
 			m_inventoryUIPanel, CalcInventoryItemSlotPos(i), kItemBarItemSlotSize
@@ -386,7 +386,7 @@ void PlayerUI::InitInventoryItemPanel()
 		}
 	);
 
-	m_inventoryUIPanel->AddChild(m_manufacturing.lock()->GetOrBuidUIPanel());
+	m_inventoryUIPanel->AddChild(m_playerCraft.lock()->GetOrBuidUIPanel());
 }
 
 Vector PlayerUI::CalcItemBarItemSlotPos(int index) const
@@ -550,7 +550,7 @@ void PlayerUI::UpdateInventory()
 
 	int index = m_playerItem->GetInventoryChoiceIndex();
 
-	int inventorySize = m_playerItem->GetInventory().lock()->GetItemCount();
+	int inventorySize = m_playerItem->GetInventory().lock()->GetSlotCount();
 
 	//アイテムがあるときにそのアイコンを表示する
 	for (int i = 0; i < inventorySize; i++)

@@ -120,14 +120,14 @@ void ItemStack::DrawModel(const Vector& v) const
 	MV1DrawModel(m_modelHandle);
 }
 
-const std::weak_ptr<Object>& ItemStack::Installation(const VectorInt& gridPos, float rotationAngle)
+std::weak_ptr<Object> ItemStack::Installation(const VectorInt& gridPos, float rotationAngle)
 {
 	if (!m_installationItem) return std::weak_ptr<Object>();
 
 	return m_installationItem(gridPos, rotationAngle);
 }
 
-const std::weak_ptr<Object>& ItemStack::GeneratePreviewObject()
+std::weak_ptr<Object> ItemStack::GeneratePreviewObject()
 {
 	if (!m_generatePreviewObject) return std::weak_ptr<Object>();
 	m_previewObject = m_generatePreviewObject();

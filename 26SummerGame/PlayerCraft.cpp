@@ -1,24 +1,25 @@
-﻿#include "ManufacturingSystem.h"
-#include "Recipe.h"
+#include "PlayerCraft.h"
+#include "Object.h"
 #include "RecipeManager.h"
-#include "FactoryManager.h"
-#include "ItemStack.h"
-#include "ItemSlot.h"
-#include "Debug.h"
-#include "ItemType.h"
+#include "UIFactory.h"
 #include "UIPanel.h"
+#include "UIImage.h"
 #include "UIItemBox.h"
 #include "UISquare.h"
-#include "UIImage.h"
-#include "UIFactory.h"
+#include "Game.h"
+#include "ResourceType.h"
 #include "ItemManager.h"
+#include "ItemSlot.h"
+#include "UIManager.h"
 #include "StringUtil.h"
+#include "Timer.h"
+#include <numeric>
 
 namespace
 {
 	/*UI*/
 	//windowの定数
-	const Vector kWindowPos = { Game::kDisplaySize.m_x * 0.75f , Game::kDisplaySize.m_y * 0.5f };
+	const Vector kWindowPos = { Game::kDisplaySize.m_x * 0.75f , Game::kDisplaySize.m_y * 0.4f };
 	const Vector kWindowSize = { 600,800,0 };
 	constexpr unsigned int kWindowColor = 0xd3d3d3;
 	constexpr int kWindowAlpha = 200;
@@ -42,33 +43,54 @@ namespace
 	const Vector kCompletionItemBoxSize = { 80,80 };
 }
 
-ManufacturingSystem::ManufacturingSystem(std::shared_ptr<Object> parentObject):
-	Component(parentObject),
+PlayerCraft::PlayerCraft(std::shared_ptr<Object> parent) :
+	Component(parent),
 	m_recipeManager(RecipeManager::GetInstance()),
-	m_factoryManager(FactoryManager::GetInstance())
-{}
-
-void ManufacturingSystem::Init()
+	m_uiManager(UIManager::GetInstance())
 {
-	Component::Init();
-	m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
 }
 
-void ManufacturingSystem::Update(float deltaTime)
+PlayerCraft::~PlayerCraft()
+{
+}
+
+void PlayerCraft::Init()
+{
+	Component::Init();
+	if (!m_isEnable) return;
+	m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
+	m_completionItemSlot = std::make_shared<ItemSlot>(1);
+
+	m_craftTimer.SubscribeOnFinished([this]()
+		{
+			if (HasRequiredItems(m_craftConsumeSlots)) 
+			{
+				Craft();
+			}
+			m_craftTimer.ResetStartTime();
+		});
+
+}
+
+void PlayerCraft::Update(float deltaTime)
 {
 	Component::Update(deltaTime);
 	if (!m_isEnable) return;
-	if(m_recipeList.empty())
+	if (m_recipeList.empty())
 		m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
+
+	m_craftTimer.IsTimeOver();
+
 	UpdateUIPanel();
 }
 
-void ManufacturingSystem::Finalize()
+void PlayerCraft::Finalize()
 {
 	Component::Finalize();
+	if (!m_isEnable) return;
 }
 
-std::shared_ptr<UIPanel> ManufacturingSystem::GetOrBuidUIPanel()
+std::shared_ptr<UIPanel> PlayerCraft::GetOrBuidUIPanel()
 {
 	if (!m_uiPanel)
 	{
@@ -78,52 +100,99 @@ std::shared_ptr<UIPanel> ManufacturingSystem::GetOrBuidUIPanel()
 	return m_uiPanel;
 }
 
-void ManufacturingSystem::SetRecipe(const ItemSlot* items)
+bool PlayerCraft::HasRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots) const
 {
-	if (!items->GetSlotCount()) return;
 
-	const auto& item = items->GetItem(0);
+	if (!m_currentRecipe.lock()) return false;
 
-	if (!item) return;
-
-	//アイテムスタックからアイテムタイプを取得する。
-	auto currentItemType = item->GetItemType();
-
-	//取得したアイテムタイプから作成可能なレシピを取得する。
-	m_currentRecipe = m_recipeManager.GetRecipeFromItemType(m_allowRecipeType, currentItemType);
-}
-
-int ManufacturingSystem::CalcNeedItemCount(const ItemSlot* items) const
-{
-	if (!items->GetSlotCount()) return 0;
-
-	if (!items->GetItem(0)) return 0;
-
-	const auto& recipe = m_currentRecipe.lock();
-	if (!recipe) return 0;
-
-	//そのレシピの必要素材と数を取得
-	const auto& input = recipe->GetRecipeInput();
-
-	for (const auto& inputItem : input)
+	for (const auto& [needItem, needCount] : m_currentRecipe.lock()->GetRecipeInput())
 	{
-		//アイテムタイプが違うときは不可
-		if (inputItem.first != items->GetItem(0)->GetItemType()) continue;
-		//アイテム数が足りないときは不可
-		if (inputItem.second <= items->GetItem(0)->GetItemCount()) return inputItem.second;
+		if (needCount < CountItem(itemSlots, needItem)) return false;
 	}
 
-	return 0;
+	return true;
 }
 
-void ManufacturingSystem::BuildUIPanel()
+int PlayerCraft::CountItem(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots, Item item) const
+{
+	int count = 0;
+
+	for (const auto& itemSlot : itemSlots)
+	{
+		const auto& safeItemSlot = itemSlot.lock();
+
+		if (!safeItemSlot) continue;
+
+		const auto findItem = safeItemSlot->GetItem(item);
+
+		if (!findItem) continue;
+		count += findItem->GetItemCount();
+	}
+
+	return count;
+}
+
+bool PlayerCraft::CanStoreOutput() const
+{
+	const auto& safeRecipe = m_currentRecipe.lock();
+	if (!safeRecipe) return false;
+
+	for (const auto& [outItem, outCount] : safeRecipe->GetRecipeOutput())
+	{
+		const auto* stored = m_completionItemSlot->GetItem(0);
+
+		if (stored)
+		{
+			if (stored->CheckAddItemCount(outCount) < outCount) return false;
+			continue;
+		}
+
+		if (m_completionItemSlot->FindEmptyItemSlot() == -1) return false;
+	}
+
+	return true;
+}
+
+void PlayerCraft::ConsumeRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots)
+{
+	const auto& safeRecipe = m_currentRecipe.lock();
+	if (!safeRecipe) return;
+
+	for (const auto& [needItem, needCount] : safeRecipe->GetRecipeInput())
+	{
+		int remainCount = needCount;
+
+		for (const auto& itemSlot : itemSlots)
+		{
+			if (remainCount <= 0) break;
+
+			const auto& safeItemSlot = itemSlot.lock();
+			if (!safeItemSlot) continue;
+
+			for (int i = 0; i < safeItemSlot->GetSlotCount(); i++)
+			{
+				if (remainCount <= 0) break;
+
+				auto* itemStack = safeItemSlot->GetItem(i);
+				if (!itemStack) continue;
+				if (itemStack->GetItemType() != needItem) continue;
+
+				remainCount -= itemStack->MinusItemCount(remainCount);
+
+				if (itemStack->GetItemCount() <= 0) safeItemSlot->RemoveItem(i);
+			}
+		}
+	}
+}
+
+void PlayerCraft::BuildUIPanel()
 {
 	//Windowの生成
 	UIFactory::MakeUIToPanel<UISquare>(m_uiPanel, kWindowPos, kWindowSize, kWindowColor, kWindowAlpha);
 
 	const auto closeSize = Vector{ 30,30 };
 	const auto closeOffset = Vector{ -10,10 };
-	const auto closePos = kWindowPos + Vector{ kWindowSize.m_x * 0.5f , -kWindowSize.m_y * 0.5f } + Vector{ -closeSize.m_x * 0.5f, closeSize.m_y * 0.5f} + closeOffset;
+	const auto closePos = kWindowPos + Vector{ kWindowSize.m_x * 0.5f , -kWindowSize.m_y * 0.5f } + Vector{ -closeSize.m_x * 0.5f, closeSize.m_y * 0.5f } + closeOffset;
 
 	const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_uiPanel, closePos, closeSize, GraphicId::kUIClose);
 	close.lock()->SubscribeOnClick([this]() {m_uiPanel->SetVisible(false); });
@@ -146,7 +215,7 @@ void ManufacturingSystem::BuildUIPanel()
 			m_uiPanel, pos, kRecipeSize, kRecipeColor, kRecipeAlpha
 		);
 		recipeSquare.lock()->SubscribeOnClick(
-			[this,&recipe]() 
+			[this, &recipe]()
 			{
 				m_currentRecipe = recipe.second;
 			});
@@ -159,14 +228,18 @@ void ManufacturingSystem::BuildUIPanel()
 
 	const auto completionOffset = Vector{ 0,10 };
 
-	const auto completionPos = Vector{ kWindowPos.m_x,leftDown.m_y } - Vector{0,kCompletionItemBoxSize.m_y *0.5f} - completionOffset;
+	const auto completionPos = Vector{ kWindowPos.m_x,leftDown.m_y } - Vector{ 0,kCompletionItemBoxSize.m_y * 0.5f } - completionOffset;
 
 	m_completionItemBox = std::make_shared<UIItemBox>(
 		m_uiPanel, completionPos, kCompletionItemBoxSize);
 	m_completionItemBox->SetImageAlpha(100);
+	m_completionItemBox->SetOnDragBeginEvent([this]()
+		{
+			m_uiManager.ItemSelect(m_completionItemSlot, 0);
+		});
 }
 
-void ManufacturingSystem::UpdateUIPanel()
+void PlayerCraft::UpdateUIPanel()
 {
 	const auto& safeRecipe = m_currentRecipe.lock();
 	if (!safeRecipe) return;
@@ -174,18 +247,17 @@ void ManufacturingSystem::UpdateUIPanel()
 	const auto& outputs = safeRecipe->GetRecipeOutput();
 
 	const auto& output = outputs.at((0));
-	
-	m_completionItemBox->SetGraphicID(ItemTable::GetGraphicID(output.first));
 
+	m_completionItemBox->SetGraphicID(ItemTable::GetGraphicID(output.first));
 }
 
-void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe)
+void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe)
 {
 	const auto& safeRecipe = recipe.lock();
 	const auto& outputs = safeRecipe->GetRecipeOutput();
 	const auto& inputs = safeRecipe->GetRecipeInput();
 
-	auto startOffset = Vector{10,kRecipeSize.m_y * 0.25f };
+	auto startOffset = Vector{ 10,kRecipeSize.m_y * 0.25f };
 
 	auto startPos = leftUpDrawPos + kItemBoxSize * 0.5f + startOffset;
 
@@ -196,7 +268,7 @@ void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Reci
 		pos = startPos + (Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * i;
 
 		const auto& itemBox = std::make_shared<UIItemBox>(
-		m_uiPanel, pos,kItemBoxSize);
+			m_uiPanel, pos, kItemBoxSize);
 		auto graphicID = ItemTable::GetGraphicID(outputs.at(i).first);
 
 		itemBox->SetGraphicID(graphicID);
@@ -214,12 +286,12 @@ void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Reci
 	auto arrowPos = pos + Vector{ kItemBoxOffset * 0.75f };
 
 	UIFactory::MakeUIToPanel<UIImage>(
-		m_uiPanel, arrowPos, kItemBoxSize * 1.5f, GraphicId::kArrow,kRecipeAlpha
+		m_uiPanel, arrowPos, kItemBoxSize * 1.5f, GraphicId::kArrow, kRecipeAlpha
 	);
 
 	for (int i = 0; i < inputs.size(); i++)
 	{
-		pos = startPos + ( Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * (i + outputs.size());
+		pos = startPos + (Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * (i + outputs.size());
 
 		const auto& itemBox = std::make_shared<UIItemBox>(
 			m_uiPanel, pos, kItemBoxSize);
@@ -238,19 +310,16 @@ void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Reci
 	}
 }
 
-bool ManufacturingSystem::Manufacture(ItemSlot* inputItems, ItemSlot* outputItemSlot)
+void PlayerCraft::Craft()
 {
 	const auto& safeRecipe = m_currentRecipe.lock();
-	if (!safeRecipe) return false;
-
-	int needItemCount = CalcNeedItemCount(inputItems);
-	if (!needItemCount) return false;
+	if (!safeRecipe) return;
 
 	//出力用スロットを取得
-	const auto& outputItem = outputItemSlot->GetItem(0);
+	const auto& outputItem = m_completionItemSlot->GetItem(0);
 
 	//入力用スロットを取得
-	const auto& inputItem = inputItems->GetItem(0);
+	const auto& inputSlots = m_craftConsumeSlots;
 
 	//レシピの出力する素材と個数を取得
 	const auto& output = safeRecipe->GetRecipeOutput();
@@ -272,9 +341,9 @@ bool ManufacturingSystem::Manufacture(ItemSlot* inputItems, ItemSlot* outputItem
 			if (recipeOutputCount != outputItem->CheckAddItemCount(recipeOutputCount)) continue;
 			isOk = true;
 		}
-		if (!isOk) return false;
+		if (!isOk) return;
 
-		inputItem->MinusItemCount(needItemCount);
+		inputSlots->MinusItemCount(needItemCount);
 		outputItem->AddItemCount(recipeOutputCount);
 	}
 	//出力用スロットが空の時
@@ -287,7 +356,7 @@ bool ManufacturingSystem::Manufacture(ItemSlot* inputItems, ItemSlot* outputItem
 			recipeOutputCount = outputItem.second;
 		}
 
-		inputItem->MinusItemCount(needItemCount);
+		inputSlots->MinusItemCount(needItemCount);
 		outputItemSlot->AddItemStack(0, std::make_unique<ItemStack>(recipeOutputType, recipeOutputCount));
 	}
 
@@ -296,7 +365,7 @@ bool ManufacturingSystem::Manufacture(ItemSlot* inputItems, ItemSlot* outputItem
 		m_factoryManager.OnMakeItem(outputItem.first, outputItem.second);
 	}
 
-	if(!inputItem->GetItemCount()) inputItems->RemoveItem(0);
+	if (!inputSlots->GetItemCount()) inputItems->RemoveItem(0);
 
 	return true;
 }

@@ -12,7 +12,7 @@ public:
 	ItemSlot(int itemCount);
 	~ItemSlot() {};
 
-	int GetItemCount() const { return m_items.size(); }
+	int GetSlotCount() const { return m_items.size(); }
 
 	ItemStack* GetItem(int index) const;
 
@@ -77,7 +77,7 @@ public:
 	/// 何も入っていないアイテムスタックのインデックスを返す。全部埋まっているなら-1を返す。
 	/// </summary>
 	/// <returns></returns>
-	int FindEmptyItemSlot()
+	int FindEmptyItemSlot() const
 	{
 		for (int i = 0; i < m_items.size(); i++)
 		{

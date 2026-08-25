@@ -8,11 +8,22 @@ Timer::Timer(Second durationSec):
 {
 }
 
-bool Timer::IsTimeOver() const
+bool Timer::IsTimeOver()
 {
 	if (!m_isEnable) return false;
 	const MiliSecond currentTime = GetNowCount();
-	if (currentTime < m_startTime + m_duration) return false;
+	if (currentTime < m_startTime + m_duration)
+	{
+		m_isTimerOverLastFrame = false;
+		return false;
+	}
+
+	if (!m_isTimerOverLastFrame) {
+		m_onFinished.Invoke();
+	}
+
+
+	m_isTimerOverLastFrame = true;
 	return true;
 }
 

@@ -103,12 +103,12 @@ public:
 	/// <summary>
 	/// このアイテムを設置する。成功したらそのポインタを返し、失敗したらnullptrを返す。
 	/// </summary>
-	const std::weak_ptr<Object>& Installation(const VectorInt& gridPos, float rotationAngle);
+	std::weak_ptr<Object> Installation(const VectorInt& gridPos, float rotationAngle);
 
 	/// <summary>
 	/// このアイテムのプレビューを表示する。成功したらそのポインタを返し、失敗したらnullptrを返す。
 	/// </summary>
-	const std::weak_ptr<Object>& GeneratePreviewObject();
+	std::weak_ptr<Object> GeneratePreviewObject();
 
 	void RemovePreviewObject();
 	

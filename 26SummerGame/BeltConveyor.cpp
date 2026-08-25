@@ -113,7 +113,7 @@ void BeltConveyor::Update(float deltaTime)
 
 bool BeltConveyor::TryInsert(ItemStack* item, int count)
 {
-	//if (!item || item->GetItemCount() <= 0) return false;
+	//if (!item || item->GetSlotCount() <= 0) return false;
 
 	////入口に空きが無い（末尾アイテクがまだ入口付近にいる）
 	//if (!m_beltItems.empty() &&

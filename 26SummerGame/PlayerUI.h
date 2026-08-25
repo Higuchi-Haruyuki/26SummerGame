@@ -30,7 +30,7 @@ class UIText;
 class UIButton;
 class QuestManager;
 class UIItemBox;
-class ManufacturingSystem;
+class PlayerCraft;
 
 /// <summary>
 /// UI表示を行う。
@@ -204,7 +204,7 @@ private:
 	std::shared_ptr<PlayerController> m_playerController;
 	std::shared_ptr<CharactorStateManager> m_state;
 	std::shared_ptr<PlayerItem> m_playerItem;
-	std::weak_ptr<ManufacturingSystem> m_manufacturing;
+	std::weak_ptr<PlayerCraft> m_playerCraft;
 
 	//現在選んでいるUIのFactoryComponent
 	std::weak_ptr<FactoryComponent> m_chooseFactory;

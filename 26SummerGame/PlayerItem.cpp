@@ -60,6 +60,8 @@ void PlayerItem::Init()
 
 	m_inventory = std::make_shared<ItemSlot>(kInventoryWidthCount * kInventoryHeightCount);
 
+	m_completionCraft = std::make_shared<ItemSlot>(1);
+
 	m_itemSlot->AddItemStack(0, ItemStack::MakeItemStack<MiningMachine>("MiningMachine", Item::kMiningMachine, 100));
 	m_itemSlot->AddItemStack(1, ItemStack::MakeItemStack<BeltConveyor>("BeltConveyor", Item::kBeltconveyor, 100));
 	m_itemSlot->AddItemStack(2, ItemStack::MakeItemStack<Furnace>("Furnace", Item::kFurnace, 100));
@@ -83,7 +85,7 @@ void PlayerItem::Update(float deltaTime)
 void PlayerItem::SetItemBarChoiceIndex(int index)
 {
 	bool isLower = index < 0;
-	bool isUpper = index > m_itemSlot->GetItemCount();
+	bool isUpper = index > m_itemSlot->GetSlotCount();
 
 	bool isOutOfRange = isLower || isUpper;
 
@@ -113,7 +115,7 @@ ItemStack* PlayerItem::GetItemFromInventory(int idx) const
 void PlayerItem::SetInventoryChoiceIndex(int index)
 {
 	bool isLower = index < 0;
-	bool isUpper = index > m_inventory->GetItemCount();
+	bool isUpper = index > m_inventory->GetSlotCount();
 
 	bool isOutOfRange = isLower || isUpper;
 
@@ -125,7 +127,7 @@ void PlayerItem::SetInventoryChoiceIndex(int index)
 ItemStack* PlayerItem::GetItemFromItemBar(int idx) const
 {
 	bool isLower = idx < 0;
-	bool isUpper = idx > m_itemSlot->GetItemCount();
+	bool isUpper = idx > m_itemSlot->GetSlotCount();
 	bool isOutOfRange = isLower || isUpper;
 
 	if (isOutOfRange) return nullptr;

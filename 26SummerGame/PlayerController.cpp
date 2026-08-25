@@ -7,6 +7,7 @@
 #include "FactoryComponent.h"
 #include "HitPoint.h"
 #include "Object.h"
+#include "PlayerCraft.h"
 #include "PlayerController.h"
 #include "PlayerInput.h"
 #include "PlayerUI.h"
@@ -45,6 +46,11 @@ void PlayerController::Init()
 	ChangeState(CharactorState::IDLE);
 
 	m_playerItem = GetParentObject()->AddComponent<PlayerItem>();
+
+	const auto& playerCraft = GetParentObject()->AddComponent<PlayerCraft>();
+
+	playerCraft->AddCraftConsumeSlot(m_playerItem.lock()->GetItemBar());
+	playerCraft->AddCraftConsumeSlot(m_playerItem.lock()->GetInventory());
 
 	m_playerUI = GetParentObject()->AddComponent<PlayerUI>();
 }
