@@ -61,13 +61,6 @@ namespace component
 	{
 		//FactoryComponentを持っていないとき
 		if (!GetFactoryComponentFromCol(destoryCol)) return;
-
-		const auto& object = GetObjectFromCol(destoryCol);
-		if (!object) return;
-
-		auto gridPos = object->GetGridPosition();
-
-		DrawSphere3D(Game::GridPosToWorldPos(gridPos).ToVECTOR(), 100, 32, 0xff0000, 0xff0000, false);
 	}
 
 	void DestroyMode::Destory(const std::weak_ptr<Collider>& destoryCol)

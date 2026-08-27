@@ -34,6 +34,7 @@
 #include "UIItemBox.h"
 #include "PlayerCraft.h"
 #include "ItemSlot.h"
+#include "Color.h"
 
 namespace
 {
@@ -54,14 +55,14 @@ namespace
 		Game::kDisplaySize.m_y / 8 * 7 - 50
 	};
 	const Vector kItemBarSize = { 800,80 };
-	constexpr unsigned int kItemBarColor = 0xd3d3d3;
+	constexpr unsigned int kItemBarColor = static_cast<unsigned int>(Color::kMainColor);
 	constexpr int kItemBarAlpha = 100;
 
 	/*アイテムバーのアイテム表示に関する定数*/
 	constexpr int kItemBarItemCount = 10;
 	constexpr int kItemBarSlotOffsetX = 10;
 	const Vector kItemBarItemSlotSize = { (kItemBarSize.m_x - 100) / kItemBarItemCount , kItemBarSize.m_y - 10 };
-	constexpr unsigned int kItemBarItemSlotColor = 0xffffff;
+	constexpr unsigned int kItemBarItemSlotColor = static_cast<unsigned int>(Color::kSubColor);
 	constexpr int kItemBarItemSlotAlpha = 255;
 
 	/*設置モード中の定数*/
@@ -78,13 +79,15 @@ namespace
 		Game::kDisplaySize.m_y / 2.5f
 	};
 	const Vector kInventorySize = { 850,810 };
-	constexpr unsigned int kInventoryColor = 0xd3d3d3;
+	constexpr unsigned int kInventoryColor = static_cast<unsigned int>(Color::kMainColor);
 	constexpr int kInventoryAlpha = 130;
 
 	constexpr int kInventoryItemCountWidth = 10;
 	constexpr int kInventoryItemCountHeight = 10;
 	constexpr int kInventorySlotOffsetX = 10;
 	constexpr int kInventorySlotOffsetY = 10;
+
+	constexpr unsigned int kItemBarBoxHighlight = static_cast<unsigned int>(Color::kMainAccentColor);
 }
 
 PlayerUI::PlayerUI(std::shared_ptr<Object> parentObject) :
@@ -245,7 +248,9 @@ void PlayerUI::InitFactoryUIPanel()
 	auto mainSize = Game::kDisplaySize * 0.5f;
 
 	//一番下に描画する視覚上のパネル
-	UIFactory::MakeUIToPanel<UISquare>(m_factoryUIPanel, mainPos, mainSize, 0xd3d3d3, 200);
+	UIFactory::MakeUIToPanel<UISquare>(m_factoryUIPanel, 
+		mainPos, mainSize, 
+		static_cast<unsigned int>(Color::kMainColor), 200);
 
 	//工業オブジェクトのなまえ
 	m_factoryUITitleText = UIFactory::MakeUIToPanel<UIText>(m_factoryUIPanel, TextArgs{
@@ -253,8 +258,8 @@ void PlayerUI::InitFactoryUIPanel()
 				TextPivot::Center,
 				FontId::kFactoryUITitle,
 				"",
-				0x000000,
-				0xffffff,
+				static_cast<unsigned int>(Color::kMainCharColor),
+				static_cast<unsigned int>(Color::kSubCharColor),
 				255
 		});
 
@@ -283,15 +288,17 @@ void PlayerUI::InitItemBarUIPanel()
 
 void PlayerUI::InitQuestUIPanel()
 {
-	UIFactory::MakeUIToPanel<UISquare>(m_questUIPanel, kQuestUIPos, kQuestUISize, 0xd3d3d3, 200);
+	UIFactory::MakeUIToPanel<UISquare>(m_questUIPanel, 
+		kQuestUIPos, kQuestUISize, 
+		static_cast<unsigned int>(Color::kMainColor), 200);
 
 	m_questText = UIFactory::MakeUIToPanel<UIText>(m_questUIPanel, TextArgs{
 				kQuestUIPos + Vector{0,kQuestUISize.m_y * 0.4f},
 				TextPivot::CenterBottom,
 				FontId::kQuestUIText,
 				"",
-				0x000000,
-				0xffffff,
+				static_cast<unsigned int>(Color::kMainCharColor),
+				static_cast<unsigned int>(Color::kSubCharColor),
 				255
 		});
 	UIFactory::MakeUIToPanel<UIText>(m_questUIPanel, TextArgs{
@@ -299,8 +306,8 @@ void PlayerUI::InitQuestUIPanel()
 				TextPivot::CenterTop,
 				FontId::kFactoryUIText,
 				"<クエスト名>",
-				0xffffff,
-				0x000000,
+				static_cast<unsigned int>(Color::kSubCharColor),
+				static_cast<unsigned int>(Color::kMainCharColor),
 				255
 		});
 
@@ -515,7 +522,7 @@ void PlayerUI::UpdateItemBar()
 	for (int i = 0; i < kItemBarItemCount; i++)
 	{
 		if (i == index)
-			m_itemBarBoxes.at(i)->SetColor(0xffff00);
+			m_itemBarBoxes.at(i)->SetColor(kItemBarBoxHighlight);
 		else
 			m_itemBarBoxes.at(i)->SetDefaultColor();
 	}

@@ -56,7 +56,7 @@ public:
 private:
 	UIManager& m_uiManager;
 
-	Item m_filterItem;
+	Item m_filterItem = Item::kNone;
 	bool m_isEnableFilterItem = false;
 
 	std::weak_ptr<UIText> m_text;

@@ -155,27 +155,12 @@ void ManufacturingSystem::BuildUIPanel()
 		index++;
 	}
 
-	const auto leftDown = kWindowPos + Vector{ -kWindowSize.m_x * 0.5f , kWindowSize.m_y * 0.5f };
-
-	const auto completionOffset = Vector{ 0,10 };
-
-	const auto completionPos = Vector{ kWindowPos.m_x,leftDown.m_y } - Vector{0,kCompletionItemBoxSize.m_y *0.5f} - completionOffset;
-
-	m_completionItemBox = std::make_shared<UIItemBox>(
-		m_uiPanel, completionPos, kCompletionItemBoxSize);
-	m_completionItemBox->SetImageAlpha(100);
 }
 
 void ManufacturingSystem::UpdateUIPanel()
 {
 	const auto& safeRecipe = m_currentRecipe.lock();
 	if (!safeRecipe) return;
-
-	const auto& outputs = safeRecipe->GetRecipeOutput();
-
-	const auto& output = outputs.at((0));
-	
-	m_completionItemBox->SetGraphicID(ItemTable::GetGraphicID(output.first));
 
 }
 

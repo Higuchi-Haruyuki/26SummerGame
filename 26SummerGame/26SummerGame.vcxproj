@@ -141,6 +141,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Animation3D.cpp" />
+    <ClCompile Include="AssemblingMachine.cpp" />
     <ClCompile Include="Base_Quest.cpp" />
     <ClCompile Include="BeltConveyor.cpp" />
     <ClCompile Include="Camera.cpp" />
@@ -204,12 +205,15 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Animation3D.h" />
+    <ClInclude Include="AssemblingMachine.h" />
     <ClInclude Include="Base_Quest.h" />
     <ClInclude Include="BeltConveyor.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharactorStateManager.h" />
     <ClInclude Include="Collider.h" />
+    <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
+    <ClInclude Include="ContainerUtil.h" />
     <ClInclude Include="Debug.h" />
     <ClInclude Include="DestroyMode.h" />
     <ClInclude Include="DrawText.h" />

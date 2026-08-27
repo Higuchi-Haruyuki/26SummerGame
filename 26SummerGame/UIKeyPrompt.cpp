@@ -2,6 +2,14 @@
 #include "ResourceManager.h"
 #include <DxLib.h>
 #include "DrawText.h"
+#include "Color.h"
+
+namespace
+{
+	constexpr unsigned int kBoxColor = static_cast<unsigned int>(Color::kMainColor);
+	constexpr unsigned int kCharColor = static_cast<unsigned int>(Color::kMainCharColor);
+	constexpr unsigned int kCharEdgeColor = static_cast<unsigned int>(Color::kSubCharColor);
+}
 
 
 UIKeyPrompt::UIKeyPrompt(const Vector& position, const Vector& size, GraphicId resourceId, const std::string& text) :
@@ -21,13 +29,13 @@ void UIKeyPrompt::Draw() const
 	DrawBox(
 		static_cast<int>(m_position.m_x - halfWidth), static_cast<int>(m_position.m_y - halfHeight),
 		static_cast<int>(m_position.m_x + halfWidth), static_cast<int>(m_position.m_y + halfHeight),
-		0x000000, true);
+		kBoxColor, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 100);
 
 	text::DrawRightCenterFormatStringToHandleWithEdge(
 		static_cast<int>(m_position.m_x + halfWidth - m_innerOffset),
 		static_cast<int>(m_position.m_y),
-		0x000000, 0xffffff,
+		kCharColor, kCharEdgeColor,
 		m_resourceManager.GetHandle(FontId::kFactoryUIText),
 		"{}", m_text);
 

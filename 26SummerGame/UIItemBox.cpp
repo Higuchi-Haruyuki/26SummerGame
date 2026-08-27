@@ -6,12 +6,16 @@
 #include "UISquare.h"
 #include "ResourceType.h"
 #include "UIManager.h"
+#include "Color.h"
 
 namespace
 {
-	constexpr unsigned int kColor = 0x808080;
+	constexpr unsigned int kColor = static_cast<unsigned int>(Color::kSubColor);
 	constexpr int kAlpha = 150;
 	constexpr int kPreviewAlpha = 100;
+
+	constexpr unsigned int kTextMainColor = static_cast<unsigned int>(Color::kMainCharColor);
+	constexpr unsigned int kTextEdgeColor = static_cast<unsigned int>(Color::kSubCharColor);
 }
 
 UIItemBox::UIItemBox(std::weak_ptr<UIPanel> addPanel, const Vector& position, const Vector& size) :
@@ -54,8 +58,8 @@ UIItemBox::UIItemBox(std::weak_ptr<UIPanel> addPanel, const Vector& position, co
 				TextPivot::RightBottom,
 				FontId::kFactoryUITextMini,
 				"x0",
-				0xffffff,
-				0x000000,
+				kTextMainColor,
+				kTextEdgeColor,
 				255
 		});
 }

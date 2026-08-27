@@ -2,6 +2,7 @@
 #include <vector>
 #include <memory>
 #include <string>
+#include <map>
 
 class ItemStack;
 enum class Item;
@@ -85,6 +86,12 @@ public:
 		}
 		return -1;
 	}
+
+	/// <summary>
+	///アイテムとその個数を取得
+	/// </summary>
+	/// <returns></returns>
+	std::map<Item, int> SumItemCount() const;
 
 private:
 	std::vector<std::unique_ptr<ItemStack>> m_items;

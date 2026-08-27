@@ -64,6 +64,5 @@ private:
 
     std::unordered_map<RecipeName, std::shared_ptr<Recipe>> m_recipeList;
 
-    std::shared_ptr<UIItemBox> m_completionItemBox;
 };
 

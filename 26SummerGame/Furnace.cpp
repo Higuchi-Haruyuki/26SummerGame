@@ -28,6 +28,7 @@
 #include "UIItemBox.h"
 #include "ItemSlot.h"
 #include "UIPanel.h"
+#include "ItemManager.h"
 
 namespace
 {
@@ -165,11 +166,13 @@ void Furnace::UpdateUIPanel()
 	if (fuel)
 	{
 		m_fuelItemUI->SetGraphicID(fuel->GetItemIconGraphicID());
+		m_fuelItemUI->SetImageAlpha(255);
 		m_fuelItemUI->SetText("x{}", fuel->GetItemCount());
 	}
 	else
 	{
-		m_fuelItemUI->SetGraphicID(GraphicId::kNone);
+		m_fuelItemUI->SetGraphicID(ItemTable::GetGraphicID(kFuelItemType));
+		m_fuelItemUI->SetImageAlpha(100);
 		m_fuelItemUI->SetText("");
 	}
 
@@ -196,5 +199,4 @@ void Furnace::BuildUIPanel()
 	m_fuelItemUI->SetOnSelectItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 	m_fuelItemUI->SetOnMoveItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 
-	m_uiPanel->AddChild(m_manufacturingSystem.lock()->GetOrBuidUIPanel());
 }

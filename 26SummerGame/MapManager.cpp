@@ -34,6 +34,8 @@ void MapManager::Init()
 
 void MapManager::Draw() const
 {
+	SetUseLighting(false);
+
 	for (const auto& gridResource : m_gridResources)
 	{
 		auto worldPos = Game::GridPosToWorldPos(gridResource.m_gridPos) - Vector{0,75,0};
@@ -50,13 +52,16 @@ void MapManager::Draw() const
 			color = 0xf5deb3;
 			break;
 		case Item::kCopperOre:
-			color = 0x8b4513;
+			color = 0x553911;
 			break;
 		default:
 			break;
 		}
+
 		DrawSphere3D(worldPos.ToVECTOR(), 100, 16, color, color, true);
+
 	}
+	SetUseLighting(true);
 }
 
 Item MapManager::GetResourceAtGridPos(const VectorInt& gridPos)

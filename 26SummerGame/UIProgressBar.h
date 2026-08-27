@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Base_UIElement.h"
 #include <algorithm>
 

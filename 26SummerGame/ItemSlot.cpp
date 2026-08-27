@@ -83,3 +83,25 @@ void ItemSlot::AddItemStack(int index, std::unique_ptr<ItemStack> item)
 	m_items.at(index) = std::move(item);
 }
 
+std::map<Item, int> ItemSlot::SumItemCount() const
+{
+	std::map<Item, int> result;
+
+	for (const auto& item : m_items)
+	{
+		//すでにそのアイテムがキーとしてあるか
+		auto it = result.find(item->GetItemType());
+
+		//ないなら新規追加
+		if (it == result.end())
+		{
+			result.emplace(item->GetItemType(), item->GetItemCount());
+		}
+
+		//あるときは個数追加
+		(*it).second += item->GetItemCount();
+	}
+
+	return result;
+}
+

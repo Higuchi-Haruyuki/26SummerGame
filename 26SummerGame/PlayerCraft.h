@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include "Component.h"
 #include "Recipe.h"
 #include "Timer.h"
@@ -16,76 +16,108 @@ class ItemStack;
 class UIProgressBar;
 class PlayerItem;
 class UIText;
+class UISquare;
 
 enum class RecipeType;
 enum class RecipeName;
 
 class PlayerCraft :
-    public Component
+	public Component
 {
 public:
-    PlayerCraft(std::shared_ptr<Object> parent);
-    ~PlayerCraft();
+	PlayerCraft(std::shared_ptr<Object> parent);
+	~PlayerCraft();
 
-    void Init() override;
-    void Update(float deltaTime) override;
-    void Finalize() override;
+	void Init() override;
+	bool HasRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots) const;
+	void Update(float deltaTime) override;
+	void Finalize() override;
 
-    std::shared_ptr<UIPanel> GetOrBuidUIPanel();
+	std::shared_ptr<UIPanel> GetOrBuidUIPanel();
 
-    void SetAllowRecipeType(RecipeType recipeType) { m_allowRecipeType = recipeType; }
+	void AddCraftConsumeSlot(std::weak_ptr<ItemSlot> slot) { m_craftConsumeSlots.push_back(slot); }
 
-    void AddCraftConsumeSlot(std::weak_ptr<ItemSlot> slot) { m_craftConsumeSlots.push_back(slot); }
-
-    bool HasRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots) const;
-
-private:
-    //指定アイテムがスロット群に合計何個あるか
-    int CountItem(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots, Item item) const;
-
-    bool CanStoreOutput() const;
-
-    void StoreOutput();
-
-    void ConsumeRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots);
-
-    void BuildUIPanel();
-
-    void UpdateUIPanel();
-
-    void BuildCraftQueueUI();
-
-    void BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe);
-
-    void Craft();
+	void SetAllowRecipeType(RecipeType recipeType) { m_allowRecipeType = recipeType; }
 
 private:
-    //シングルトンへの参照
-    RecipeManager& m_recipeManager;
-    UIManager& m_uiManager;
+	void BuildUIPanel();
 
-    std::weak_ptr<PlayerItem> m_playerItem;
+	void BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe);
 
-    //制作時にアイテムを消費する場所
-    std::vector<std::weak_ptr<ItemSlot>> m_craftConsumeSlots;
+	void BuildCraftQueueUI();
 
-    RecipeType m_allowRecipeType = RecipeType::kNone;
+	void UpdateUIPanel();
 
-    //レシピ設定用のパネル
-    std::shared_ptr<UIPanel> m_uiPanel;
+	void Craft();
 
-    std::unordered_map<RecipeName, std::shared_ptr<Recipe>> m_recipeList;
+	bool CanStoreOutput() const;
 
-    Timer m_craftTimer{0};
+	void ConsumeRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots);
 
-    std::deque<std::weak_ptr<Recipe>> m_craftQueue;
+	void StoreOutput();
 
-    //UI要素
-    std::weak_ptr<UIProgressBar> m_craftProgressBar;
+	//指定アイテムがスロット群に合計何個あるか
+	int CountItem(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots, Item item) const;
 
-    std::vector<std::shared_ptr<UIItemBox>> m_craftQueueUI;
+	void AddCraftQueue(std::weak_ptr<Recipe> newCraft);
 
-    std::weak_ptr<UIText> m_craftProgressText;
+	/// <summary>
+	/// クラフトキューで使用する予定のアイテムを考慮して、追加できるかを判定する。
+	/// </summary>
+	/// <param name="recipeName"></param>
+	/// <returns></returns>
+	bool CanAddCraftQueue(RecipeName recipeName) const;
+
+	/// <summary>
+	/// 現在1番先頭にあるクラフトをスキップする
+	/// </summary>
+	void SkipNextCraft();
+
+	/// <summary>
+	/// クラフトキューで任意位置にあるクラフトをスキップする
+	/// </summary>
+	/// <param name="index"></param>
+	void RemoveCraftQueue(int index);
+
+	/// <summary>
+	///指定アイテムがクラフトキューに合計何個あるか
+	/// </summary>
+	/// <param name="item"></param>
+	/// <returns></returns>
+	int CountItemAtCraftQueue(Item item) const;
+
+	const std::pair<std::weak_ptr<Recipe>, int>& GetCraftQueue(int index) const;
+
+private:
+	//シングルトンへの参照
+	RecipeManager& m_recipeManager;
+	UIManager& m_uiManager;
+
+	std::weak_ptr<PlayerItem> m_playerItem;
+
+	//制作時にアイテムを消費する場所
+	std::vector<std::weak_ptr<ItemSlot>> m_craftConsumeSlots;
+
+	RecipeType m_allowRecipeType = RecipeType::kNone;
+
+	//レシピ設定用のパネル
+	std::shared_ptr<UIPanel> m_uiPanel;
+
+	std::unordered_map<RecipeName, std::shared_ptr<Recipe>> m_recipeList;
+
+	Timer m_craftTimer{0};
+
+	std::deque<std::pair<std::weak_ptr<Recipe>, int>> m_craftQueue;
+
+
+	//UI要素
+	std::map<RecipeName,std::weak_ptr<UISquare>> m_recipeSquares;
+
+	std::weak_ptr<UIProgressBar> m_craftProgressBar;
+
+	std::vector<std::shared_ptr<UIItemBox>> m_craftQueueUI;
+
+	std::weak_ptr<UIText> m_craftProgressText;
 
 };
 
