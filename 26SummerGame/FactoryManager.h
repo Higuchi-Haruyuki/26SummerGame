@@ -58,6 +58,11 @@ public:
 		return itemCount;
 	}
 
+	int GetFactoryComponentCount() const
+	{
+		return m_factoryComponents.size();
+	}
+
 private:
 	FactoryManager() = default;
 	~FactoryManager() = default;

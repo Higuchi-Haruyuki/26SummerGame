@@ -20,6 +20,7 @@
 #include "Model.h"
 #include "InstallationMode.h"
 #include "DestroyMode.h"
+#include "StringUtil.h"
 
 namespace
 {
@@ -59,7 +60,6 @@ void MainScene::Init()
 	model->SetEnableLighting(false);
 	model->SetModel(ModelId::kSkyBox);
 
-
 }
 void MainScene::Update(float deltaTime)
 {
@@ -70,11 +70,29 @@ void MainScene::Update(float deltaTime)
 		m_player->SetPosition(Game::GridPosToWorldPos(kPlayerStartGridPos));
 	}
 
+
+	auto objectCount = GetSceneObjects().size();
+	Debug::Log("Object数: " + StringUtil::IntToString(objectCount));
+
+	auto colliderCount = m_sceneColliders.size();
+	Debug::Log("Collider数: " + StringUtil::IntToString(colliderCount));
+
+	auto shapeCount =  m_sceneShapes.size();
+	Debug::Log("Shape数: " + StringUtil::IntToString(shapeCount));
+
+	auto factoryCount = FactoryManager::GetInstance().GetFactoryComponentCount();
+	Debug::Log("Factory数: " + StringUtil::IntToString(factoryCount));
+
+}
+
+void MainScene::Draw() const
+{
+	Scene::Draw();
+
 	if (m_stateManager.lock()->CheckCurrentState(CharactorState::INSTALLATION))
 		DrawGrid();
 
 	MapManager::GetInstance().Draw();
-
 }
 
 

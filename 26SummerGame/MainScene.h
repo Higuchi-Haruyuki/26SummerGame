@@ -12,6 +12,7 @@ public:
 	MainScene() : Scene() {};
 	void Init() override;
 	void Update(float deltaTime) override;
+	void Draw() const override;
 
 private:
 	std::shared_ptr<Object> m_player;
