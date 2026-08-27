@@ -1,14 +1,14 @@
 ﻿#include "SquareCollider3D.h"
 #include <DxLib.h>
 #include <cmath>
-void SquareCollider3D::Draw(const Vector& cameraPos, const unsigned int& color) const
+void SquareCollider3D::Draw(unsigned int color) const
 {
 	if (!m_isEnable) return;
-	if (!GetParentObject()) return;
-	if (!GetParentObject()->GetIsEnable()) return;
+	if (!GetParentObject().lock()) return;
+	if (!GetParentObject().lock()->GetIsEnable()) return;
 	if (!m_isVisible) return;
 
-	auto position = GetParentObject()->GetPosition() + m_offset;
+	auto position = GetPosition() + m_offset;
 
 	float width = cosf(GetRotationAngle()) * m_width + sinf(GetRotationAngle()) * m_depth;
 	float depth = sinf(GetRotationAngle()) * m_width + cosf(GetRotationAngle()) * m_depth;

@@ -5,13 +5,13 @@
 class Model : public Shape
 {
 public:
-	Model(std::shared_ptr<Object> parentObject) :Shape(parentObject) {};
+	Model(std::weak_ptr<Object> parentObject) :Shape(parentObject) {};
 	~Model() {};
 
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 	void Finalize() override;
-	void Draw(const Vector& cameraPos) const override;
+	void Draw() const override;
 
 	//GETTER
 	int GetModelHandle() const { return m_modelHandle; }
@@ -25,7 +25,7 @@ public:
 	}
 	void SetEnableLighting(bool isEnable) { m_isEnableLighting = isEnable; }
 
-	void TextureScroll(float deltaTime);
+	void TextureScroll();
 
 private:
 

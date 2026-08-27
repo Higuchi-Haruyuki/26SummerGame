@@ -18,11 +18,11 @@ class AssemblingMachine :
     public FactoryComponent
 {
 public:
-    AssemblingMachine(std::shared_ptr<Object> parentObject);
+    AssemblingMachine(std::weak_ptr<Object> parentObject);
     virtual ~AssemblingMachine();
 
     void Init() override;
-    void Update(float deltaTime) override;
+    void Update() override;
 
     void UpdateUIPanel() override;
 

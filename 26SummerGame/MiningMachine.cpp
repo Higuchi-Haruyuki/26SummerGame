@@ -62,7 +62,7 @@ namespace
 	const Vector kUISize = { Game::kDisplaySize.m_x / 20, Game::kDisplaySize.m_x / 20 };
 }
 
-MiningMachine::MiningMachine(std::shared_ptr<Object> parentObject) :
+MiningMachine::MiningMachine(std::weak_ptr<Object> parentObject) :
 	FactoryComponent(parentObject), m_mapManager(MapManager::GetInstance())
 {}
 
@@ -70,16 +70,16 @@ void MiningMachine::Init()
 {
 	FactoryComponent::Init();
 
-	m_shape = GetParentObject()->GetComponent<Square3D>();
-	if (!m_shape)
-		m_shape = GetParentObject()->AddComponent<Square3D>();
-	m_collider = GetParentObject()->GetComponent<SquareCollider3D>();
-	if (!m_collider)
-		m_collider = GetParentObject()->AddComponent<SquareCollider3D>();
+	m_shape = GetComponent<Square3D>();
+	if (!m_shape.lock())
+		m_shape = AddComponent<Square3D>();
+	m_collider = GetComponent<SquareCollider3D>();
+	if (!m_collider.lock())
+		m_collider = AddComponent<SquareCollider3D>();
 
-	m_fuelSystem = GetParentObject()->AddComponent<FuelSystem>();
+	m_fuelSystem = AddComponent<FuelSystem>();
 
-	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape);
+	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape.lock());
 	square3D->SetUVScrollTexHandle(GraphicId::kMiningMachineTop);
 	square3D->SetUVScrollOffset(1);
 
@@ -89,9 +89,9 @@ void MiningMachine::Init()
 	m_fuelSystem.lock()->SetFuelItem(kFuelItemType);
 }
 
-void MiningMachine::Update(float deltaTime)
+void MiningMachine::Update()
 {
-	FactoryComponent::Update(deltaTime);
+	FactoryComponent::Update();
 
 	if (!m_isEnable) return;
 
@@ -108,7 +108,7 @@ void MiningMachine::Update(float deltaTime)
 	if (!m_timer->IsTimeOver()) return;
 
 	//資源を取得
-	auto myGridPos = GetParentObject()->GetGridPosition();
+	auto myGridPos = GetParentObject().lock()->GetGridPosition();
 	Item resource = m_mapManager.GetResourceAtGridPos(myGridPos);
 
 	bool result = TryInsert(m_outputSlot.get(), std::make_unique<ItemStack>(resource, 1));

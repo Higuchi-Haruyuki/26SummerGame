@@ -28,7 +28,7 @@ namespace
 
 }
 
-PlayerController::PlayerController(std::shared_ptr<Object> parentObject)
+PlayerController::PlayerController(std::weak_ptr<Object> parentObject)
 	: Component(parentObject), m_playerInput(PlayerInput::GetInstance())
 {}
 
@@ -41,23 +41,23 @@ void PlayerController::Init()
 {
 	Component::Init();
 
-	m_state = GetParentObject()->GetComponent<CharactorStateManager>();
+	m_state = GetComponent<CharactorStateManager>();
 
 	ChangeState(CharactorState::IDLE);
 
-	m_playerItem = GetParentObject()->AddComponent<PlayerItem>();
+	m_playerItem = AddComponent<PlayerItem>();
 
-	const auto& playerCraft = GetParentObject()->AddComponent<PlayerCraft>();
+	const auto& playerCraft = AddComponent<PlayerCraft>().lock();
 
 	playerCraft->AddCraftConsumeSlot(m_playerItem.lock()->GetItemBar());
 	playerCraft->AddCraftConsumeSlot(m_playerItem.lock()->GetInventory());
 
-	m_playerUI = GetParentObject()->AddComponent<PlayerUI>();
+	m_playerUI = AddComponent<PlayerUI>();
 }
 
-void PlayerController::Update(float deltaTime)
+void PlayerController::Update()
 {
-	Component::Update(deltaTime);
+	Component::Update();
 	if (!m_isEnable) return;
 
 	InputAction();
@@ -76,7 +76,7 @@ std::weak_ptr<FactoryComponent>  PlayerController::GetScreenCenterFactoryObject(
 	rayCastResult.RaycastFromScreenCenter();
 	const auto& rayCastCollider = rayCastResult.GetHitCollider().lock();
 	if (!rayCastCollider) return std::weak_ptr<FactoryComponent>();
-	return rayCastCollider->GetParentObject()->GetComponent<FactoryComponent>();
+	return rayCastCollider->GetComponent<FactoryComponent>();
 }
 
 
@@ -86,7 +86,7 @@ std::weak_ptr<FactoryComponent>  PlayerController::GetMousePointFactoryObject()
 	rayCastResult.RaycastFromMousePoint();
 	const auto& rayCastCollider = rayCastResult.GetHitCollider().lock();
 	if (!rayCastCollider) return std::weak_ptr<FactoryComponent>();
-	return rayCastCollider->GetParentObject()->GetComponent<FactoryComponent>();
+	return rayCastCollider->GetComponent<FactoryComponent>();
 }
 
 void PlayerController::SetChoiceIndex()

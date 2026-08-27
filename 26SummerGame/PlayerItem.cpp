@@ -43,7 +43,7 @@ namespace
 
 }
 
-PlayerItem::PlayerItem(const std::shared_ptr<Object> parentObject)
+PlayerItem::PlayerItem(std::weak_ptr<Object> parentObject)
 	:Component(parentObject), m_input(PlayerInput::GetInstance()),
 	m_uiManager(UIManager::GetInstance())
 {
@@ -53,8 +53,8 @@ void PlayerItem::Init()
 {
 	Component::Init();
 
-	m_state = GetParentObject()->GetComponent<CharactorStateManager>();
-	m_collider = GetParentObject()->GetComponent<Collider>();
+	m_state = GetComponent<CharactorStateManager>();
+	m_collider = GetComponent<Collider>();
 
 	m_itemSlot = std::make_shared<ItemSlot>(kItemBarItemCount);
 
@@ -72,9 +72,9 @@ void PlayerItem::Init()
 	m_itemSlot->AddItemStack(9, ItemStack::MakeItemStack(Item::kCoalOre, 50));
 }
 
-void PlayerItem::Update(float deltaTime)
+void PlayerItem::Update()
 {
-	Component::Update(deltaTime);
+	Component::Update();
 
 	ChoiceItemSlot();
 	ChoiceInventorySlot();

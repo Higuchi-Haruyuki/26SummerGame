@@ -13,8 +13,6 @@ class UIManager;
 
 using Radian = float;
 
-namespace component
-{ 
     /// <summary>
     /// 設置モードでの処理を行う
     /// </summary>
@@ -22,10 +20,10 @@ namespace component
         public Component
     {
     public:
-		InstallationMode(std::shared_ptr<Object> parentObject);
+		InstallationMode(std::weak_ptr<Object> parentObject);
 		~InstallationMode() override = default;
 		void Init() override;
-		void Update(float deltaTime) override;
+		void Update() override;
 
 	private:
 
@@ -116,4 +114,4 @@ namespace component
 		Radian m_previewRotationAngle = 0.0f;
 
     };
-}
+

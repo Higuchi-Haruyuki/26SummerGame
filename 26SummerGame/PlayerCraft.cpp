@@ -75,7 +75,7 @@ namespace
 	const auto kProgressBarColor = static_cast<unsigned int>(Color::kSubAccentColor);
 }
 
-PlayerCraft::PlayerCraft(std::shared_ptr<Object> parent) :
+PlayerCraft::PlayerCraft(std::weak_ptr<Object> parent) :
 	Component(parent),
 	m_recipeManager(RecipeManager::GetInstance()),
 	m_uiManager(UIManager::GetInstance())
@@ -91,7 +91,7 @@ void PlayerCraft::Init()
 	Component::Init();
 	if (!m_isEnable) return;
 
-	m_playerItem = GetParentObject()->GetComponent<PlayerItem>();
+	m_playerItem = GetComponent<PlayerItem>();
 
 	m_craftQueueUI.resize(kMaxDisplayCraftQueue);
 
@@ -117,9 +117,9 @@ bool PlayerCraft::HasRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& i
 	return true;
 }
 
-void PlayerCraft::Update(float deltaTime)
+void PlayerCraft::Update()
 {
-	Component::Update(deltaTime);
+	Component::Update();
 	if (!m_isEnable) return;
 
 	if (m_recipeList.empty())

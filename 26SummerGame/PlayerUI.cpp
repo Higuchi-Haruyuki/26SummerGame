@@ -90,7 +90,7 @@ namespace
 	constexpr unsigned int kItemBarBoxHighlight = static_cast<unsigned int>(Color::kMainAccentColor);
 }
 
-PlayerUI::PlayerUI(std::shared_ptr<Object> parentObject) :
+PlayerUI::PlayerUI(std::weak_ptr<Object> parentObject) :
 	Component(parentObject), m_input(PlayerInput::GetInstance()),
 	m_uiManager(UIManager::GetInstance()),
 	m_resourceManager(ResourceManager::GetInstance()),
@@ -117,7 +117,7 @@ void PlayerUI::Init()
 	};
 
 	//ステートの変更イベントを購読
-	m_state->OnChangeState = [this](const CharactorState& beforeState, const CharactorState& nowState)
+	m_state.lock()->OnChangeState = [this](const CharactorState& beforeState, const CharactorState& nowState)
 		{
 			ChangeCharactorState(beforeState, nowState);
 			ApplyUIVisibility(nowState);
@@ -127,11 +127,11 @@ void PlayerUI::Init()
 	InitUIPanel();
 
 	//現在のステートのUIが見えるようにする
-	ApplyUIVisibility(m_state->GetCurrentState());
+	ApplyUIVisibility(m_state.lock()->GetCurrentState());
 
 }
 
-void PlayerUI::Update(float deltaTime)
+void PlayerUI::Update()
 {
 	GetComponentReference();
 
@@ -143,16 +143,16 @@ void PlayerUI::Update(float deltaTime)
 
 void PlayerUI::GetComponentReference()
 {
-	if (!m_collider)
-		m_collider = GetParentObject()->GetComponent<Collider>();
-	if (!m_playerController)
-		m_playerController = GetParentObject()->GetComponent<PlayerController>();
-	if (!m_playerItem)
-		m_playerItem = GetParentObject()->GetComponent<PlayerItem>();
-	if (!m_state)
-		m_state = GetParentObject()->GetComponent<CharactorStateManager>();
+	if (!m_collider.lock())
+		m_collider = GetComponent<Collider>();
+	if (!m_playerController.lock())
+		m_playerController = GetComponent<PlayerController>();
+	if (!m_playerItem.lock())
+		m_playerItem = GetComponent<PlayerItem>();
+	if (!m_state.lock())
+		m_state = GetComponent<CharactorStateManager>();
 	if (!m_playerCraft.lock())
-		m_playerCraft = GetParentObject()->GetComponent<PlayerCraft>();
+		m_playerCraft = GetComponent<PlayerCraft>();
 }
 
 void PlayerUI::CreatePanel()
@@ -187,12 +187,12 @@ void PlayerUI::InitIdleUIPanel()
 {
 	const auto& installationMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, kKeyPromptDownLeftPos, kKeyPromptSize, GraphicId::kKeyboardZ, "設置モード");
 	installationMode.lock()->SetOnClick([this]() {
-		m_playerController->EnterInstallationMode(); 
+		m_playerController.lock()->EnterInstallationMode();
 		});
 
 	const auto& destroyMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, kKeyPromptDownRightPos, kKeyPromptSize, GraphicId::kKeyboardX, "破壊モード");
 	destroyMode.lock()->SetOnClick([this]() {
-		m_playerController->EnterDestroyMode();  
+		m_playerController.lock()->EnterDestroyMode();
 		});
 
 	m_factoryUIPrompt = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, kKeyPromptFactoryUIPos, kKeyPromptSize, GraphicId::kMouseLeft, "null");
@@ -205,14 +205,14 @@ void PlayerUI::InitInstallationUIPanel()
 		GraphicId::kKeyboardC, "設置モード終了");
 
 	installationMode.lock()->SetOnClick([this]() {
-		m_playerController->ExitInstallationMode();
+		m_playerController.lock()->ExitInstallationMode();
 		});
 
 	const auto& destroyMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_installationKeyPanel, kKeyPromptDownRightPos, kKeyPromptSize, 
 		GraphicId::kKeyboardX, "破壊モード");
 
 	destroyMode.lock()->SetOnClick([this]() {
-		m_playerController->EnterDestroyMode();
+		m_playerController.lock()->EnterDestroyMode();
 		});
 
 	UIFactory::MakeUIToPanel<UIKeyPrompt>(m_installationKeyPanel, kKeyPromptFactoryUIPos, kKeyPromptSize, GraphicId::kMouseLeft, "設置");
@@ -227,14 +227,14 @@ void PlayerUI::InitDestroyUIPanel()
 		GraphicId::kKeyboardZ, "設置モード");
 
 	installationMode.lock()->SetOnClick([this]() {
-		m_playerController->EnterInstallationMode();
+		m_playerController.lock()->EnterInstallationMode();
 		});
 
 	const auto& destroyMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_destroyKeyPanel, kKeyPromptDownRightPos, kKeyPromptSize, 
 		GraphicId::kKeyboardC, "破壊モード終了");
 
 	destroyMode.lock()->SetOnClick([this]() {
-		m_playerController->ExitDestroyMode();
+		m_playerController.lock()->ExitDestroyMode();
 		});
 
 	m_destroyUIKeyPrompt = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_destroyKeyPanel, kKeyPromptFactoryUIPos, kKeyPromptSize, GraphicId::kMouseLeft, "破壊");
@@ -271,7 +271,7 @@ void PlayerUI::InitFactoryUIPanel()
 	const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_factoryUIPanel, pos, size, GraphicId::kUIClose);
 	close.lock()->SubscribeOnClick([this]()
 		{
-			m_playerController->CloseFactoryComponentUI();
+			m_playerController.lock()->CloseFactoryComponentUI();
 		}
 	);
 
@@ -323,19 +323,19 @@ void PlayerUI::InitItemBarItemSlot()
 		itemBox->SetOnClickEvent(
 			[this, index]
 			{
-				m_playerItem->SetItemBarChoiceIndex(index);
+				m_playerItem.lock()->SetItemBarChoiceIndex(index);
 			}
 		);
 		itemBox->SetOnDragBeginEvent(
 			[this, index]()
 			{
-				m_uiManager.ItemSelect(m_playerItem->GetItemBar().lock(), index);
+				m_uiManager.ItemSelect(m_playerItem.lock()->GetItemBar().lock(), index);
 			}
 		);
 		itemBox->SetOnDropEvent(
 			[this, index]
 			{
-				m_uiManager.MoveItem(m_playerItem->GetItemBar(),index);
+				m_uiManager.MoveItem(m_playerItem.lock()->GetItemBar(),index);
 			}
 		);
 		
@@ -349,7 +349,7 @@ void PlayerUI::InitInventoryItemPanel()
 	//アイテムバーの背景部分
 	UIFactory::MakeUIToPanel<UISquare>(m_inventoryUIPanel, kInventoryPos, kInventorySize, kInventoryColor, kInventoryAlpha);
 
-	const auto& inventory = m_playerItem->GetInventory();
+	const auto& inventory = m_playerItem.lock()->GetInventory();
 	for (int i = 0; i < inventory.lock()->GetSlotCount(); i++)
 	{
 		const auto& itemBox = std::make_shared<UIItemBox>(
@@ -361,7 +361,7 @@ void PlayerUI::InitInventoryItemPanel()
 		itemBox->SetOnClickEvent(
 			[this, index]
 			{
-				m_playerItem->SetInventoryChoiceIndex(index);
+				m_playerItem.lock()->SetInventoryChoiceIndex(index);
 			}
 		);
 		itemBox->SetOnDragBeginEvent(
@@ -389,7 +389,7 @@ void PlayerUI::InitInventoryItemPanel()
 	const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_inventoryUIPanel, pos, size, GraphicId::kUIClose);
 	close.lock()->SubscribeOnClick([this]()
 		{
-			m_playerController->CloseInventoryUI();
+			m_playerController.lock()->CloseInventoryUI();
 		}
 	);
 
@@ -439,11 +439,11 @@ void PlayerUI::SetChooseFactoryComponent(DeviceType currentDevice)
 	//コントローラーのとき
 	if (currentDevice == DeviceType::kGamepad)
 		//画面中心のオブジェクトを取得
-		m_chooseFactory = m_playerController->GetScreenCenterFactoryObject();
+		m_chooseFactory = m_playerController.lock()->GetScreenCenterFactoryObject();
 	//キーボードのとき
 	else if (currentDevice == DeviceType::kKeyboard)
 		//マウスカーソルの位置のオブジェクトを取得
-		m_chooseFactory = m_playerController->GetMousePointFactoryObject();
+		m_chooseFactory = m_playerController.lock()->GetMousePointFactoryObject();
 }
 
 void PlayerUI::UpdateUIPanel()
@@ -514,9 +514,9 @@ void PlayerUI::UpdateFactoryUIPanel()
 
 void PlayerUI::UpdateItemBar()
 {
-	if (!m_playerItem) return;
+	if (!m_playerItem.lock()) return;
 
-	int index = m_playerItem->GetItemBarChoiceIndex();
+	int index = m_playerItem.lock()->GetItemBarChoiceIndex();
 
 	//選択時の色変更
 	for (int i = 0; i < kItemBarItemCount; i++)
@@ -530,7 +530,7 @@ void PlayerUI::UpdateItemBar()
 	//アイテムがあるときにそのアイコンを表示する
 	for (int i = 0; i < kItemBarItemCount; i++)
 	{
-		const auto& itemStack = m_playerItem->GetItemFromItemBar(i);
+		const auto& itemStack = m_playerItem.lock()->GetItemFromItemBar(i);
 
 		if (!itemStack)
 			m_itemBarBoxes.at(i)->SetGraphicID(GraphicId::kNone);
@@ -541,7 +541,7 @@ void PlayerUI::UpdateItemBar()
 	//アイテムがあるときにその数を表示する
 	for (int i = 0; i < kItemBarItemCount; i++)
 	{
-		const auto& itemStack = m_playerItem->GetItemFromItemBar(i);
+		const auto& itemStack = m_playerItem.lock()->GetItemFromItemBar(i);
 
 		if (!itemStack)
 			m_itemBarBoxes.at(i)->SetText("");
@@ -553,16 +553,16 @@ void PlayerUI::UpdateItemBar()
 
 void PlayerUI::UpdateInventory()
 {
-	if (!m_playerItem) return;
+	if (!m_playerItem.lock()) return;
 
-	int index = m_playerItem->GetInventoryChoiceIndex();
+	int index = m_playerItem.lock()->GetInventoryChoiceIndex();
 
-	int inventorySize = m_playerItem->GetInventory().lock()->GetSlotCount();
+	int inventorySize = m_playerItem.lock()->GetInventory().lock()->GetSlotCount();
 
 	//アイテムがあるときにそのアイコンを表示する
 	for (int i = 0; i < inventorySize; i++)
 	{
-		const auto& itemStack = m_playerItem->GetItemFromInventory(i);
+		const auto& itemStack = m_playerItem.lock()->GetItemFromInventory(i);
 
 		if (!itemStack)
 			m_inventoryBoxes.at(i)->SetGraphicID(GraphicId::kNone);
@@ -573,7 +573,7 @@ void PlayerUI::UpdateInventory()
 	//アイテムがあるときにその数を表示する
 	for (int i = 0; i < inventorySize; i++)
 	{
-		const auto& itemStack = m_playerItem->GetItemFromInventory(i);
+		const auto& itemStack = m_playerItem.lock()->GetItemFromInventory(i);
 
 		if (!itemStack)
 			m_inventoryBoxes.at(i)->SetText("");
@@ -626,13 +626,13 @@ void PlayerUI::SetUIVisible(const CharactorState& state, bool visible)
 
 void PlayerUI::IsEnableCameraControll(bool enable) const
 {
-	Camera::GetInstance().SetIsEnableMovement(enable);
-	Camera::GetInstance().SetIsEnableRotation(enable);
+	/*Camera::GetInstance().SetIsEnableMovement(enable);
+	Camera::GetInstance().SetIsEnableRotation(enable);*/
 }
 
 bool PlayerUI::IsCurrentState(CharactorState state) const
 {
-	return m_state->CheckCurrentState(state);
+	return m_state.lock()->CheckCurrentState(state);
 }
 
 bool PlayerUI::IsEnableSetChooseFactoryComponent() const
@@ -653,7 +653,7 @@ void PlayerUI::ChangeCharactorState(const CharactorState& lastState, const Chara
 		if (!m_chooseFactory.lock())
 		{
 			//ステートをアイドルに戻す
-			m_state->ChangeState(CharactorState::IDLE);
+			m_state.lock()->ChangeState(CharactorState::IDLE);
 			return;
 		};
 

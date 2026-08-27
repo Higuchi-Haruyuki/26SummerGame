@@ -17,6 +17,9 @@ public:
 	//GETTER
 	CharactorState GetCurrentState() const { return m_currentState; }
 
+	void Init() override;
+	void Update() override;
+
 	//SETTER
 	/// <summary>
 	/// それぞれのステートの最低時間を設定する
@@ -77,6 +80,7 @@ public:
 	/// </summary>
 	std::function<void(const CharactorState&,const CharactorState&)> OnChangeState;
 private:
+	float m_timer = 0.0f;
 	// それぞれのステートの最低時間
 	std::map<CharactorState, int> m_stateMinTime;
 	// 内部で保持する今のステート

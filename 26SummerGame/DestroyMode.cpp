@@ -14,8 +14,6 @@
 #include <algorithm>
 #include "ItemSlot.h"
 
-namespace component
-{
 	DestroyMode::DestroyMode(std::shared_ptr<Object> parentObject):
 		Component(parentObject),
 		m_input(PlayerInput::GetInstance()),
@@ -31,7 +29,7 @@ namespace component
 
 	}
 
-	void DestroyMode::Update(float deltaTime)
+	void DestroyMode::Update()
 	{
 		//コンポーネントへの参照を取得する。
 		GetComponentReference();
@@ -51,26 +49,26 @@ namespace component
 
 	void DestroyMode::GetComponentReference()
 	{
-		if (!m_playerItem.lock()) m_playerItem = GetParentObject()->GetComponent<PlayerItem>();
+		if (!m_playerItem.lock()) m_playerItem = GetComponent<PlayerItem>();
 
-		if (!m_state.lock()) m_state = GetParentObject()->GetComponent<CharactorStateManager>();
+		if (!m_state.lock()) m_state = GetComponent<CharactorStateManager>();
 	
 	}
 
 	void DestroyMode::PreviewDestoryObject(const std::weak_ptr<Collider>& destoryCol)
 	{
 		//FactoryComponentを持っていないとき
-		if (!GetFactoryComponentFromCol(destoryCol)) return;
+		if (!GetFactoryComponentFromCol(destoryCol).lock()) return;
 	}
 
 	void DestroyMode::Destory(const std::weak_ptr<Collider>& destoryCol)
 	{
 		//Objectを取得
-		const auto& object = GetObjectFromCol(destoryCol);
+		const auto& object = GetObjectFromCol(destoryCol).lock();
 		if (!object) return;
 
 		//FactoryComponentを取得
-		const auto& factoryCom = GetFactoryComponentFromCol(destoryCol);
+		const auto& factoryCom = GetFactoryComponentFromCol(destoryCol).lock();
 		//FactoryComponentを持ってなかったとき
 		if (!factoryCom) return;
 
@@ -124,11 +122,11 @@ namespace component
 		return safeState->CheckCurrentState(CharactorState::DESTROY);
 	}
 
-	std::shared_ptr<FactoryComponent> DestroyMode::GetFactoryComponentFromCol(const std::weak_ptr<Collider>& col)
+	std::weak_ptr<FactoryComponent> DestroyMode::GetFactoryComponentFromCol(const std::weak_ptr<Collider>& col)
 	{
 		//Objectを取得
-		const auto& object = GetObjectFromCol(col);
-		if (!object) return nullptr;
+		const auto& object = GetObjectFromCol(col).lock();
+		if (!object) return std::weak_ptr<FactoryComponent>();
 
 		//FactoryComponentを取得
 		const auto& factoryCom = object->GetComponent<FactoryComponent>();
@@ -136,10 +134,10 @@ namespace component
 		return factoryCom;
 	}
 
-	std::shared_ptr<Object> DestroyMode::GetObjectFromCol(const std::weak_ptr<Collider>& col)
+	std::weak_ptr<Object> DestroyMode::GetObjectFromCol(const std::weak_ptr<Collider>& col)
 	{
 		const auto& safeDestroyCol = col.lock();
-		if (!safeDestroyCol) return nullptr;
+		if (!safeDestroyCol) return std::weak_ptr<Object>();
 
 		//Objectを取得
 		const auto& object = safeDestroyCol->GetParentObject();
@@ -152,6 +150,3 @@ namespace component
 		result.RaycastFromMousePoint();
 		return result;
 	}
-
-
-}

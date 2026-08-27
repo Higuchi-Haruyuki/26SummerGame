@@ -11,12 +11,12 @@ class MainScene : public Scene
 public:
 	MainScene() : Scene() {};
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 	void Draw() const override;
 
 private:
-	std::shared_ptr<Object> m_player;
-	std::shared_ptr<Collider> m_playerCollider;
+	std::weak_ptr<Object> m_player;
+	std::weak_ptr<Collider> m_playerCollider;
 
 	std::weak_ptr<Object> m_skyDome;
 

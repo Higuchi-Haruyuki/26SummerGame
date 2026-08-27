@@ -110,9 +110,9 @@ void MapManager::GenerateMap()
 
 void MapManager::CreateStageObject(const Vector& pos, const Vector& siz, unsigned int col)
 {
-	const auto& obj = ObjectFactory::CreateObject(pos, "Ground");
-	const auto& stageSquare3D = obj->AddComponent<Square3D>();
-	const auto& collider = obj->AddComponent<SquareCollider3D>();
+	const auto& obj = ObjectFactory::CreateObject(pos, "Ground").lock();
+	const auto& stageSquare3D = obj->AddComponent<Square3D>().lock();
+	const auto& collider = obj->AddComponent<SquareCollider3D>().lock();
 	stageSquare3D->SetSize(siz);
 	stageSquare3D->SetColor(col);
 	collider->SetSize(siz);

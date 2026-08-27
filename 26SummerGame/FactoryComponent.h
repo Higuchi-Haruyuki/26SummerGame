@@ -32,11 +32,11 @@ class FactoryComponent :
 	public Component
 {
 public:
-	FactoryComponent(std::shared_ptr<Object> parentObject);
+	FactoryComponent(std::weak_ptr<Object> parentObject);
 	virtual ~FactoryComponent();
 
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 	void Finalize() override;
 
 	/// <summary>
@@ -131,8 +131,8 @@ protected:
 	RecipeManager& m_recipeManager;
 
 	//コンポーネントへのポインタ
-	std::shared_ptr<Shape> m_shape;
-	std::shared_ptr<Collider> m_collider;
+	std::weak_ptr<Shape> m_shape;
+	std::weak_ptr<Collider> m_collider;
 
 	//プレビューモードかのフラグ
 	bool m_isPreviewMode = false;

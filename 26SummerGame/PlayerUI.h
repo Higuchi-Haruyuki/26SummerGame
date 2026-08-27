@@ -39,11 +39,11 @@ class PlayerUI :
     public Component
 {
 public:
-    PlayerUI(std::shared_ptr<Object> parentObject);
+    PlayerUI(std::weak_ptr<Object> parentObject);
 	virtual ~PlayerUI() override {};
 
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 
 private:
 
@@ -200,10 +200,10 @@ private:
 	QuestManager& m_questManager;
 
 	//コンポーネントのポインタ
-	std::shared_ptr<Collider> m_collider;
-	std::shared_ptr<PlayerController> m_playerController;
-	std::shared_ptr<CharactorStateManager> m_state;
-	std::shared_ptr<PlayerItem> m_playerItem;
+	std::weak_ptr<Collider> m_collider;
+	std::weak_ptr<PlayerController> m_playerController;
+	std::weak_ptr<CharactorStateManager> m_state;
+	std::weak_ptr<PlayerItem> m_playerItem;
 	std::weak_ptr<PlayerCraft> m_playerCraft;
 
 	//現在選んでいるUIのFactoryComponent

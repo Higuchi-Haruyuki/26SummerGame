@@ -5,7 +5,7 @@
 #include "Object.h"
 #include "Debug.h"
 
-TransportSystem::TransportSystem(std::shared_ptr<Object> parentObject) :
+TransportSystem::TransportSystem(std::weak_ptr<Object> parentObject) :
 	Component(parentObject),
 	m_factoryManager(FactoryManager::GetInstance())
 {
@@ -15,9 +15,9 @@ void TransportSystem::Init()
 {
 }
 
-void TransportSystem::Update(float deltaTime)
+void TransportSystem::Update()
 {
-	Component::Update(deltaTime);
+	Component::Update();
 	
 	if (!m_isEnable) return;
 
@@ -39,12 +39,12 @@ void TransportSystem::Update(float deltaTime)
 
 VectorInt TransportSystem::GetInputPos() const
 {
-	return GetParentObject()->GetGridPosition() - GetOutputDir();
+	return GetParentObject().lock()->GetGridPosition() - GetOutputDir();
 }
 
 VectorInt TransportSystem::GetOutputPos() const
 {
-	return GetParentObject()->GetGridPosition() + GetOutputDir();
+	return GetParentObject().lock()->GetGridPosition() + GetOutputDir();
 }
 
 bool TransportSystem::TransportItemInputToMyself(std::shared_ptr<FactoryComponent> myself)
@@ -78,10 +78,10 @@ void TransportSystem::TransportItem(std::shared_ptr<FactoryComponent> input, std
 
 }
 
-void TransportSystem::SetOutputObject(const std::shared_ptr<FactoryComponent>& obj)
+void TransportSystem::SetOutputObject(std::shared_ptr<FactoryComponent> obj)
 {
 	//自分自身のポインタを取得
-	const auto& self = GetParentObject()->GetComponent<FactoryComponent>();
+	const auto& self = GetComponent<FactoryComponent>().lock();
 	if (!self) return;
 
 	//このコンポーネントが管理下にないなら入出力の処理をしない
@@ -94,10 +94,10 @@ void TransportSystem::SetOutputObject(const std::shared_ptr<FactoryComponent>& o
 
 }
 
-void TransportSystem::SetInputObject(const std::shared_ptr<FactoryComponent>& obj)
+void TransportSystem::SetInputObject(std::shared_ptr<FactoryComponent> obj)
 {
 	//自分自身のポインタを取得
-	const auto& self = GetParentObject()->GetComponent<FactoryComponent>();
+	const auto& self = GetComponent<FactoryComponent>().lock();
 	if (!self) return;
 
 	//このコンポーネントが管理下にないなら入出力の処理をしない
@@ -109,9 +109,9 @@ void TransportSystem::SetInputObject(const std::shared_ptr<FactoryComponent>& ob
 	m_input = obj;
 }
 
-std::shared_ptr<FactoryComponent> TransportSystem::GetOutputObjectFromOutputDir()
+std::weak_ptr<FactoryComponent> TransportSystem::GetOutputObjectFromOutputDir()
 {
-	auto myGridPos = GetParentObject()->GetGridPosition();
+	auto myGridPos = GetParentObject().lock()->GetGridPosition();
 
 	//出力先コンポーネントの設定
 	auto targetGridPos = myGridPos + GetOutputDir();
@@ -120,9 +120,9 @@ std::shared_ptr<FactoryComponent> TransportSystem::GetOutputObjectFromOutputDir(
 	return outputComponent;
 }
 
-std::shared_ptr<FactoryComponent> TransportSystem::GetInputObjectFromOutputDir()
+std::weak_ptr<FactoryComponent> TransportSystem::GetInputObjectFromOutputDir()
 {
-	auto myGridPos = GetParentObject()->GetGridPosition();
+	auto myGridPos = GetParentObject().lock()->GetGridPosition();
 
 	//入力元コンポーネントの設定
 	auto targetGridPos = myGridPos - GetOutputDir();

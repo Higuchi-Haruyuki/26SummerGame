@@ -12,11 +12,11 @@ class Inserter :
 {
 
 public:
-    Inserter(std::shared_ptr<Object> parentObject);
+    Inserter(std::weak_ptr<Object> parentObject);
     virtual ~Inserter() {};
 
     void Init() override;
-    void Update(float deltaTime) override;
+    void Update() override;
 
     void UpdateUIPanel() override;
 

@@ -22,8 +22,8 @@ class ItemStack
 public:
 	ItemStack(Item itemType, int itemCount);
 	ItemStack(Item itemType, int itemCount,
-		const std::function<std::shared_ptr<Object>(const VectorInt& gridPos, float rotationAngle)>& installationFunc,
-		const std::function<std::shared_ptr<Object>()>& previewFunc
+		const std::function<std::weak_ptr<Object>(const VectorInt& gridPos, float rotationAngle)>& installationFunc,
+		const std::function<std::weak_ptr<Object>()>& previewFunc
 	);
 	
 	~ItemStack() {};

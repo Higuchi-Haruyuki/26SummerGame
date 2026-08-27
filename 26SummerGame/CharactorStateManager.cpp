@@ -3,6 +3,18 @@
 #include "Debug.h"
 
 
+void CharactorStateManager::Init()
+{
+	Component::Init();
+}
+
+void CharactorStateManager::Update()
+{
+	Component::Update();
+	if (m_isEnable) return;
+	m_timer++;
+}
+
 void CharactorStateManager::SetStateMinTime(const std::map<CharactorState, int> stateMinTime)
 {
 	if (stateMinTime.size() == 0) return;

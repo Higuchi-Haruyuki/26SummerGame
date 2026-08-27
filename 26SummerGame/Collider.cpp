@@ -21,9 +21,9 @@ void Collider::Init()
 	//現在のシーンのColliderの配列にこのコンポーネントを追加
 	SceneManager::GetInstance().AddColliderToCurrentScene(std::dynamic_pointer_cast<Collider>(shared_from_this()));
 }
-void Collider::Update(float deltaTime)
+void Collider::Update()
 {
-	Component::Update(deltaTime);
+	Component::Update();
 	if (!m_isEnable) return;
 	//ひとつ前のフレームの配列に移動させて、現在のフレームの配列は破棄する
 	m_collideObjectBeforeFrame = std::move(m_collideObjectThisFrame);
@@ -48,17 +48,18 @@ void Collider::Finalize()
 	m_collideObjectThisFrame.clear();
 	SceneManager::GetInstance().GetCurrentScene()->AddToRemoveColliders(std::dynamic_pointer_cast<Collider>(shared_from_this()));
 }
-std::vector<std::shared_ptr<Object>> Collider::GetNearObjects(int radius) const
+std::vector<std::weak_ptr<Object>> Collider::GetNearObjects(int radius) const
 {
-	std::vector<std::shared_ptr<Object>> nearObjects;
+	std::vector<std::weak_ptr<Object>> nearObjects;
 	if (radius < 0) return nearObjects;
-	auto myPos = GetParentObject()->GetPosition();
+
+	auto myPos = GetPosition();
 	auto sqRadius = radius * radius;
 	for (const auto& collider : SceneManager::GetInstance().GetCurrentScene()->GetSceneColliders())
 	{
 		auto obj = collider->GetParentObject();
 		//距離の二乗が半径の二乗より小さいときにそのオブジェクトは範囲内にいる。
-		float sqdist = myPos.SqDistance(obj->GetPosition());
+		float sqdist = myPos.SqDistance(obj.lock()->GetPosition());
 		if (sqdist < sqRadius)
 		{
 			//距離の二乗が0ならそれは自分のコライダーなので含めない
@@ -75,7 +76,10 @@ bool Collider::isCollideThisFrame(const std::string& tag)
 	if (m_collideObjectThisFrame.size() == 0) return false;
 	for (auto& obj : m_collideObjectThisFrame)
 	{
-		if (obj->GetTag() == tag)
+		const auto& safeObj = obj.lock();
+		if (!safeObj) continue;
+
+		if (safeObj->GetTag() == tag)
 		{
 			return true;
 		}
@@ -86,9 +90,12 @@ bool Collider::isCollideThisFrame(const std::string& tag)
 bool Collider::isCollideBeforeFrame(const std::string& tag)
 {
 	if (m_collideObjectBeforeFrame.size() == 0) return false;
-	for (auto& obj : m_collideObjectBeforeFrame)
+	for (const auto& obj : m_collideObjectBeforeFrame)
 	{
-		if (obj->GetTag() == tag)
+		const auto& safeObj = obj.lock();
+		if (!safeObj) continue;
+
+		if (safeObj->GetTag() == tag)
 		{
 			return true;
 		}
@@ -97,6 +104,9 @@ bool Collider::isCollideBeforeFrame(const std::string& tag)
 }
 void Collider::CollisionAndPushBack()
 {
+	const auto& parentObject = GetParentObject().lock();
+	if (!parentObject) return;
+
 	//ステージのColliderを取得する
 	const auto& sceneCol = SceneManager::GetInstance().GetCurrentScene()->GetSceneColliders();
 	//ステージColliderの要素数が0のときは関数を終了する
@@ -104,9 +114,9 @@ void Collider::CollisionAndPushBack()
 	//加速度を速度に適用
 	m_velocity += m_accel;
 	//現在位置と速度から移動位置を仮定
-	Vector resultPos = GetParentObject()->GetPosition() + m_offset + m_velocity;
+	Vector resultPos = parentObject->GetPosition() + m_offset + m_velocity;
 
-	std::string myTag = GetParentObject()->GetTag();
+	std::string myTag = parentObject->GetTag();
 	if (myTag == "Ground") return;
 	//衝突しているかチェックする
 	for (const auto& col : sceneCol)
@@ -114,13 +124,13 @@ void Collider::CollisionAndPushBack()
 		if(!SceneManager::GetInstance().GetCurrentScene()->HasSceneColliders(col)) continue;
 
 		//そのコンポーネントを持つオブジェクトが非アクティブのとき処理をスキップする
-		if (!col->GetParentObject()->GetIsEnable()) continue;
+		if (!col->GetParentObject().lock()->GetIsEnable()) continue;
 
 		//そのコンポーネントが非アクティブのとき処理をスキップする
 		if (!col->m_isEnable) continue;
 
 		//当たり判定を無視するタグとしてもっているとき処理をスキップする
-		if (HasIgnoreTag(col->GetParentObject()->GetTag()) || col->HasIgnoreTag(myTag)) continue;
+		if (HasIgnoreTag(col->GetParentObject().lock()->GetTag()) || col->HasIgnoreTag(myTag)) continue;
 
 		//このコンポーネントがSquareCollider3D
 		if (std::shared_ptr<SquareCollider3D> mySquare = std::dynamic_pointer_cast<SquareCollider3D>(shared_from_this()))
@@ -166,17 +176,23 @@ void Collider::CollisionAndPushBack()
 	//Debug::Log(std::format("sumNormal: {}", m_sumNormal.ToString()));
 	//Debug::Log(std::format("sumPushBack:{}", m_sumPushBack.ToString()));
 	//仮定した値に補正する押し戻し量を加えてプレイヤーの座標にする
-	GetParentObject()->SetPosition(resultPos - m_offset + m_sumPushBack);
+	parentObject->SetPosition(resultPos - m_offset + m_sumPushBack);
 }
 
-HitPoint Collider::isCollide(const Vector& resultPos, const std::shared_ptr<SquareCollider3D> squareACollider, const std::shared_ptr<SquareCollider3D> squareBCollider)
+HitPoint Collider::isCollide(const Vector& resultPos, std::weak_ptr<SquareCollider3D> squareACollider, std::weak_ptr<SquareCollider3D> squareBCollider)
 {
+	const auto& safeColliderA = squareACollider.lock();
+	if (!safeColliderA) return HitPoint{};
+
+	const auto& safeColliderB = squareBCollider.lock();
+	if (!safeColliderB) return HitPoint{};
+
 	HitPoint hitPoint;
 	auto tempPos = resultPos + m_sumPushBack;
-	auto squareA = squareACollider->GetParentObject();
-	auto squareB = squareBCollider->GetParentObject();
+	auto squareA = safeColliderA->GetParentObject().lock();
+	auto squareB = safeColliderB->GetParentObject().lock();
 
-	auto squareBPos = squareB->GetPosition() + squareBCollider->GetOffset();
+	auto squareBPos = squareB->GetPosition() + safeColliderB->GetOffset();
 
 	//長方形のxの差分を求める
 	auto xDiff = squareBPos.m_x - tempPos.m_x;
@@ -188,22 +204,22 @@ HitPoint Collider::isCollide(const Vector& resultPos, const std::shared_ptr<Squa
 	auto zDiff = squareBPos.m_z - tempPos.m_z;
 
 	//それぞれの軸の長さを回転させたあとの値を取得
-	float widthA = cosf(squareACollider->GetRotationAngle()) * squareACollider->GetWidth() 
-		+ sinf(squareACollider->GetRotationAngle()) * squareACollider->GetDepth();
+	float widthA = cosf(safeColliderA->GetRotationAngle()) * safeColliderA->GetWidth()
+		+ sinf(safeColliderA->GetRotationAngle()) * safeColliderA->GetDepth();
 
-	float depthA = sinf(squareACollider->GetRotationAngle()) * squareACollider->GetWidth()
-		+ cosf(squareACollider->GetRotationAngle()) * squareACollider->GetDepth();
+	float depthA = sinf(safeColliderA->GetRotationAngle()) * safeColliderA->GetWidth()
+		+ cosf(safeColliderA->GetRotationAngle()) * safeColliderA->GetDepth();
 
-	float widthB = cosf(squareBCollider->GetRotationAngle()) * squareBCollider->GetWidth()
-		+ sinf(squareBCollider->GetRotationAngle()) * squareBCollider->GetDepth();
+	float widthB = cosf(safeColliderB->GetRotationAngle()) * safeColliderB->GetWidth()
+		+ sinf(safeColliderB->GetRotationAngle()) * safeColliderB->GetDepth();
 
-	float depthB = sinf(squareBCollider->GetRotationAngle()) * squareBCollider->GetWidth()
-		+ cosf(squareBCollider->GetRotationAngle()) * squareBCollider->GetDepth();
+	float depthB = sinf(safeColliderB->GetRotationAngle()) * safeColliderB->GetWidth()
+		+ cosf(safeColliderB->GetRotationAngle()) * safeColliderB->GetDepth();
 
 	//それぞれの軸のめり込み量を計算
 	// それぞれ（長方形の幅の半分の和）が中心座標の差の絶対値より大きいときに衝突している
 	auto overlapX = (widthA / 2 + widthB / 2) - std::abs(xDiff);
-	auto overlapY = (squareACollider->GetHeight() / 2 + squareBCollider->GetHeight() / 2) - std::abs(yDiff);
+	auto overlapY = (safeColliderA->GetHeight() / 2 + safeColliderB->GetHeight() / 2) - std::abs(yDiff);
 	auto overlapZ = (depthA / 2 + depthB / 2) - std::abs(zDiff);
 
 	//両方の軸で重なっているとき衝突
@@ -216,8 +232,8 @@ HitPoint Collider::isCollide(const Vector& resultPos, const std::shared_ptr<Squa
 		float minX = (std::max)(tempPos.m_x - widthA / 2, squareBPos.m_x - widthB / 2);
 		float maxX = (std::min)(tempPos.m_x + widthA / 2, squareBPos.m_x + widthB / 2);
 
-		float minY = (std::max)(tempPos.m_y - squareACollider->GetHeight() / 2, squareBPos.m_y - squareBCollider->GetHeight() / 2);
-		float maxY = (std::min)(tempPos.m_y + squareACollider->GetHeight() / 2, squareBPos.m_y + squareBCollider->GetHeight() / 2);
+		float minY = (std::max)(tempPos.m_y - safeColliderA->GetHeight() / 2, squareBPos.m_y - safeColliderB->GetHeight() / 2);
+		float maxY = (std::min)(tempPos.m_y + safeColliderA->GetHeight() / 2, squareBPos.m_y + safeColliderB->GetHeight() / 2);
 
 		float minZ = (std::max)(tempPos.m_z - depthA / 2,
 			squareBPos.m_z - depthB / 2);
@@ -253,7 +269,7 @@ HitPoint Collider::isCollide(const Vector& resultPos, const std::shared_ptr<Squa
 		m_collideObjectThisFrame.push_back(squareB);
 
 		//どちらもトリガーじゃないときの処理
-		if (!squareACollider->m_isTrigger && !squareBCollider->m_isTrigger)
+		if (!safeColliderA->m_isTrigger && !safeColliderB->m_isTrigger)
 		{
 			//押し戻し量の総和を計算
 			m_sumPushBack += GetPushBackValue(hitPoint, squareACollider, squareBCollider);
@@ -281,13 +297,19 @@ HitPoint Collider::isCollide(const Vector& resultPos, const std::shared_ptr<Squa
 	}
 	return hitPoint;
 }
-Vector Collider::GetPushBackValue(const HitPoint& hitPoint, const std::shared_ptr<Collider> colliderA, const std::shared_ptr<Collider> colliderB)
+Vector Collider::GetPushBackValue(const HitPoint& hitPoint, std::weak_ptr<Collider> colliderA, std::weak_ptr<Collider> colliderB)
 {
+	const auto& safeColliderA = colliderA.lock();
+	if (!safeColliderA) return Vector{};
+
+	const auto& safeColliderB = colliderB.lock();
+	if (!safeColliderB) return Vector{};
+
 	//どちらかのisTriggerがtrueなら押し戻し判定を行わない
-	if (colliderA->m_isTrigger || colliderB->m_isTrigger) return { 0,0 };
+	if (safeColliderA->m_isTrigger || safeColliderB->m_isTrigger) return { 0,0 };
 	//2つのオブジェクトの質量の逆数の和
-	auto AInvMass = colliderA->InverseMass();
-	auto BInvMass = colliderB->InverseMass();
+	auto AInvMass = safeColliderA->InverseMass();
+	auto BInvMass = safeColliderB->InverseMass();
 	auto totalInvMass = AInvMass + BInvMass;
 	//両方とも質量の逆数が0のときは押し戻し判定をしない
 	if (totalInvMass > 0.0f)
@@ -302,11 +324,11 @@ Vector Collider::GetPushBackValue(const HitPoint& hitPoint, const std::shared_pt
 	return { 0,0 };
 }
 //前回のフレームで衝突しているのか確認する関数
-bool Collider::isCollideBeforeFlame(const std::shared_ptr<Object> object)
+bool Collider::isCollideBeforeFlame(std::weak_ptr<Object> object)
 {
 	for (const auto& obj : m_collideObjectBeforeFrame)
 	{
-		if (obj == object) return true;
+		if (obj.lock() == object.lock()) return true;
 	}
 	return false;
 }

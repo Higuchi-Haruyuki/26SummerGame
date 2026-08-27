@@ -39,35 +39,43 @@ void MainScene::Init()
 		Game::GridPosToWorldPos(kPlayerStartGridPos), "Player"
 	);
 
-	m_playerCollider = m_player->AddComponent<SquareCollider3D>();
-	m_playerCollider->SetSize(Vector{ 150,150,150 });
-	m_playerCollider->SetOffset({ 0,0,0 });
-	m_playerCollider->IsTrigger(true);
+	const auto& player = m_player.lock();
 
-	m_stateManager = m_player->AddComponent<CharactorStateManager>();
+	m_playerCollider = player->AddComponent<SquareCollider3D>();
+	
+	const auto& collider = m_playerCollider.lock();
+	
+	collider->SetSize(Vector{ 150,150,150 });
+	collider->SetOffset({ 0,0,0 });
+	collider->IsTrigger(true);
 
-	m_player->AddComponent<PlayerController>();
+	m_stateManager = player->AddComponent<CharactorStateManager>();
 
-	m_player->AddComponent<component::InstallationMode>();
+	player->AddComponent<PlayerController>();
 
-	m_player->AddComponent<component::DestroyMode>();
+	player->AddComponent<InstallationMode>();
+
+	player->AddComponent<DestroyMode>();
 	
 	m_skyDome = ObjectFactory::CreateObject(
 		kSkyDomePos, "SkyBox"
 	);
 	
-	const auto& model = m_skyDome.lock()->AddComponent<Model>();
+	const auto& model = m_skyDome.lock()->AddComponent<Model>().lock();
 	model->SetEnableLighting(false);
 	model->SetModel(ModelId::kSkyBox);
 
 }
-void MainScene::Update(float deltaTime)
+void MainScene::Update()
 {
-	Scene::Update(deltaTime);
+	Scene::Update();
 
-	if (m_player->GetPosition().m_y < -1000)
+	const auto& player = m_player.lock();
+	if (!player) return;
+
+	if (player->GetPosition().m_y < -1000)
 	{
-		m_player->SetPosition(Game::GridPosToWorldPos(kPlayerStartGridPos));
+		player->SetPosition(Game::GridPosToWorldPos(kPlayerStartGridPos));
 	}
 
 

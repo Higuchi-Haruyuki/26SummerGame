@@ -19,11 +19,11 @@ enum class CharactorState;
 class PlayerController : public Component
 {
 public:
-	PlayerController(std::shared_ptr<Object> parentObject);
+	PlayerController(std::weak_ptr<Object> parentObject);
 	virtual ~PlayerController() override;
 
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 
 	/// <summary>
 	/// 画面の中心にいるFactoryComponentを持つオブジェクトを返す。
@@ -83,6 +83,6 @@ private:
 
 	//コンポーネントのポインタ
 	std::weak_ptr<CharactorStateManager> m_state;
-	std::shared_ptr<PlayerUI> m_playerUI;
+	std::weak_ptr<PlayerUI> m_playerUI;
 	std::weak_ptr<PlayerItem> m_playerItem;
 };

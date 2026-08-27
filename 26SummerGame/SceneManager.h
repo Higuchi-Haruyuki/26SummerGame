@@ -24,22 +24,22 @@ public:
 	/// 次のシーンに設定する。そのフレームの終わりでそのシーンがロードされる。
 	/// </summary>
 	/// <param name="scene"></param>
-	void SetNextScene(const std::shared_ptr<Scene>& scene);
+	void SetNextScene(std::shared_ptr<Scene> scene);
 
 	/// <summary>
 	/// 現在のシーンのオブジェクトの配列にオブジェクトを追加する
 	/// </summary>
-	void AddObjectToCurrentScene(const std::shared_ptr<Object>& obj);
+	void AddObjectToCurrentScene(std::shared_ptr<Object> obj);
 
 	/// <summary>
 	/// 現在のシーンのColliderの配列にColliderを追加する
 	/// </summary>
-	void AddColliderToCurrentScene(const std::shared_ptr<Collider>& col);
+	void AddColliderToCurrentScene(std::shared_ptr<Collider> col);
 
 	/// <summary>
 	/// 現在のシーンのShapeの配列にShapeを追加する
 	/// </summary>
-	void AddShapeToCurrentScene(const std::shared_ptr<Shape>& shp);
+	void AddShapeToCurrentScene(std::shared_ptr<Shape> shp);
 
 	/// <summary>
 	/// 次のシーンに設定されているかチェックする

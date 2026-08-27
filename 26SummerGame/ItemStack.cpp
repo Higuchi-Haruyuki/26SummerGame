@@ -27,8 +27,8 @@ ItemStack::ItemStack(Item itemType, int itemCount)
 }
 
 ItemStack::ItemStack(Item itemType, int itemCount,
-	const std::function<std::shared_ptr<Object>(const VectorInt& gridPos, float rotationAngle)>& func, 
-	const std::function<std::shared_ptr<Object>()>& previewFunc)
+	const std::function<std::weak_ptr<Object>(const VectorInt& gridPos, float rotationAngle)>& func, 
+	const std::function<std::weak_ptr<Object>()>& previewFunc)
 	: m_itemManager(ItemManager::GetInstance()),
 	m_itemType(itemType), m_itemCount(itemCount),m_installationItem(func),m_generatePreviewObject(previewFunc)
 {
@@ -131,7 +131,7 @@ std::weak_ptr<Object> ItemStack::GeneratePreviewObject()
 {
 	if (!m_generatePreviewObject) return std::weak_ptr<Object>();
 	m_previewObject = m_generatePreviewObject();
-	m_previewObject.lock()->GetComponent<FactoryComponent>()->SetIsPreviewMode(true, kPreviewObjectAlpha);
+	m_previewObject.lock()->GetComponent<FactoryComponent>().lock()->SetIsPreviewMode(true, kPreviewObjectAlpha);
 	return m_previewObject;
 }
 
@@ -150,7 +150,7 @@ void ItemStack::RotationPreviewObject(Radian rotationAngle)
 	const auto& safePreviewObject = m_previewObject.lock();
 	if (!safePreviewObject) return;
 
-	safePreviewObject->GetComponent<FactoryComponent>()->SetRotationAngle(rotationAngle);
+	safePreviewObject->GetComponent<FactoryComponent>().lock()->SetRotationAngle(rotationAngle);
 }
 
 void ItemStack::SetPositionPreviewObject(const Vector& pos)

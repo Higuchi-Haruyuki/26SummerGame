@@ -1,27 +1,20 @@
 ﻿#pragma once
 #include "vector.h"
-#include "Object.h"
+#include "Component.h"
 #include <memory>
 
 class PlayerInput;
 
 
-class Camera : public Object
+class Camera : public Component
 {
 public:
+	Camera(std::weak_ptr<Object> parent);
+	~Camera() = default;
 
-	/// <summary>
-	/// シングルトンインスタンスを取得する
-	/// </summary>
-	/// <returns></returns>
-	static Camera& GetInstance()
-	{
-		static Camera instance;
-		return instance;
-	}
 
 	void Init() override;
-	void Update(float delta) override;
+	void Update() override;
 
 	float GetCameraYaw() const { return m_cameraYaw; }
 	float GetCameraPitch() const { return m_cameraPitch;}
@@ -29,8 +22,6 @@ public:
 	void SetIsEnableMovement(bool b) { m_isEnableMovement = b; }
 	void SetIsEnableRotation(bool b) { m_isEnableRotation = b; }
 private:
-	Camera() = default;
-	~Camera() = default;
 	//コピー禁止
 	Camera(const Camera&) = delete;
 	Camera& operator = (const Camera&) = delete;

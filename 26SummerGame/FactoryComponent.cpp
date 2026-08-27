@@ -28,7 +28,7 @@ namespace
 }
 
 
-FactoryComponent::FactoryComponent(std::shared_ptr<Object> parentObject) :
+FactoryComponent::FactoryComponent(std::weak_ptr<Object> parentObject) :
 	Component(parentObject),
 	m_factoryManager(FactoryManager::GetInstance()),
 	m_recipeManager(RecipeManager::GetInstance())
@@ -44,14 +44,14 @@ void FactoryComponent::Init()
 
 	m_factoryManager.AddToFactoryComponents(std::dynamic_pointer_cast<FactoryComponent>(shared_from_this()));
 
-	m_collider = GetParentObject()->GetComponent<SquareCollider3D>();
-	if (!m_collider)
-		m_collider = GetParentObject()->AddComponent<SquareCollider3D>();
+	m_collider = GetComponent<SquareCollider3D>();
+	if (!m_collider.lock())
+		m_collider = AddComponent<SquareCollider3D>();
 }
 
-void FactoryComponent::Update(float deltaTime)
+void FactoryComponent::Update()
 {
-	Component::Update(deltaTime);
+	Component::Update();
 
 #if false
 	if (auto item = GetInputItemStack(0))
@@ -98,14 +98,14 @@ std::shared_ptr<UIPanel> FactoryComponent::GetOrBuildUIPanel()
 
 void FactoryComponent::SetRotationAngle(Radian angle)
 {
-	m_shape->SetRotationAngle(-angle);
-	m_collider->SetRotationAngle(angle);
+	m_shape.lock()->SetRotationAngle(-angle);
+	m_collider.lock()->SetRotationAngle(angle);
 }
 
 void FactoryComponent::SetIsPreviewMode(bool b,int alpha)
 {
-	m_collider->IsEnable(!b);
-	m_shape->SetAlpha(alpha);
+	m_collider.lock()->IsEnable(!b);
+	m_shape.lock()->SetAlpha(alpha);
 	m_isPreviewMode = true;
 }
 
@@ -130,11 +130,11 @@ ItemStack* FactoryComponent::GetOutputItemStack(int index) const
 
 void FactoryComponent::SetSizeAndColorAndMaxSlot(const Vector& siz, unsigned int col, int maxInputSlot, int maxOutputSlot)
 {
-	m_shape->SetSize(siz);
-	m_shape->SetColor(col);
-	m_collider->SetSize(siz);
-	m_collider->IsVisible(true);
-	m_collider->SetMass(0);
+	m_shape.lock()->SetSize(siz);
+	m_shape.lock()->SetColor(col);
+	m_collider.lock()->SetSize(siz);
+	m_collider.lock()->IsVisible(true);
+	m_collider.lock()->SetMass(0);
 
 	m_inputSlot = std::make_shared<ItemSlot>(maxInputSlot);
 	m_outputSlot = std::make_shared<ItemSlot>(maxOutputSlot);

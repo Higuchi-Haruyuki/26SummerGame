@@ -53,8 +53,12 @@ namespace
 	const Vector kMaxCameraPos = { 15500,3000,15500 };
 }
 
+Camera::Camera(std::weak_ptr<Object> parent):
+	Component(parent)
+{}
+
 void Camera::Init() {
-	Object::Init();
+	Component::Init();
 	//Zバッファを使用する
 	SetUseZBuffer3D(true);
 	//Zバッファに書き込みを行う
@@ -66,30 +70,34 @@ void Camera::Init() {
 
 }
 
-void Camera::Update(float deltaTime) {
+void Camera::Update() {
 	if (!m_isEnable) return;
-	Object::Update(deltaTime);
+	Component::Update();
+
+	const auto& parentObject = GetParentObject().lock();
+	if (!parentObject) return;
 
 	UpdateMovement();
 	UpdateRotation();
 	UpdateZoom();
 
 
+
 	float t = 1.0f - expf(-kMoveSmoothingLambda);
-	auto temp = (m_targetPos - m_position) * t;
-	SetPosition(GetPosition() + temp);
+	auto temp = (m_targetPos - parentObject->GetPosition()) * t;
+	parentObject->SetPosition(parentObject->GetPosition() + temp);
 
 	m_targetPos.Clamp(kMinCameraPos,kMaxCameraPos);
 
-	SetCameraPositionAndAngle(GetPosition().ToVECTOR(), m_cameraPitch, m_cameraYaw,0.0f);
+	SetCameraPositionAndAngle(parentObject->GetPosition().ToVECTOR(), m_cameraPitch, m_cameraYaw,0.0f);
 	GetCameraFrontVector();
 
 	Debug::Log(std::format("CameraYaw: {}, CameraPitch: {}", m_cameraYaw, m_cameraPitch));
 
-	Debug::Log(std::format("CameraPos: {}", GetPosition().ToString()));
-	Debug::Log(std::format("CameraGridPos: {}", GetGridPosition().ToString()));
+	Debug::Log(std::format("CameraPos: {}", parentObject->GetPosition().ToString()));
+	Debug::Log(std::format("CameraGridPos: {}", parentObject->GetGridPosition().ToString()));
 	Debug::Log(std::format("CameraChankPos: {}",
-		Game::GridPosToChankPos(GetGridPosition())
+		Game::GridPosToChankPos(parentObject->GetGridPosition())
 		.ToString()
 	));
 }

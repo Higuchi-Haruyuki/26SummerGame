@@ -42,7 +42,7 @@ namespace
 	const Vector kCompletionItemBoxSize = { 80,80 };
 }
 
-ManufacturingSystem::ManufacturingSystem(std::shared_ptr<Object> parentObject):
+ManufacturingSystem::ManufacturingSystem(std::weak_ptr<Object> parentObject):
 	Component(parentObject),
 	m_recipeManager(RecipeManager::GetInstance()),
 	m_factoryManager(FactoryManager::GetInstance())
@@ -54,9 +54,9 @@ void ManufacturingSystem::Init()
 	m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);
 }
 
-void ManufacturingSystem::Update(float deltaTime)
+void ManufacturingSystem::Update()
 {
-	Component::Update(deltaTime);
+	Component::Update();
 	if (!m_isEnable) return;
 	if(m_recipeList.empty())
 		m_recipeList = m_recipeManager.GetSortedRecipeList(m_allowRecipeType);

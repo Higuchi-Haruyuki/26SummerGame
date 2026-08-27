@@ -24,11 +24,11 @@ enum class Item;
 class PlayerItem : public Component
 {
 public:
-	PlayerItem(const std::shared_ptr<Object> parentObject);
+	PlayerItem(std::weak_ptr<Object> parentObject);
 	virtual ~PlayerItem() {}
 
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 
 	/*ItemBar関連関数*/
 
@@ -160,7 +160,7 @@ private:
 
 	std::shared_ptr<ItemSlot> m_inventory;
 
-	std::shared_ptr<CharactorStateManager> m_state;
+	std::weak_ptr<CharactorStateManager> m_state;
 
 	ItemStack* m_selectedItemBar = nullptr;
 

@@ -14,8 +14,8 @@ void Square3D::Init() {
 	SetTextureAddressMode(DX_TEXADDRESS_WRAP);
 }
 
-void Square3D::Update(float deltaTime) {
-	Shape::Update(deltaTime);
+void Square3D::Update() {
+	Shape::Update();
 	if (!m_isEnable) return;
 }
 
@@ -23,14 +23,14 @@ void Square3D::Finalize() {
 	Shape::Finalize();
 }
 
-void Square3D::Draw(const Vector& cameraPos) const {
+void Square3D::Draw() const {
 	if (!m_isEnable) return;
-	if (!GetParentObject()) return;
+	if (!GetParentObject().lock()) return;
 	//if (!SceneManager::GetInstance().GetCurrentScene()->HasSceneShapes(std::dynamic_pointer_cast<Shape>(shared_from_this()))) return;
-	if (!GetParentObject()->GetIsEnable()) return;
+	if (!GetParentObject().lock()->GetIsEnable()) return;
 	if (!m_isVisible) return;
 
-	auto position = GetParentObject()->GetPosition();
+	auto position = GetPosition();
 
 	float width = cosf(m_rotationAngle) * m_width + sinf(m_rotationAngle) * m_depth;
 	float depth = sinf(m_rotationAngle) * m_width + cosf(m_rotationAngle) * m_depth;

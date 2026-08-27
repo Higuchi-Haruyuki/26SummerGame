@@ -25,12 +25,12 @@ class PlayerCraft :
 	public Component
 {
 public:
-	PlayerCraft(std::shared_ptr<Object> parent);
+	PlayerCraft(std::weak_ptr<Object> parent);
 	~PlayerCraft();
 
 	void Init() override;
 	bool HasRequiredItems(const std::vector<std::weak_ptr<ItemSlot>>& itemSlots) const;
-	void Update(float deltaTime) override;
+	void Update() override;
 	void Finalize() override;
 
 	std::shared_ptr<UIPanel> GetOrBuidUIPanel();

@@ -63,7 +63,7 @@ namespace
 
 }
 
-BeltConveyor::BeltConveyor(std::shared_ptr<Object> parentObject):
+BeltConveyor::BeltConveyor(std::weak_ptr<Object> parentObject):
 	FactoryComponent(parentObject)
 {
 }
@@ -72,13 +72,13 @@ void BeltConveyor::Init()
 {
 	FactoryComponent::Init();
 
-	m_shape = GetParentObject()->GetComponent<Model>();
-	if (!m_shape)
-		m_shape = GetParentObject()->AddComponent<Model>();
+	m_shape = GetComponent<Model>();
+	if (!m_shape.lock())
+		m_shape = AddComponent<Model>();
 
-	m_model = GetParentObject()->GetComponent<Model>();
+	m_model = GetComponent<Model>();
 
-	m_transport = GetParentObject()->AddComponent<TransportSystem>();
+	m_transport = AddComponent<TransportSystem>();
 
 	if (const auto& safe = m_model.lock())
 	{
@@ -92,9 +92,9 @@ void BeltConveyor::Init()
 
 }
 
-void BeltConveyor::Update(float deltaTime)
+void BeltConveyor::Update()
 {
-	FactoryComponent::Update(deltaTime);
+	FactoryComponent::Update();
 
 	if (m_isPreviewMode) return;
 	//前の処理から指定時間まだ経過していない
@@ -113,18 +113,6 @@ void BeltConveyor::Update(float deltaTime)
 
 bool BeltConveyor::TryInsert(ItemStack* item, int count)
 {
-	//if (!item || item->GetSlotCount() <= 0) return false;
-
-	////入口に空きが無い（末尾アイテクがまだ入口付近にいる）
-	//if (!m_beltItems.empty() &&
-	//	m_beltItems.back().m_progress < kItemInterval) return false;
-
-	//m_beltItems.push_back(
-	//	{ std::make_unique<ItemStack>(item->GetItemType(), 1), 0.0f });
-
-	//item->MinusItemCount(1);
-	//return true;
-
 	return FactoryComponent::TryInsert(m_outputSlot.get(), item, count);
 }
 
@@ -212,7 +200,11 @@ Vector BeltConveyor::GetItemWorldPos(float progress) const
 	Vector dir = { static_cast<float>(Game::kGridSize),0,0 };
 	dir.RotateY(GetRotationAngle());
 
-	return GetParentObject()->GetPosition() + dir * (progress - 0.5f);
+	const auto& safeParent = GetParentObject().lock();
+
+	if (!safeParent) return Vector{};
+
+	return safeParent->GetPosition() + dir * (progress - 0.5f);
 }
 
 void BeltConveyor::SetRotationAngle(Radian angle)

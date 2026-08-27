@@ -8,12 +8,12 @@
 class Square3D : public Shape
 {
 public:
-	Square3D(std::shared_ptr<Object> parentObject) :Shape(parentObject) {};
+	Square3D(std::weak_ptr<Object> parentObject) :Shape(parentObject) {};
 	~Square3D() {};
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 	void Finalize() override;
-	void Draw(const Vector& cameraPos) const override;
+	void Draw() const override;
 
 	// GETTER
 	Vector GetSize() const { return Vector{ m_width, m_height, m_depth }; }
@@ -23,12 +23,12 @@ public:
 
 	Vector GetMin() const
 	{
-		const auto& p = GetParentObject()->GetPosition();
+		const auto& p = GetPosition();
 		return Vector{ p.m_x - m_width / 2, p.m_y - m_height / 2, p.m_z - m_depth / 2 };
 	}
 	Vector GetMax() const
 	{
-		const auto& p = GetParentObject()->GetPosition();
+		const auto& p = GetPosition();
 		return Vector{ p.m_x + m_width / 2, p.m_y + m_height / 2, p.m_z + m_depth / 2 };
 	}
 

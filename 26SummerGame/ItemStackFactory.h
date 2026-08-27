@@ -1,4 +1,4 @@
-#pragma once
+﻿#pragma once
 #include <memory>
 #include "ItemType.h"
 #include "ItemStack.h"

@@ -20,11 +20,11 @@ class ManufacturingSystem :
     public Component
 {
 public:
-    ManufacturingSystem(std::shared_ptr<Object> parentObject);
+    ManufacturingSystem(std::weak_ptr<Object> parentObject);
     virtual ~ManufacturingSystem() {};
 
     void Init() override;
-    void Update(float deltaTime) override;
+    void Update() override;
     void Finalize() override;
 
     std::shared_ptr<UIPanel> GetOrBuidUIPanel();

@@ -21,7 +21,7 @@ void QuestManager::Init()
 	ListenQuestClearEvent();
 }
 
-void QuestManager::Update(float deltaTime)
+void QuestManager::Update()
 {
 	QuestClearCheck();
 

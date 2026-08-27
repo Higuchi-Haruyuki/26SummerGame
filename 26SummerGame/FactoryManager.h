@@ -17,18 +17,18 @@ public:
 	// シングルトンのインスタンスを返します
 	static FactoryManager& GetInstance();
 
-	void AddToFactoryComponents(const std::shared_ptr<FactoryComponent>& f);
+	void AddToFactoryComponents(std::shared_ptr<FactoryComponent> f);
 
-	std::shared_ptr<FactoryComponent> GetComponentAtGridPos(const VectorInt& gridPos);
+	std::weak_ptr<FactoryComponent> GetComponentAtGridPos(const VectorInt& gridPos);
 
 	/// <summary>
 	/// 引数で渡されたコンポーネントが管理下が管理下にあるかを返す。
 	/// </summary>
-	bool IsManageFactoryComponent(const std::shared_ptr<FactoryComponent>& f);
+	bool IsManageFactoryComponent(std::weak_ptr<FactoryComponent> f);
 
-	bool IsReservedRemove(const std::shared_ptr<FactoryComponent>& f);
+	bool IsReservedRemove(std::weak_ptr<FactoryComponent> f);
 
-	void AddToRemoveFactoryComponents(const std::shared_ptr<FactoryComponent>& f);
+	void AddToRemoveFactoryComponents(std::weak_ptr<FactoryComponent> f);
 	
 	void RemoveFactoryComponents();
 

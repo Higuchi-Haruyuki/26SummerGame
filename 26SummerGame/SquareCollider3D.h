@@ -6,9 +6,9 @@
 class SquareCollider3D : public Collider
 {
 public:
-	SquareCollider3D(std::shared_ptr<Object> parentObject) : Collider(parentObject) {};
+	SquareCollider3D(std::weak_ptr<Object> parentObject) : Collider(parentObject) {};
 
-	void Draw(const Vector& cameraPos, const unsigned int& color) const override;
+	void Draw(unsigned int color) const override;
 
 	// GETTER
 	float GetWidth() const { return m_width; }
@@ -17,12 +17,12 @@ public:
 
 	Vector GetMin() const
 	{
-		const auto& p = GetParentObject()->GetPosition();
+		const auto& p = GetPosition();
 		return Vector{ p.m_x - m_width / 2, p.m_y - m_height / 2, p.m_z - m_depth / 2 };
 	}
 	Vector GetMax() const
 	{
-		const auto& p = GetParentObject()->GetPosition();
+		const auto& p = GetPosition();
 		return Vector{ p.m_x + m_width / 2, p.m_y + m_height / 2, p.m_z + m_depth / 2 };
 	}
 

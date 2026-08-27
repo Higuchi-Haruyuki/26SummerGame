@@ -14,11 +14,11 @@ class TransportSystem :
     public Component
 {
 public:
-	TransportSystem(std::shared_ptr<Object> parentObject);
+	TransportSystem(std::weak_ptr<Object> parentObject);
 	virtual ~TransportSystem() {};
 
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 
 	template<std::derived_from<FactoryComponent> T>
 	void SetInputAndOutputObject()
@@ -61,25 +61,25 @@ public:
 
 private:
 
-	void SetOutputObject(const std::shared_ptr<FactoryComponent>& obj);
+	void SetOutputObject(std::shared_ptr<FactoryComponent> obj);
 
-	void SetInputObject(const std::shared_ptr<FactoryComponent>& obj);
+	void SetInputObject(std::shared_ptr<FactoryComponent> obj);
 
-	std::shared_ptr<FactoryComponent> GetOutputObjectFromOutputDir();
+	std::weak_ptr<FactoryComponent> GetOutputObjectFromOutputDir();
 
-	std::shared_ptr<FactoryComponent> GetInputObjectFromOutputDir();
+	std::weak_ptr<FactoryComponent> GetInputObjectFromOutputDir();
 
 	void SetInputObjectFromOutputDir()
 	{
 		const auto& inputComponent = GetInputObjectFromOutputDir();
-		if (!inputComponent) return;
-		SetInputObject(inputComponent);
+		if (!inputComponent.lock()) return;
+		SetInputObject(inputComponent.lock());
 	}
 
 	template<std::derived_from<FactoryComponent> T>
 	void SetOutputObjectFromOutputDir()
 	{
-		const auto& outputComponent = GetOutputObjectFromOutputDir();
+		const auto& outputComponent = GetOutputObjectFromOutputDir().lock();
 		if (!outputComponent) return;
 
 		const auto& classT = std::dynamic_pointer_cast<T>(outputComponent);
@@ -91,9 +91,9 @@ private:
 	void SetOutputObjectFromOutputDir()
 	{
 		const auto& outputComponent = GetOutputObjectFromOutputDir();
-		if (!outputComponent) return;
+		if (!outputComponent.lock()) return;
 
-		SetOutputObject(outputComponent);
+		SetOutputObject(outputComponent.lock());
 	}
 
 	/// <summary>

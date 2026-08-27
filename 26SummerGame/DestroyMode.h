@@ -12,8 +12,6 @@ class Vector;
 class Collider;
 class FactoryComponent;
 
-namespace component
-{
 	/// <summary>
 	/// 破壊モードでの処理を行う。
 	/// </summary>
@@ -24,7 +22,7 @@ namespace component
 		DestroyMode(std::shared_ptr<Object> parentObject);
 		~DestroyMode() override = default;
 		void Init() override;
-		void Update(float deltaTime) override;
+		void Update() override;
 
 	private:
 
@@ -54,14 +52,14 @@ namespace component
 		/// </summary>
 		/// <param name="col"></param>
 		/// <returns></returns>
-		std::shared_ptr<FactoryComponent> GetFactoryComponentFromCol(const std::weak_ptr<Collider>& col);
+		std::weak_ptr<FactoryComponent> GetFactoryComponentFromCol(const std::weak_ptr<Collider>& col);
 
 		/// <summary>
 		/// Colliderからそのオブジェクトを取得する。
 		/// </summary>
 		/// <param name="col"></param>
 		/// <returns></returns>
-		std::shared_ptr<Object> GetObjectFromCol(const std::weak_ptr<Collider>& col);
+		std::weak_ptr<Object> GetObjectFromCol(const std::weak_ptr<Collider>& col);
 
 		/// <summary>
 		/// マウスの位置からレイキャストを行う。
@@ -81,7 +79,7 @@ namespace component
 		std::weak_ptr<CharactorStateManager> m_state;
 
 	};
-}
+
 
 
 

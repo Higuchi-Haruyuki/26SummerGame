@@ -11,15 +11,15 @@ void Animation3D::Init()
 {
 	Component::Init();
 	
-	m_model = GetParentObject()->GetComponent<Model>();
+	m_model = GetComponent<Model>();
 }
 
-void Animation3D::Update(float deltaTime)
+void Animation3D::Update()
 {
-	Component::Update(deltaTime);
+	Component::Update();
 	if (!m_isEnable) return;
-	if (!m_model) m_model = GetParentObject()->GetComponent<Model>();
-	if (!m_model) return;
+	if (!m_model.lock()) m_model = GetComponent<Model>();
+	if (!m_model.lock()) return;
 
 	if (!m_isPlaying) return;
 	m_animPlayTime += m_animSpeed;
@@ -29,7 +29,7 @@ void Animation3D::Update(float deltaTime)
 		if (m_isLoop)m_animPlayTime = 0.0f;
 		else Stop();
 	}
-	int modelHandle = m_model->GetModelHandle();
+	int modelHandle = m_model.lock()->GetModelHandle();
 	if(modelHandle != -1 && m_attachIndex != -1 && m_animPlayTime != -1)
 		MV1SetAttachAnimTime(modelHandle, m_attachIndex, m_animPlayTime);
 
@@ -49,7 +49,7 @@ void Animation3D::AttachAnim(const std::string& animName)
 	m_animPlayTime = 0;
 	AnimationInfo animInfo = GetAnimationInfoFromName(animName);
 	m_animSpeed = animInfo.m_speed;
-	m_attachIndex = MV1AttachAnim(m_model->GetModelHandle(),animInfo.m_index);
+	m_attachIndex = MV1AttachAnim(m_model.lock()->GetModelHandle(), animInfo.m_index);
 	if (m_attachIndex != -1) m_attachAnimName = animName;
 	GetAttachAnimTotalTime();
 }
@@ -58,7 +58,7 @@ void Animation3D::AttachAnim(const std::string& animName)
 void Animation3D::GetAttachAnimTotalTime()
 {
 	if (m_attachIndex == -1) return;
-	m_totalTime = MV1GetAttachAnimTotalTime(m_model->GetModelHandle(), m_attachIndex);
+	m_totalTime = MV1GetAttachAnimTotalTime(m_model.lock()->GetModelHandle(), m_attachIndex);
 }
 
 AnimationInfo Animation3D::GetAnimationInfoFromName(const std::string& animName)
@@ -74,7 +74,7 @@ AnimationInfo Animation3D::GetAnimationInfoFromName(const std::string& animName)
 void Animation3D::DettachAnim()
 {
 	if (m_attachIndex == -1) return;
-	MV1DetachAnim(m_model->GetModelHandle(), m_attachIndex);
+	MV1DetachAnim(m_model.lock()->GetModelHandle(), m_attachIndex);
 	m_attachIndex = -1;
 	m_totalTime = -1;
 	m_animPlayTime = 0;

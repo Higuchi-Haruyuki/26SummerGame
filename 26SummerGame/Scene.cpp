@@ -16,30 +16,26 @@
 #include "FactoryManager.h"
 #include "QuestManager.h"
 #include "vector.h"
+#include "Camera.h"
+#include "ObjectFactory.h"
 namespace
 {
 	constexpr int kGridNum = 159;
 }
 void Scene::Init()
 {
-	m_timer = 0;
-
 	//カメラの初期化処理
-	Camera::GetInstance().Init();
+	const auto& camera = ObjectFactory::CreateObject().lock();
+	camera->AddComponent<Camera>();
 
 	QuestManager::GetInstance().Init();
 
 }
-void Scene::Update(float deltaTime)
+void Scene::Update()
 {
-	m_timer += deltaTime;
-
 	Debug::Log(std::format("FPS: {}", GetFPS()));
 
-
-	Camera::GetInstance().Update(deltaTime);
-
-	QuestManager::GetInstance().Update(deltaTime);
+	QuestManager::GetInstance().Update();
 
 	if (m_sceneObjects.size() == 0) return;
 
@@ -47,7 +43,7 @@ void Scene::Update(float deltaTime)
 	for (const auto& object : m_sceneObjects)
 	{
 		if (IsRemoveReserved(object)) continue;
-		object->Update(deltaTime);
+		object->Update();
 	}
 }
 void Scene::LateUpdate()
@@ -71,38 +67,21 @@ void Scene::LateUpdate()
 }
 void Scene::Draw() const
 {
-	auto cameraPos = Camera::GetInstance().GetPosition();
 	if (m_sceneShapes.size() != 0)
 	{
 		//ステージオブジェクトの描画処理
 		for (const auto& shape : m_sceneShapes)
 		{
 			if (IsRemoveReserved(shape)) continue;
-			shape->Draw(cameraPos);
+			shape->Draw();
 		}
 	}
-
-//#if _DEBUG
-//	if (m_sceneColliders.size() != 0)
-//	{
-//		//ステージコライダーの描画処理
-//		for (const auto& collider : m_sceneColliders)
-//		{
-//			if (IsRemoveReserved(collider))  continue;
-//			collider->Draw(cameraPos, 0x00ffff);
-//		}
-//	}
-//
-//	DrawGrid();
-//
-//#endif
 
 	//デバック用のログを描画
 	Debug::Draw();
 }
 void Scene::Finalize()
 {
-	m_timer = 0;
 	for (const auto& obj : m_sceneObjects)
 	{
 		obj->Finalize();
@@ -119,6 +98,7 @@ void Scene::AddToSceneObjectsFromReserved()
 		if (!obj) continue;
 		m_sceneObjects.push_back(std::move(obj));
 	}
+	m_reservedObjects.clear();
 }
 
 void Scene::AddToSceneColliders(const std::shared_ptr<Collider>& collider)
@@ -149,25 +129,25 @@ void Scene::AddToReservedObjects(const std::shared_ptr<Object>& object)
 	}
 }
 
-void Scene::AddToRemoveObjects(const std::shared_ptr<Object>& object)
+void Scene::AddToRemoveObjects(std::shared_ptr<Object> object)
 {
 	if (!HasSceneObjects(object)) return;
 	m_removeSceneObjects.emplace(object);
 }
 
-void Scene::AddToRemoveColliders(const std::shared_ptr<Collider>& collider)
+void Scene::AddToRemoveColliders(std::shared_ptr<Collider> collider)
 {
 	if (!HasSceneColliders(collider)) return;
 	m_removeSceneColliders.emplace(collider);
 }
 
-void Scene::AddToRemoveShapes(const std::shared_ptr<Shape>& shape)
+void Scene::AddToRemoveShapes(std::shared_ptr<Shape> shape)
 {
 	if (!HasSceneShapes(shape)) return;
 	m_removeSceneShapes.emplace(shape);
 }
 
-void Scene::MoveSceneObject(const int& targetIndex, const std::shared_ptr<Object>& object)
+void Scene::MoveSceneObject(int targetIndex, std::shared_ptr<Object> object)
 {
 	if (targetIndex > m_sceneObjects.size() || targetIndex < 0) return;
 	int index = -1;
@@ -207,8 +187,8 @@ void Scene::MoveSceneObject(const int& targetIndex, const std::shared_ptr<Object
 			end
 		);
 	}
-	MoveSceneCollider(targetIndex, m_sceneObjects[targetIndex]->GetComponent<Collider>());
-	MoveSceneShape(targetIndex, m_sceneObjects[targetIndex]->GetComponent<Shape>());
+	MoveSceneCollider(targetIndex, m_sceneObjects[targetIndex]->GetComponent<Collider>().lock());
+	MoveSceneShape(targetIndex, m_sceneObjects[targetIndex]->GetComponent<Shape>().lock());
 }
 
 void Scene::RemoveObjectsAndComponents()
@@ -231,15 +211,7 @@ void Scene::RemoveObjectsAndComponents()
 	m_removeSceneShapes.clear();
 }
 
-void Scene::DrawStringCenter(const Vector& pos, std::string text, const int& size,const unsigned int& color, const int& fontHandle) const
-{
-	float width = static_cast<float>(GetDrawStringWidthToHandle(text.c_str(), static_cast<int>(strlen(text.c_str())), fontHandle));
-	float height = static_cast<float>(size);
-	auto drawPos = pos - Vector{ width / 2 , height / 2 };
-	DrawStringToHandle(static_cast<int>(drawPos.m_x), static_cast<int>(drawPos.m_y), text.c_str(), color, fontHandle);
-}
-
-void Scene::MoveSceneCollider(const int& targetIndex, const std::shared_ptr<Collider>& collider)
+void Scene::MoveSceneCollider(int targetIndex, std::shared_ptr<Collider> collider)
 {
 	if (targetIndex > m_sceneColliders.size() || targetIndex < 0) return;
 	int index = -1;
@@ -280,7 +252,7 @@ void Scene::MoveSceneCollider(const int& targetIndex, const std::shared_ptr<Coll
 		);
 	}
 }
-void Scene::MoveSceneShape(const int& targetIndex, const std::shared_ptr<Shape>& shape)
+void Scene::MoveSceneShape(int targetIndex, std::shared_ptr<Shape> shape)
 {
 	if (targetIndex > m_sceneShapes.size() || targetIndex < 0) return;
 	int index = -1;

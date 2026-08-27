@@ -17,11 +17,11 @@ class Furnace :
     public FactoryComponent
 {
 public:
-    Furnace(std::shared_ptr<Object> parentObject);
+    Furnace(std::weak_ptr<Object> parentObject);
     virtual ~Furnace() {};
 
     void Init() override;
-    void Update(float deltaTime) override;
+    void Update() override;
 
     void UpdateUIPanel() override;
 

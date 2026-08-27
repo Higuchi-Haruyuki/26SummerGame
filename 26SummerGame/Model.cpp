@@ -10,11 +10,11 @@ void Model::Init()
 	Shape::Init();
 }
 
-void Model::Update(float deltaTime)
+void Model::Update()
 {
-	Shape::Update(deltaTime);
+	Shape::Update();
 	if (!m_isEnable) return;
-	TextureScroll(deltaTime);
+	TextureScroll();
 }
 
 void Model::Finalize()
@@ -22,11 +22,11 @@ void Model::Finalize()
 	Shape::Finalize();
 }
 
-void Model::Draw(const Vector& cameraPos) const
+void Model::Draw() const
 {
 	if (!m_isEnable) return;
-	if (!GetParentObject()) return;
-	if (!GetParentObject()->GetIsEnable()) return;
+	if (!GetParentObject().lock()) return;
+	if (!GetParentObject().lock()->GetIsEnable()) return;
 	if (!m_isVisible) return;
 	if (m_modelHandle == -1)
 	{
@@ -41,7 +41,7 @@ void Model::Draw(const Vector& cameraPos) const
 		MV1SetMaterialDrawBlendParamAll(m_modelHandle, m_alpha);
 	}
 
-	MV1SetPosition(m_modelHandle, GetParentObject()->GetPosition().ToVECTOR());
+	MV1SetPosition(m_modelHandle, GetParentObject().lock()->GetPosition().ToVECTOR());
 	//MV1SetScale(m_modelHandle, m_scale.ToVECTOR());
 	MV1SetRotationXYZ(m_modelHandle, VGet(0, m_rotationAngle, 0));
 	
@@ -60,12 +60,12 @@ void Model::SetModel(ModelId id)
 	m_modelHandle = ResourceManager::GetInstance().GetHandle(id);
 }
 
-void Model::TextureScroll(float deltaTime)
+void Model::TextureScroll()
 {
 	if (m_modelHandle == -1) return;
 	if (m_frameIndex == -1) return;
 
-	m_currentOffsetU = m_currentOffsetU + m_scrollSpeedU * deltaTime;
+	m_currentOffsetU = m_currentOffsetU + m_scrollSpeedU;
 	
 	int i = MV1SetFrameTextureAddressTransform(
 		m_modelHandle, 

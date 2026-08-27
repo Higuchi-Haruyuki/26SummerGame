@@ -7,17 +7,15 @@
 
 
 void Object::Init() {
-	m_timer = 0;
 	m_isEnable = true;
 
 	m_gridPosition = Game::WorldPosToGridPos(GetPosition());
 }
-void Object::Update(float deltaTime) {
+void Object::Update() {
 	if (!m_isEnable) return;
-	m_timer += deltaTime;
 	for (const auto& component : m_components) 
 	{
-		component->Update(deltaTime);
+		component->Update();
 	}
 
 }
@@ -49,30 +47,27 @@ void Object::LateUpdate()
 		component->LateUpdate();
 	}
 }
-void Object::OnCollisionStay(const HitPoint& hitPoint, const std::shared_ptr<Object> object)
+void Object::OnCollisionStay(const HitPoint& hitPoint, const std::weak_ptr<Object> object)
 {
 	//コンポーネントの該当関数を呼び出す
 	for (const auto& component : m_components)
 	{
 		component->OnCollisionStay(hitPoint,object);
 	}
-	if(OnCollisionStayFunc) OnCollisionStayFunc(object);
 }
-void Object::OnCollisionEnter(const HitPoint& hitPoint, const std::shared_ptr<Object> object)
+void Object::OnCollisionEnter(const HitPoint& hitPoint, const std::weak_ptr<Object> object)
 {
 	//コンポーネントの該当関数を呼び出す
 	for (const auto& component : m_components)
 	{
 		component->OnCollisionEnter(hitPoint, object);
 	}
-	if (OnCollisionEnterFunc) OnCollisionEnterFunc(object);
 }
-void Object::OnCollisionExit(const HitPoint& hitPoint, const std::shared_ptr<Object> object)
+void Object::OnCollisionExit(const HitPoint& hitPoint, const std::weak_ptr<Object> object)
 {
 	//コンポーネントの該当関数を呼び出す
 	for (const auto& component : m_components)
 	{
 		component->OnCollisionExit(hitPoint, object);
 	}
-	if (OnCollisionExitFunc) OnCollisionExitFunc(object);
 }

@@ -12,7 +12,7 @@ public:
 
 	void Init();
 
-	void Update(float deltaTime);
+	void Update();
 
 	/// <summary>
 	/// 現在のクエストのポインタを返す。

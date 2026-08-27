@@ -18,9 +18,7 @@ namespace
 	constexpr Radian kMaxRad = 360.0f;
 }
 
-namespace component
-{
-	InstallationMode::InstallationMode(std::shared_ptr<Object> parentObject):
+	InstallationMode::InstallationMode(std::weak_ptr<Object> parentObject):
 		Component(parentObject),
 		m_input(PlayerInput::GetInstance()),
 		m_sceneManager(SceneManager::GetInstance()),
@@ -36,7 +34,7 @@ namespace component
 
 	}
 
-	void InstallationMode::Update(float deltaTime)
+	void InstallationMode::Update()
 	{
 		//コンポーネントへの参照を取得する。
 		GetComponentReference();
@@ -61,11 +59,11 @@ namespace component
 
 	void InstallationMode::GetComponentReference()
 	{
-		if (!m_playerItem.lock()) m_playerItem = GetParentObject()->GetComponent<PlayerItem>();
+		if (!m_playerItem.lock()) m_playerItem = GetComponent<PlayerItem>();
 
-		if (!m_state.lock()) m_state = GetParentObject()->GetComponent<CharactorStateManager>();
+		if (!m_state.lock()) m_state = GetComponent<CharactorStateManager>();
 	
-		if (!m_playerUI.lock()) m_playerUI = GetParentObject()->GetComponent<PlayerUI>();
+		if (!m_playerUI.lock()) m_playerUI = GetComponent<PlayerUI>();
 	}
 
 	ItemStack* InstallationMode::GetSelectedItemReference()
@@ -214,4 +212,4 @@ namespace component
 		return result;
 	}
 
-}
+

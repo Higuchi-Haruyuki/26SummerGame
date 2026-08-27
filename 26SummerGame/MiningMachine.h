@@ -12,11 +12,11 @@ class MiningMachine :
     public FactoryComponent
 {
 public:
-    MiningMachine(std::shared_ptr<Object> parentObject);
+    MiningMachine(std::weak_ptr<Object> parentObject);
     virtual ~MiningMachine() {};
 
     void Init() override;
-    void Update(float deltaTime) override;
+    void Update() override;
 
     void UpdateUIPanel() override;
 

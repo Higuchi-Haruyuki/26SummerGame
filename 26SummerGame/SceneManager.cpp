@@ -1,7 +1,7 @@
 ﻿#include "SceneManager.h"
 #include "Scene.h"
 #include <assert.h>
-void SceneManager::SetNextScene(const std::shared_ptr<Scene>& scene)
+void SceneManager::SetNextScene(std::shared_ptr<Scene> scene)
 {
 	m_nextScene = scene;
 }
@@ -25,15 +25,15 @@ void SceneManager::ChangeScene()
 	m_currentScene->AddToSceneObjectsFromReserved();
 }
 
-void SceneManager::AddObjectToCurrentScene(const std::shared_ptr<Object>& obj)
+void SceneManager::AddObjectToCurrentScene(std::shared_ptr<Object> obj)
 {
 	m_currentScene->AddToReservedObjects(obj);
 }
-void SceneManager::AddColliderToCurrentScene(const std::shared_ptr<Collider>& col)
+void SceneManager::AddColliderToCurrentScene(std::shared_ptr<Collider> col)
 {
 	m_currentScene->AddToSceneColliders(col);
 }
-void SceneManager::AddShapeToCurrentScene(const std::shared_ptr<Shape>& shp)
+void SceneManager::AddShapeToCurrentScene(std::shared_ptr<Shape> shp)
 {
 	m_currentScene->AddToSceneShapes(shp);
 }

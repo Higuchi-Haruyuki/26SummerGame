@@ -4,12 +4,12 @@
 class Shape : public Component
 {
 public:
-	Shape(std::shared_ptr<Object> parentObject) :Component(parentObject) { m_isVisible = true; };
+	Shape(std::weak_ptr<Object> parentObject) :Component(parentObject) { m_isVisible = true; };
 	virtual ~Shape() = default;
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 	void Finalize() override;
-	virtual void Draw(const Vector& cameraPos) const;
+	virtual void Draw() const;
 
 	//GETTER
 	Vector GetScale() const { return m_scale; }

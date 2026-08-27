@@ -18,7 +18,7 @@ public:
 	virtual void Init();
 
 	//毎フレーム実行
-	virtual void Update(float deltaTime);
+	virtual void Update();
 
 	//毎フレームUpdateのあとに実行
 	virtual void LateUpdate();
@@ -30,7 +30,6 @@ public:
 	virtual void Finalize();
 
 	//GETTER
-	float GetTimer() const { return m_timer; }
 	std::vector<std::shared_ptr<Object>> GetSceneObjects() const { return m_sceneObjects; }
 	std::vector<std::shared_ptr<Shape>> GetSceneShapes()  const { return m_sceneShapes; }
 	std::vector<std::shared_ptr<Collider>> GetSceneColliders() const { return m_sceneColliders; }
@@ -52,77 +51,77 @@ public:
 	/// 削除するオブジェクトを配列に追加する。
 	/// </summary>
 	/// <param name="object"></param>
-	void AddToRemoveObjects(const std::shared_ptr<Object>& object);
+	void AddToRemoveObjects(std::shared_ptr<Object> object);
 
 	/// <summary>
 	/// 削除するColliderを配列に追加する。
 	/// </summary>
 	/// <param name="object"></param>
-	void AddToRemoveColliders(const std::shared_ptr<Collider>& collider);
+	void AddToRemoveColliders(std::shared_ptr<Collider> collider);
 
 	/// <summary>
 	/// 削除するShapeを配列に追加する。
 	/// </summary>
 	/// <param name="object"></param>
-	void AddToRemoveShapes(const std::shared_ptr<Shape>& shape);
+	void AddToRemoveShapes(std::shared_ptr<Shape> shape);
 
 	/// <summary>
 	/// 指定したオブジェクトがすでにあれば指定したインデックスに移動する(頻繁に呼ばないこと)
 	/// </summary>
 	/// <param name="targetIndex">移動先のインデックス</param>
 	/// <param name="object">移動させたいオブジェクトのスマートポインタ</param>
-	void MoveSceneObject(const int& targetIndex, const std::shared_ptr<Object>& object);
+	void MoveSceneObject(int targetIndex, std::shared_ptr<Object> object);
 
 	//HAS
-	bool HasSceneObjects(const std::shared_ptr<Object>& object) const
+	bool HasSceneObjects(std::weak_ptr<Object> object) const
 	{
 		for (const auto& obj : m_sceneObjects)
 		{
-			if (object == obj)
+			if (object.lock() == obj)
 			{
-				return m_removeSceneObjects.contains(object);
+				return m_removeSceneObjects.contains(object.lock());
 			}
 		}
 		for (const auto& obj : m_reservedObjects)
-			if (object == obj) return true;
+			if (object.lock() == obj) return true;
 		return false;
 	}
-	bool HasSceneColliders(const std::shared_ptr<Collider>& collider) const
+	bool HasSceneColliders(std::weak_ptr<Collider> collider) const
 	{
 		for (const auto& obj : m_sceneColliders)
 		{
-			if (collider == obj)
+			if (collider.lock() == obj)
 			{
-				return m_removeSceneColliders.contains(collider);
+				return m_removeSceneColliders.contains(collider.lock());
 			}
 		}
 
 		return false;
 	}
-	bool HasSceneShapes(const std::shared_ptr<Shape>& shape) const
+	bool HasSceneShapes(std::weak_ptr<Shape> shape) const
 	{
 		for (const auto& obj : m_sceneShapes)
 		{
-			if (shape == obj)
+			if (shape.lock() == obj)
 			{
-				return m_removeSceneShapes.contains(shape);
+				return m_removeSceneShapes.contains(shape.lock());
 			}
 		}
 			
 		return false;
 	}
 
-	bool IsRemoveReserved(const std::shared_ptr<Object>& object) const
+	bool IsRemoveReserved(std::weak_ptr<Object> object) const
 	{
-		return m_removeSceneObjects.contains(object);
+		return m_removeSceneObjects.contains(object.lock());
 	}
-	bool IsRemoveReserved(const std::shared_ptr<Shape>& object) const
+	bool IsRemoveReserved(std::weak_ptr<Shape> object) const
 	{
-		return m_removeSceneShapes.contains(object);
+		return m_removeSceneShapes.contains(object.lock());
 	}
-	bool IsRemoveReserved(const std::shared_ptr<Collider>& object) const
+	bool IsRemoveReserved(std::weak_ptr<Collider> object) const
 	{
-		return m_removeSceneColliders.contains(object);
+		return m_removeSceneColliders.contains(object.lock());
 	}
 
 	//REMOVE
@@ -133,7 +132,6 @@ public:
 	void RemoveObjectsAndComponents();
 
 protected:
-	void DrawStringCenter(const Vector& pos, std::string text, const int& size, const unsigned int& color, const int& fontHandle) const;
 
 	/// <summary>
 	/// グリッドを描画する
@@ -145,7 +143,6 @@ protected:
 	std::vector<std::shared_ptr<Shape>> m_sceneShapes;
 	//そのシーン内に存在するすべてのColliderが格納されている配列
 	std::vector<std::shared_ptr<Collider>> m_sceneColliders;
-	float m_timer = 0;
 
 private:
 
@@ -154,14 +151,14 @@ private:
 	/// </summary>
 	/// <param name="targetIndex">移動先のインデックス</param>
 	/// <param name="collider">移動させたいColliderのスマートポインタ</param>
-	void MoveSceneCollider(const int& targetIndex, const std::shared_ptr<Collider>& collider);
+	void MoveSceneCollider(int targetIndex, std::shared_ptr<Collider> collider);
 
 	/// <summary>
 	/// 指定したShapeがすでにあれば指定したインデックスに移動する
 	/// </summary>
 	/// <param name="targetIndex">移動先のインデックス</param>
 	/// <param name="shape">移動させたいShapeのスマートポインタ</param>
-	void MoveSceneShape(const int& targetIndex, const std::shared_ptr<Shape>& shape);
+	void MoveSceneShape(int targetIndex, std::shared_ptr<Shape> shape);
 
 
 private:

@@ -51,7 +51,7 @@ void RayCastResult::RayCastCalc(Ray& ray)
 	//SquareCollider3Dのみを考慮する。
 	for (const auto& col : colliders)
 	{
-		const auto& obj = col->GetParentObject();
+		const auto& obj = col->GetParentObject().lock();
 		if (!obj) continue;
 
 		if (obj->GetTag() == "Player") continue;

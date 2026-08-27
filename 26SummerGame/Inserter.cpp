@@ -33,7 +33,7 @@ namespace
 	const Vector kUISize = { Game::kDisplaySize.m_x / 20, Game::kDisplaySize.m_x / 20 };
 }
 
-Inserter::Inserter(std::shared_ptr<Object> parentObject) :
+Inserter::Inserter(std::weak_ptr<Object> parentObject) :
 	FactoryComponent(parentObject)
 {
 
@@ -43,13 +43,13 @@ void Inserter::Init()
 {
 	FactoryComponent::Init();
 
-	m_shape = GetParentObject()->GetComponent<Square3D>();
-	if (!m_shape)
-		m_shape = GetParentObject()->AddComponent<Square3D>();
+	m_shape = GetComponent<Square3D>();
+	if (!m_shape.lock())
+		m_shape = AddComponent<Square3D>();
 
-	m_transport = GetParentObject()->AddComponent<TransportSystem>();
+	m_transport = AddComponent<TransportSystem>();
 
-	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape);
+	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape.lock());
 	square3D->SetUVScrollTexHandle(GraphicId::kInserterTop);
 	square3D->SetUVScrollOffset(1);
 
@@ -59,9 +59,9 @@ void Inserter::Init()
 	SetTimerDuration(kMainProcessDuration);
 }
 
-void Inserter::Update(float deltaTime)
+void Inserter::Update()
 {
-	FactoryComponent::Update(deltaTime);
+	FactoryComponent::Update();
 
 	//前の処理から指定時間まだ経過していない
 	if (!m_timer->IsTimeOver()) return;

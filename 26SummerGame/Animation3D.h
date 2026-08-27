@@ -19,7 +19,7 @@ public:
 	~Animation3D() override = default;
 
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 	void Finalize() override;
 
 	/// <summary>
@@ -74,7 +74,7 @@ private:
 	/// <param name="animName"></param>
 	void DettachAnim();
 private:
-	std::shared_ptr<Model> m_model;
+	std::weak_ptr<Model> m_model;
 	int m_attachIndex = -1;
 	int m_totalTime = -1;
 	std::string m_attachAnimName = "";

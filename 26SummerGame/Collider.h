@@ -14,20 +14,19 @@ class SquareCollider3D;
 class Collider : public Component
 {
 public:
-	Collider(std::shared_ptr<Object> parentObject) :Component(parentObject), m_velocity({ 0,0 }), m_accel({ 0,0 })
+	Collider(std::weak_ptr<Object> parentObject) :Component(parentObject), m_velocity({ 0,0 }), m_accel({ 0,0 })
 	{
 		m_collideObjectBeforeFrame.clear();
 		m_collideObjectThisFrame.clear();
 	};
 	virtual ~Collider() = default;
 	void Init() override;
-	void Update(float deltaTime) override;
+	void Update() override;
 	void LateUpdate() override;
 	void Finalize() override;
-	virtual void Draw(const Vector& cameraPos, const unsigned int& color) const {};
+	virtual void Draw(unsigned int color) const {};
 
 	//GETTER
-	std::shared_ptr<Object> GetParentObject() const { return m_parentObject; }
 	float GetMass() const { return m_mass; }
 	/// <summary>
 	/// 回転角を取得する。単位はラジアン。
@@ -36,17 +35,16 @@ public:
 	float GetRotationAngle() const { return m_rotationAngle; }
 	Vector GetVelocity() const { return m_velocity; }
 	Vector GetAccel() const { return m_accel; }
-	std::vector<std::shared_ptr<Object>> GetCollideObjectThisFrame() const { return m_collideObjectThisFrame; }
+	std::vector<std::weak_ptr<Object>> GetCollideObjectThisFrame() const { return m_collideObjectThisFrame; }
 	Vector GetOffset() const { return m_offset; }
 
 
 	/// <summary>
 	/// 引数で指定した円の半径の範囲の中にいるオブジェクトの配列を返す。
 	/// </summary>
-	std::vector<std::shared_ptr<Object>> GetNearObjects(int radius) const;
+	std::vector<std::weak_ptr<Object>> GetNearObjects(int radius) const;
 
 	//SETTER
-	void SetParentObject(const std::shared_ptr<Object> o) { m_parentObject = o; }
 	void SetMass(const float& mass) { m_mass = mass; }
 	virtual void SetSize(const Vector& size) {};
 	/// <summary>
@@ -69,7 +67,7 @@ public:
 	/// <summary>
 	/// このフレームで衝突したオブジェクトを保存している配列にオブジェクトを追加する。
 	/// </summary>
-	void AddCollideObjectThisFrame(const std::shared_ptr<Object>& collideObject)
+	void AddCollideObjectThisFrame(std::weak_ptr<Object> collideObject)
 	{
 		if (IsCollideThisFrame(collideObject)) return;
 		m_collideObjectThisFrame.push_back(collideObject);
@@ -79,11 +77,11 @@ public:
 	/// このフレームでオブジェクトと衝突しているならtrueを返す。
 	/// </summary>
 	/// <returns></returns>
-	bool IsCollideThisFrame(const std::shared_ptr<Object>& collideObject)
+	bool IsCollideThisFrame(std::weak_ptr<Object> collideObject)
 	{
 		for (const auto& obj : m_collideObjectThisFrame)
 		{
-			if (obj == collideObject) return true;
+			if (obj.lock() == collideObject.lock()) return true;
 		}
 		return false;
 	}
@@ -164,19 +162,19 @@ private:
 	/// <param name="squareACollider"></param>
 	/// <param name="squareBCollider"></param>
 	/// <returns></returns>
-	HitPoint isCollide(const Vector& resultPos, const std::shared_ptr<SquareCollider3D> squareACollider, const std::shared_ptr<SquareCollider3D> squareBCollider);
+	HitPoint isCollide(const Vector& resultPos, std::weak_ptr<SquareCollider3D> squareACollider, std::weak_ptr<SquareCollider3D> squareBCollider);
 
 	/// <summary>
 	/// 衝突情報と該当2オブジェクトから押し戻し量を求める。
 	/// </summary>
 	/// <returns></returns>
-	Vector GetPushBackValue(const HitPoint& hitPoint, const std::shared_ptr<Collider> objectA, const std::shared_ptr<Collider> objectB);
+	Vector GetPushBackValue(const HitPoint& hitPoint, std::weak_ptr<Collider> objectA, std::weak_ptr<Collider> objectB);
 
 	/// <summary>
 	/// 一つ前のフレームでオブジェクトと衝突していたならtrueを返す。
 	/// </summary>
 	/// <returns></returns>
-	bool isCollideBeforeFlame(const std::shared_ptr<Object> object);
+	bool isCollideBeforeFlame(std::weak_ptr<Object> object);
 
 	/// <summary>
 	/// プレイヤーの速度と位置から当たり判定の処理を行い、必要によって押し戻しを行う
@@ -185,9 +183,9 @@ private:
 
 private:
 	//一つ前のフレームで衝突したオブジェクトを保存する配列
-	std::vector<std::shared_ptr<Object>> m_collideObjectBeforeFrame;
+	std::vector<std::weak_ptr<Object>> m_collideObjectBeforeFrame;
 	//このフレームで衝突したオブジェクトを保存する配列
-	std::vector<std::shared_ptr<Object>> m_collideObjectThisFrame;
+	std::vector<std::weak_ptr<Object>> m_collideObjectThisFrame;
 
 	//当たり判定を無視するタグを保存
 	std::vector <std::string> m_ignoreTag;

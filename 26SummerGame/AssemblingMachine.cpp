@@ -30,7 +30,7 @@
 #include "UIPanel.h"
 #include "ItemManager.h"
 
-AssemblingMachine::AssemblingMachine(std::shared_ptr<Object> parentObject):
+AssemblingMachine::AssemblingMachine(std::weak_ptr<Object> parentObject):
 	FactoryComponent(parentObject)
 {}
 
@@ -40,7 +40,7 @@ AssemblingMachine::~AssemblingMachine()
 void AssemblingMachine::Init()
 {}
 
-void AssemblingMachine::Update(float deltaTime)
+void AssemblingMachine::Update()
 {}
 
 void AssemblingMachine::UpdateUIPanel()

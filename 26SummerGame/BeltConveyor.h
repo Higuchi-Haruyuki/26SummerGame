@@ -28,11 +28,11 @@ class BeltConveyor :
     public FactoryComponent
 {
 public:
-    BeltConveyor(std::shared_ptr<Object> parentObject);
+    BeltConveyor(std::weak_ptr<Object> parentObject);
     virtual ~BeltConveyor() {};
 
     void Init() override;
-    void Update(float deltaTime) override;
+    void Update() override;
 
     /// <summary>
     /// inputのFactoryComponentから呼び出し、このコンポーネントにアイテムを入れようを試みる

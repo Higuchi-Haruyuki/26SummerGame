@@ -14,7 +14,7 @@ FactoryManager& FactoryManager::GetInstance()
 	// TODO: return ステートメントをここに挿入します
 }
 
-void FactoryManager::AddToFactoryComponents(const std::shared_ptr<FactoryComponent>& f)
+void FactoryManager::AddToFactoryComponents(std::shared_ptr<FactoryComponent> f)
 {
 	//親オブジェクトがシーンの管理下におかれていないなら追加しない。
 	if (!SceneManager::GetInstance().GetCurrentScene()->HasSceneObjects(f->GetParentObject())) return;
@@ -31,40 +31,40 @@ void FactoryManager::AddToFactoryComponents(const std::shared_ptr<FactoryCompone
 /// 与えられたグリッド座標にあるFactoryComponentを取得する。
 /// ないときはnullptrを返す。
 /// </summary>
-std::shared_ptr<FactoryComponent> FactoryManager::GetComponentAtGridPos(const VectorInt& gridPos)
+std::weak_ptr<FactoryComponent> FactoryManager::GetComponentAtGridPos(const VectorInt& gridPos)
 {
 	for (const auto& com : m_factoryComponents)
 	{
 		if (IsReservedRemove(com)) continue;
-		if (!com->GetParentObject()) continue;
-		if (com->GetParentObject()->GetGridPosition() == gridPos) return com;
+		if (!com->GetParentObject().lock()) continue;
+		if (com->GetParentObject().lock()->GetGridPosition() == gridPos) return com;
 	}
-	return nullptr;
+	return std::weak_ptr<FactoryComponent>();
 }
 
-bool FactoryManager::IsManageFactoryComponent(const std::shared_ptr<FactoryComponent>& f)
+bool FactoryManager::IsManageFactoryComponent(std::weak_ptr<FactoryComponent> f)
 {
 	for (const auto& com : m_factoryComponents)
 	{
 		if (IsReservedRemove(com)) continue;
-		if (com == f) return true;
+		if (com == f.lock()) return true;
 	}
 	return false;
 }
 
-bool FactoryManager::IsReservedRemove(const std::shared_ptr<FactoryComponent>& f)
+bool FactoryManager::IsReservedRemove(std::weak_ptr<FactoryComponent> f)
 {
 	for (const auto& com : m_removeFactoryComponents)
 	{
-		if (com == f) return true;
+		if (com == f.lock()) return true;
 	}
 	return false;
 }
 
-void FactoryManager::AddToRemoveFactoryComponents(const std::shared_ptr<FactoryComponent>& f)
+void FactoryManager::AddToRemoveFactoryComponents(std::weak_ptr<FactoryComponent> f)
 {
 	if (!IsManageFactoryComponent(f)) return;
-	m_removeFactoryComponents.push_back(f);
+	m_removeFactoryComponents.push_back(f.lock());
 }
 
 void FactoryManager::RemoveFactoryComponents()
