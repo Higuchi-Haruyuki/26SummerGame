@@ -27,6 +27,21 @@ bool UIPointer::IsLeftButtonPressed() const
 	return IsPressedLeftButtonNow();
 }
 
+bool UIPointer::IsRightButtonTrigger() const
+{
+	return !WasPressedRightButtonLast() && IsPressedRightButtonNow();
+}
+
+bool UIPointer::IsRightButtonReleased() const
+{
+	return WasPressedRightButtonLast() && !IsPressedRightButtonNow();
+}
+
+bool UIPointer::IsRightButtonPressed() const
+{
+	return IsPressedRightButtonNow();
+}
+
 bool UIPointer::WasPressedLeftButtonLast() const
 {
 	assert(m_lastMouseState != -1 && "マウスの入力がありません");
@@ -37,4 +52,16 @@ bool UIPointer::IsPressedLeftButtonNow() const
 {
 	assert(m_nowMouseState != -1 && "マウスの入力がありません");
 	return m_nowMouseState & MOUSE_INPUT_LEFT;
+}
+
+bool UIPointer::WasPressedRightButtonLast() const
+{
+	assert(m_lastMouseState != -1 && "マウスの入力がありません");
+	return m_lastMouseState & MOUSE_INPUT_RIGHT;
+}
+
+bool UIPointer::IsPressedRightButtonNow() const
+{
+	assert(m_nowMouseState != -1 && "マウスの入力がありません");
+	return m_nowMouseState & MOUSE_INPUT_RIGHT;
 }

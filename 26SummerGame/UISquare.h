@@ -30,62 +30,11 @@ public:
 		m_alpha = std::clamp(m_alpha, 0, 255);
 	}
 
-	/// <summary>
-		/// 押され始めたときに呼び出される
-		/// </summary>
-		/// <param name="onBegin"></param>
-	void SubscribeOnDragBegin(const std::function<void()>& onBegin)
-	{
-		m_onDragBeginConnections.emplace_back(m_onDragBegin.AddListener(onBegin));
-	}
-
-	/// <summary>
-	/// はなされたときによびだされる
-	/// </summary>
-	/// <param name="onBegin"></param>
-	void SubscribeOnDrop(const std::function<void()>& onDrop)
-	{
-		m_onDropConnections.emplace_back(m_onDrop.AddListener(onDrop));
-	}
-
-	/// <summary>
-	/// ドラッグ中に呼び出される
-	/// </summary>
-	/// <param name="onClick"></param>
-	void SubscribeOnDrag(const std::function<void(const Vector& screenPos)>& onDrag)
-	{
-		m_onDragConnections.emplace_back(m_onDrag.AddListener(onDrag));
-	}
-
-	void SubscribeOnDragEnd(const std::function<void()>& onDragEnd)
-	{
-		m_onDragEndConnections.emplace_back(m_onDragEnd.AddListener(onDragEnd));
-	}
-
-	void SubscribeOnClick(const std::function<void()>& onClick)
-	{
-		m_onClickConnections.emplace_back(m_onClick.AddListener(onClick));
-	}
-
 private:
 
 	unsigned int m_color = 0xFFFFFFFF; // 白色
 
 	int m_alpha = 255; // 透明度(0-255)
 
-	std::vector<Event<>::Connection> m_onDragBeginConnections;
-	Event<> m_onDragBegin;
-
-	std::vector<Event<const Vector&>::Connection> m_onDragConnections;
-	Event<const Vector&> m_onDrag;
-
-	std::vector<Event<>::Connection> m_onDragEndConnections;
-	Event<> m_onDragEnd;
-
-	std::vector<Event<>::Connection> m_onDropConnections;
-	Event<> m_onDrop;
-
-	std::vector<Event<>::Connection> m_onClickConnections;
-	Event<> m_onClick;
 };
 

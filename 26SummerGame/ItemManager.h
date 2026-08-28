@@ -4,6 +4,7 @@
 #include "ItemType.h"
 #include <cassert>
 #include "ResourceType.h"
+#include <unordered_map>
 
 enum class ItemType
 {

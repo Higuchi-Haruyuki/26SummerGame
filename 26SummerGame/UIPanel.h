@@ -35,18 +35,6 @@ public:
     void RemoveChild(const std::shared_ptr<Base_UIElement>& child);
     void ClearChildren() { m_children.clear(); }
 
-    /// <summary>
-	/// 手前の子要素から順にOnPointerDownをディスパッチする。
-	/// いずれかの子要素がtrueを返した(=消費した)時点で処理を打ち切る。
-	/// </summary>
-	/// <returns>いずれかの子要素が入力を消費したらtrue</returns>
-    bool DispatchPointerDown(const Vector& screenPos);
-
-    /// <summary>
-    /// 手前の子要素から順にOnPointerUpをディスパッチする。DispatchPointerDownと対になる処理。
-    /// </summary>
-    bool DispatchPointerUp(const Vector& screenPos);
-
     bool DispatchDragBegin(const Vector& screenPos);
 
     bool DispatchDragEnd(const Vector& screenPos);

@@ -77,38 +77,6 @@ void UIPanel::RemoveChild(const std::shared_ptr<Base_UIElement>& child)
 	m_children.erase(std::find(m_children.begin(), m_children.end(), child));
 }
 
-bool UIPanel::DispatchPointerDown(const Vector & screenPos)
-{
-	if (!m_isVisible) return false;
-
-	//手前から判定する。
-	for (auto it = m_children.rbegin(); it != m_children.rend(); ++it)
-	{
-		const auto& child = *it;
-		if (!child->HitTest(screenPos)) continue;
-
-		if (child->OnPointerDown(screenPos)) return true;
-	}
-
-	return false;
-}
-
-bool UIPanel::DispatchPointerUp(const Vector& screenPos)
-{
-	if (!m_isVisible) return false;
-
-	//手前から判定する。
-	for (auto it = m_children.rbegin(); it != m_children.rend(); ++it)
-	{
-		const auto& child = *it;
-		if (!child->HitTest(screenPos)) continue;
-
-		if (child->OnPointerUp(screenPos)) return true;
-	}
-
-	return false;
-}
-
 bool UIPanel::DispatchDragBegin(const Vector& screenPos)
 {
 	if (!m_isVisible) return false;

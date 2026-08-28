@@ -48,8 +48,6 @@ void Scene::Update()
 }
 void Scene::LateUpdate()
 {
-	if (m_sceneColliders.size() == 0) return;
-
 	//動的にUpdateで追加予約されたObjectを追加する。
 	AddToSceneObjectsFromReserved();
 
@@ -149,7 +147,7 @@ void Scene::AddToRemoveShapes(std::shared_ptr<Shape> shape)
 
 void Scene::MoveSceneObject(int targetIndex, std::shared_ptr<Object> object)
 {
-	if (targetIndex > m_sceneObjects.size() || targetIndex < 0) return;
+	if (targetIndex >= m_sceneObjects.size() || targetIndex < 0) return;
 	int index = -1;
 	for (int i = 0; i < m_sceneObjects.size(); i++)
 	{
@@ -193,18 +191,9 @@ void Scene::MoveSceneObject(int targetIndex, std::shared_ptr<Object> object)
 
 void Scene::RemoveObjectsAndComponents()
 {
-	for (const auto& obj : m_removeSceneObjects)
-	{
-		m_sceneObjects.erase(std::find(m_sceneObjects.begin(), m_sceneObjects.end(), obj));
-	}
-	for (const auto& collider : m_removeSceneColliders)
-	{
-		m_sceneColliders.erase(std::find(m_sceneColliders.begin(), m_sceneColliders.end(), collider));
-	}
-	for (const auto& shape : m_removeSceneShapes)
-	{
-		m_sceneShapes.erase(std::find(m_sceneShapes.begin(), m_sceneShapes.end(), shape));
-	}
+	std::erase_if(m_sceneObjects, [this](const auto& obj) {return m_removeSceneObjects.contains(obj); });
+	std::erase_if(m_sceneColliders, [this](const auto& col) {return m_removeSceneColliders.contains(col); });
+	std::erase_if(m_sceneShapes, [this](const auto& shape) {return m_removeSceneShapes.contains(shape); });
 
 	m_removeSceneObjects.clear();
 	m_removeSceneColliders.clear();
@@ -213,7 +202,7 @@ void Scene::RemoveObjectsAndComponents()
 
 void Scene::MoveSceneCollider(int targetIndex, std::shared_ptr<Collider> collider)
 {
-	if (targetIndex > m_sceneColliders.size() || targetIndex < 0) return;
+	if (targetIndex >= m_sceneColliders.size() || targetIndex < 0) return;
 	int index = -1;
 	for (int i = 0; i < m_sceneColliders.size(); i++)
 	{
@@ -254,7 +243,7 @@ void Scene::MoveSceneCollider(int targetIndex, std::shared_ptr<Collider> collide
 }
 void Scene::MoveSceneShape(int targetIndex, std::shared_ptr<Shape> shape)
 {
-	if (targetIndex > m_sceneShapes.size() || targetIndex < 0) return;
+	if (targetIndex >= m_sceneShapes.size() || targetIndex < 0) return;
 	int index = -1;
 	for (int i = 0; i < m_sceneShapes.size(); i++)
 	{

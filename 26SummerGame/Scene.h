@@ -79,7 +79,7 @@ public:
 		{
 			if (object.lock() == obj)
 			{
-				return m_removeSceneObjects.contains(object.lock());
+				return !IsRemoveReserved(object);
 			}
 		}
 		for (const auto& obj : m_reservedObjects)
@@ -92,7 +92,7 @@ public:
 		{
 			if (collider.lock() == obj)
 			{
-				return m_removeSceneColliders.contains(collider.lock());
+				return !IsRemoveReserved(collider);
 			}
 		}
 
@@ -104,7 +104,7 @@ public:
 		{
 			if (shape.lock() == obj)
 			{
-				return m_removeSceneShapes.contains(shape.lock());
+				return !IsRemoveReserved(shape);
 			}
 		}
 			

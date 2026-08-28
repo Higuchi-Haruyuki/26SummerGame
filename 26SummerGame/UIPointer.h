@@ -33,6 +33,24 @@ public:
 	/// <returns></returns>
 	bool IsLeftButtonPressed() const;
 
+	/// <summary>
+	/// 左クリックがこのプレームで押されたとき
+	/// </summary>
+	/// <returns></returns>
+	bool IsRightButtonTrigger() const;
+
+	/// <summary>
+	/// 左クリックが離されたとき
+	/// </summary>
+	/// <returns></returns>
+	bool IsRightButtonReleased() const;
+
+	/// <summary>
+	/// 左クリックが押しっぱなし状態
+	/// </summary>
+	/// <returns></returns>
+	bool IsRightButtonPressed() const;
+
 private:
 
 	/// <summary>
@@ -46,6 +64,18 @@ private:
 	/// </summary>
 	/// <returns></returns>
 	bool IsPressedLeftButtonNow() const;
+
+	/// <summary>
+	/// 1フレーム前でクリックされていたか
+	/// </summary>
+	/// <returns></returns>
+	bool WasPressedRightButtonLast() const;
+
+	/// <summary>
+	/// このフレームでクリックされているか
+	/// </summary>
+	/// <returns></returns>
+	bool IsPressedRightButtonNow() const;
 
 private:
 	Vector m_position = {};

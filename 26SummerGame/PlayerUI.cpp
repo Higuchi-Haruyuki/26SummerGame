@@ -186,12 +186,12 @@ void PlayerUI::InitUIPanel()
 void PlayerUI::InitIdleUIPanel()
 {
 	const auto& installationMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, kKeyPromptDownLeftPos, kKeyPromptSize, GraphicId::kKeyboardZ, "設置モード");
-	installationMode.lock()->SetOnClick([this]() {
+	installationMode.lock()->SubscribeOnClick([this]() {
 		m_playerController.lock()->EnterInstallationMode();
 		});
 
 	const auto& destroyMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, kKeyPromptDownRightPos, kKeyPromptSize, GraphicId::kKeyboardX, "破壊モード");
-	destroyMode.lock()->SetOnClick([this]() {
+	destroyMode.lock()->SubscribeOnClick([this]() {
 		m_playerController.lock()->EnterDestroyMode();
 		});
 
@@ -204,14 +204,14 @@ void PlayerUI::InitInstallationUIPanel()
 	const auto& installationMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_installationKeyPanel, kKeyPromptDownLeftPos, kKeyPromptSize, 
 		GraphicId::kKeyboardC, "設置モード終了");
 
-	installationMode.lock()->SetOnClick([this]() {
+	installationMode.lock()->SubscribeOnClick([this]() {
 		m_playerController.lock()->ExitInstallationMode();
 		});
 
 	const auto& destroyMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_installationKeyPanel, kKeyPromptDownRightPos, kKeyPromptSize, 
 		GraphicId::kKeyboardX, "破壊モード");
 
-	destroyMode.lock()->SetOnClick([this]() {
+	destroyMode.lock()->SubscribeOnClick([this]() {
 		m_playerController.lock()->EnterDestroyMode();
 		});
 
@@ -226,14 +226,14 @@ void PlayerUI::InitDestroyUIPanel()
 	const auto& installationMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_destroyKeyPanel, kKeyPromptDownLeftPos, kKeyPromptSize, 
 		GraphicId::kKeyboardZ, "設置モード");
 
-	installationMode.lock()->SetOnClick([this]() {
+	installationMode.lock()->SubscribeOnClick([this]() {
 		m_playerController.lock()->EnterInstallationMode();
 		});
 
 	const auto& destroyMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_destroyKeyPanel, kKeyPromptDownRightPos, kKeyPromptSize, 
 		GraphicId::kKeyboardC, "破壊モード終了");
 
-	destroyMode.lock()->SetOnClick([this]() {
+	destroyMode.lock()->SubscribeOnClick([this]() {
 		m_playerController.lock()->ExitDestroyMode();
 		});
 
@@ -338,7 +338,9 @@ void PlayerUI::InitItemBarItemSlot()
 				m_uiManager.MoveItem(m_playerItem.lock()->GetItemBar(),index);
 			}
 		);
-		
+		itemBox->SetOnSelectHalfItem(m_playerItem.lock()->GetItemBar(), index);
+		itemBox->SetOnMoveHalfItem(m_playerItem.lock()->GetItemBar(), index);
+
 		//配列に追加
 		m_itemBarBoxes.push_back(itemBox);
 	}
@@ -376,6 +378,9 @@ void PlayerUI::InitInventoryItemPanel()
 				m_uiManager.MoveItem(inventory, index);
 			}
 		);
+
+		itemBox->SetOnSelectHalfItem(inventory, index);
+		itemBox->SetOnMoveHalfItem(inventory, index);
 
 		//配列に追加
 		m_inventoryBoxes.push_back(itemBox);

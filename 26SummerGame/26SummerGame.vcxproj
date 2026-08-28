@@ -190,8 +190,8 @@
     <ClCompile Include="Square3D.cpp" />
     <ClCompile Include="SquareCollider3D.cpp" />
     <ClCompile Include="Timer.cpp" />
+    <ClCompile Include="TitleScene.cpp" />
     <ClCompile Include="TransportSystem.cpp" />
-    <ClCompile Include="UIButton.cpp" />
     <ClCompile Include="UIImage.cpp" />
     <ClCompile Include="UIItemBox.cpp" />
     <ClCompile Include="UIKeyPrompt.cpp" />
@@ -272,8 +272,8 @@
     <ClInclude Include="Base_UIElement.h" />
     <ClInclude Include="StringUtil.h" />
     <ClInclude Include="Timer.h" />
+    <ClInclude Include="TitleScene.h" />
     <ClInclude Include="TransportSystem.h" />
-    <ClInclude Include="UIButton.h" />
     <ClInclude Include="UIFactory.h" />
     <ClInclude Include="UIImage.h" />
     <ClInclude Include="UIItemBox.h" />

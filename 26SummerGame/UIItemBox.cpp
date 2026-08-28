@@ -49,6 +49,20 @@ UIItemBox::UIItemBox(std::weak_ptr<UIPanel> addPanel, const Vector& position, co
 			sharedPreviewImage->SetVisible(false);
 		});
 
+	sharedImage->SubscribeOnRightClickDragBegin([sharedPreviewImage]()
+		{
+			sharedPreviewImage->SetVisible(true);
+		});
+
+	sharedImage->SubscribeOnRightClickDrag([sharedPreviewImage](const Vector& screenPos)
+		{
+			sharedPreviewImage->SetPosition(screenPos);
+		});
+
+	sharedImage->SubscribeOnRightClickDragEnd([sharedPreviewImage]()
+		{
+			sharedPreviewImage->SetVisible(false);
+		});
 
 	auto textPos = position + size / 2;
 
@@ -136,6 +150,30 @@ void UIItemBox::SetOnMoveItem(std::weak_ptr<ItemSlot> itemSlot, int index)
 	);
 }
 
+void UIItemBox::SetOnSelectHalfItem(std::weak_ptr<ItemSlot> itemSlot, int index)
+{
+	SetOnRightDragBeginEvent(
+		[this, itemSlot, index]()
+		{
+			m_uiManager.SelectHalfItem(itemSlot, index);
+		}
+	);
+}
+
+void UIItemBox::SetOnMoveHalfItem(std::weak_ptr<ItemSlot> itemSlot, int index)
+{
+	SetOnRightDropEvent(
+		[this, itemSlot, index]()
+		{
+			if (m_isEnableFilterItem)
+			{
+				if (m_filterItem != m_uiManager.GetSelectedItemType()) return;
+			}
+			m_uiManager.MoveHalfItem(itemSlot, index);
+		}
+	);
+}
+
 void UIItemBox::SetOnClickEvent(const std::function<void()>& onClick)
 {
 	m_square.lock()->SubscribeOnClick(onClick);
@@ -152,4 +190,21 @@ void UIItemBox::SetOnDropEvent(const std::function<void()>& onDrop)
 {
 	m_square.lock()->SubscribeOnDrop(onDrop);
 	m_image.lock()->SubscribeOnDrop(onDrop);
+}
+
+void UIItemBox::SetOnRightClickEvent(const std::function<void()>& onClick)
+{
+	m_square.lock()->SubscribeOnRightClick(onClick);
+	m_image.lock()->SubscribeOnRightClick(onClick);
+}
+
+void UIItemBox::SetOnRightDragBeginEvent(const std::function<void()>&onDragBegin)
+{
+	m_image.lock()->SubscribeOnRightClickDragBegin(onDragBegin);
+}
+
+void UIItemBox::SetOnRightDropEvent(const std::function<void()>&onDrop)
+{
+	m_square.lock()->SubscribeOnRightClickDrop(onDrop);
+	m_image.lock()->SubscribeOnRightClickDrop(onDrop);
 }

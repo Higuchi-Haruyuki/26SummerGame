@@ -65,6 +65,8 @@ enum class GraphicId
 	kArrow,
 	kPlus,
 
+	kTitleImage,
+
 	kCount
 };
 

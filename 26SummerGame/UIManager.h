@@ -63,6 +63,10 @@ public:
 	/// <returns></returns>
 	bool MoveItem(std::weak_ptr<ItemSlot> itemSlot, int idx);
 
+	void SelectHalfItem(std::weak_ptr<ItemSlot> itemSlot, int idx);
+
+	bool MoveHalfItem(std::weak_ptr<ItemSlot> itemSlot, int idx);
+
 private:
 	UIManager() = default;
 	~UIManager() = default;
@@ -91,7 +95,15 @@ private:
 	std::shared_ptr<UIPanel> CreateScreen(const std::string& screenName, UILayer layer = UILayer::Hud);
 
 	void ResetDrag();
+
+	void ResetRightDrag();
 private:
+
+	void MouseLeftProcess(const Vector& nowPos, 
+		const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens);
+
+	void MouseRightProcess(const Vector& nowPos,
+		const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens);
 
 	/// <summary>
 	/// レイヤー番号の降順(手前優先)に並べたスクリーン一覧を作る
@@ -108,6 +120,9 @@ private:
 	/// </summary>
 	/// <param name="nowPos"></param>
 	void SetIsDraggingByThreshould(const Vector& nowPos);
+
+
+	void SetIsRightClickDraggingByThreshould(const Vector& nowPos);
 
 private:
 
@@ -130,14 +145,22 @@ private:
 	//押下したUI要素
 	std::weak_ptr<Base_UIElement> m_capturedElement;
 
+	std::weak_ptr<Base_UIElement> m_rightClickCapturedElement;
+
 	//押したときのスクリーン座標
 	Vector m_pressScreenPos;
+
+	Vector m_rightPressScreenPos;
 
 	//さいごのふれーむのスクリーン座標
 	Vector m_lastScreenPos;
 
+	Vector m_rightLastScreenPos;
+
 	//現在ドラッグ中か
 	bool m_isDragging = false;
+
+	bool m_isRightDragging = false;
 
 	//参照元のアイテムスロット
 	std::weak_ptr<ItemSlot> m_referenceItemSlot;
@@ -145,5 +168,10 @@ private:
 	//参照しているアイテムスロットにおけるインデックス
 	int m_referenceIndex = -1;
 
+	//参照元のアイテムスロット
+	std::weak_ptr<ItemSlot> m_halfReferenceItemSlot;
+
+	//参照しているアイテムスロットにおけるインデックス
+	int m_halfReferenceIndex = -1;
 };
 

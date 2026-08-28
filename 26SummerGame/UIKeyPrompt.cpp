@@ -47,7 +47,7 @@ void UIKeyPrompt::Draw() const
 
 bool UIKeyPrompt::OnClick(const Vector& screenPos)
 {
-	if (m_onClick) m_onClick();
+	m_onClick.Invoke();
 	return true;
 }
 

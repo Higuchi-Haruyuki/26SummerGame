@@ -27,7 +27,6 @@ class PlayerItem;
 class UISquare;
 class UIImage;
 class UIText;
-class UIButton;
 class QuestManager;
 class UIItemBox;
 class PlayerCraft;

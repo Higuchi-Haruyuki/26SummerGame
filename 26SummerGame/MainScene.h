@@ -16,7 +16,7 @@ public:
 
 private:
 	std::weak_ptr<Object> m_player;
-	std::weak_ptr<Collider> m_playerCollider;
+	//std::weak_ptr<Collider> m_playerCollider;
 
 	std::weak_ptr<Object> m_skyDome;
 

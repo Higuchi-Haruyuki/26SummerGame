@@ -73,9 +73,9 @@ void MiningMachine::Init()
 	m_shape = GetComponent<Square3D>();
 	if (!m_shape.lock())
 		m_shape = AddComponent<Square3D>();
-	m_collider = GetComponent<SquareCollider3D>();
-	if (!m_collider.lock())
-		m_collider = AddComponent<SquareCollider3D>();
+	//m_collider = GetComponent<SquareCollider3D>();
+	//if (!m_collider.lock())
+	//	m_collider = AddComponent<SquareCollider3D>();
 
 	m_fuelSystem = AddComponent<FuelSystem>();
 

@@ -7,6 +7,7 @@
 #include "Debug.h"
 #include "ItemManager.h"
 #include "ItemType.h"
+#include "ItemStackFactory.h"
 
 namespace
 {
@@ -21,60 +22,9 @@ void UIManager::Update(float deltaTime)
 
 	const auto nowPos = m_pointer.GetScreenPosition();
 
-	//押した瞬間に最前面をキャプチャする。
-	if (m_pointer.IsLeftButtonTrigger())
-	{
-		ResetDrag();
-		m_pressScreenPos = nowPos;
-		m_lastScreenPos = nowPos;
+	MouseLeftProcess(nowPos, orderedScreens);
 
-		const auto& hitElement = FindHitElement(orderedScreens, nowPos);
-
-		if (hitElement)
-		{
-			m_capturedElement = hitElement;
-
-			hitElement->OnPointerDown(nowPos);
-		}
-
-	}
-
-	if (m_pointer.IsLeftButtonPressed())
-	{
-		SetIsDraggingByThreshould(nowPos);
-		
-		if (auto captured = m_capturedElement.lock())
-		{
-			if (m_isDragging)
-			{
-				captured->OnDrag(nowPos, nowPos - m_lastScreenPos);
-			}
-		}
-	}
-
-	if (m_pointer.IsLeftButtonReleased())
-	{
-		if (auto captured = m_capturedElement.lock())
-		{
-			captured->OnPointerUp(nowPos);
-
-			if (m_isDragging)
-			{
-				const auto& hitElement = FindHitElement(orderedScreens, nowPos);
-
-				if (hitElement) hitElement->OnDrop(nowPos);
-
-				captured->OnDragEnd(nowPos);
-			}
-			else
-			{
-				captured->OnClick(nowPos);
-			}
-		}
-
-		ResetDrag();
-
-	}
+	MouseRightProcess(nowPos, orderedScreens);
 
 	if (FindHitElement(orderedScreens, nowPos)) m_isPointerOverUI = true;
 	else m_isPointerOverUI = false;
@@ -133,43 +83,96 @@ bool UIManager::MoveItem(std::weak_ptr<ItemSlot> toItemSlot, int toindex)
 	bool result = false;
 
 	auto referenceItem = m_referenceItemSlot.lock()->GetItemOwnership(m_referenceIndex);
-	auto toItem = toItemSlot.lock()->GetItemOwnership(toindex);
 	//移動先にアイテムがないとき
-	if (!toItem)
+	if (!toItemSlot.lock()->GetItem(toindex))
 	{
 		toItemSlot.lock()->AddItemStack(toindex, std::move(referenceItem));
 		result = true;
 	}
 	else
 	{
-		if (toItem->GetItemType() != referenceItem->GetItemType())
+		auto toItemOwerShip = toItemSlot.lock()->GetItemOwnership(toindex);
+
+		if (toItemOwerShip->GetItemType() != referenceItem->GetItemType())
 		{
-			std::swap(referenceItem, toItem);
+			std::swap(referenceItem, toItemOwerShip);
 
 			m_referenceItemSlot.lock()->AddItemStack(m_referenceIndex,
 				std::move(referenceItem));
 
 			toItemSlot.lock()->AddItemStack(toindex,
-				std::move(toItem));
+				std::move(toItemOwerShip));
 
 			result = true;
 		}
 		else
 		{
-			result = toItem->MoveItemStack(referenceItem.get(), referenceItem->GetItemCount());
+			result = toItemOwerShip->MoveItemStack(referenceItem.get(), referenceItem->GetItemCount());
 
 			if (referenceItem->GetItemCount() != 0)
 			{
 				m_referenceItemSlot.lock()->AddItemStack(m_referenceIndex,
 					std::move(referenceItem));
 			}
-			
-			toItemSlot.lock()->AddItemStack(toindex, std::move(toItem));
+
+			toItemSlot.lock()->AddItemStack(toindex, std::move(toItemOwerShip));
 		}
 	}
 
 	ResetDrag();
 	return result;
+}
+
+void UIManager::SelectHalfItem(std::weak_ptr<ItemSlot> itemSlot, int idx)
+{
+	m_halfReferenceItemSlot = itemSlot;
+	m_halfReferenceIndex = idx;
+}
+
+bool UIManager::MoveHalfItem(std::weak_ptr<ItemSlot> toItemSlot, int toindex)
+{
+	if (!m_halfReferenceItemSlot.lock()) return false;
+	if (toindex == -1) return false;
+
+	auto referenceItem = m_halfReferenceItemSlot.lock()->GetItem(m_halfReferenceIndex);
+	auto toItem = toItemSlot.lock()->GetItem(toindex);
+
+	auto itemCount = referenceItem->GetItemCount();
+
+	auto moveCount = itemCount / 2;
+
+	if (!moveCount)
+	{
+		ResetDrag();
+		return false;
+	}
+
+	//移動先にアイテムがないとき
+	if (!toItem)
+	{
+
+		toItemSlot.lock()->AddItemStack(toindex,
+			ItemStackFactory::Make(referenceItem->GetItemType(), moveCount));
+
+		referenceItem->MinusItemCount(moveCount);
+	}
+	//あるとき
+	else
+	{
+		if (referenceItem->GetItemType() != toItem->GetItemType())
+		{
+			ResetDrag();
+			return false;
+		}
+		auto successCount = toItem->AddItemCount(moveCount);
+
+		auto remain = moveCount - successCount;
+
+		referenceItem->MinusItemCount(moveCount - remain);
+	}
+
+	ResetDrag();
+	return true;
 }
 
 
@@ -199,6 +202,131 @@ void UIManager::ResetDrag()
 	m_capturedElement.reset();
 
 	m_isDragging = false;
+}
+
+void UIManager::ResetRightDrag()
+{
+	m_referenceItemSlot.reset();
+
+	m_referenceIndex = -1;
+
+	m_rightClickCapturedElement.reset();
+
+	m_isRightDragging = false;
+}
+
+void UIManager::MouseLeftProcess(const Vector& nowPos,
+	const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens)
+{
+	//押した瞬間に最前面をキャプチャする。
+	if (m_pointer.IsLeftButtonTrigger())
+	{
+		ResetDrag();
+		m_pressScreenPos = nowPos;
+		m_lastScreenPos = nowPos;
+
+		const auto& hitElement = FindHitElement(orderedScreens, nowPos);
+
+		if (hitElement)
+		{
+			m_capturedElement = hitElement;
+		}
+
+	}
+
+	if (m_pointer.IsLeftButtonPressed())
+	{
+		SetIsDraggingByThreshould(nowPos);
+
+		if (auto captured = m_capturedElement.lock())
+		{
+			if (m_isDragging)
+			{
+				captured->OnDrag(nowPos, nowPos - m_lastScreenPos);
+			}
+
+			m_lastScreenPos = nowPos;
+		}
+	}
+
+	if (m_pointer.IsLeftButtonReleased())
+	{
+		if (auto captured = m_capturedElement.lock())
+		{
+			if (m_isDragging)
+			{
+				const auto& hitElement = FindHitElement(orderedScreens, nowPos);
+
+				if (hitElement) hitElement->OnDrop(nowPos);
+
+				captured->OnDragEnd(nowPos);
+			}
+			else
+			{
+				captured->OnClick(nowPos);
+			}
+		}
+
+		ResetDrag();
+
+	}
+}
+
+void UIManager::MouseRightProcess(const Vector& nowPos,
+	const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens)
+{
+	//押した瞬間に最前面をキャプチャする。
+	if (m_pointer.IsRightButtonTrigger())
+	{
+		ResetRightDrag();
+		m_rightPressScreenPos = nowPos;
+		m_rightLastScreenPos = nowPos;
+
+		const auto& hitElement = FindHitElement(orderedScreens, nowPos);
+
+		if (hitElement)
+		{
+			m_rightClickCapturedElement = hitElement;
+		}
+
+	}
+
+	if (m_pointer.IsRightButtonPressed())
+	{
+		SetIsRightClickDraggingByThreshould(nowPos);
+
+		if (auto captured = m_rightClickCapturedElement.lock())
+		{
+			if (m_isRightDragging)
+			{
+				captured->OnRightClickDrag(nowPos, nowPos - m_rightLastScreenPos);
+			}
+
+			m_rightLastScreenPos = nowPos;
+		}
+	}
+
+	if (m_pointer.IsRightButtonReleased())
+	{
+		if (auto captured = m_rightClickCapturedElement.lock())
+		{
+			if (m_isRightDragging)
+			{
+				const auto& hitElement = FindHitElement(orderedScreens, nowPos);
+
+				if (hitElement) hitElement->OnRightClickDrop(nowPos);
+
+				captured->OnRightClickDragEnd(nowPos);
+			}
+			else
+			{
+				captured->OnRightClick(nowPos);
+			}
+		}
+
+		ResetRightDrag();
+
+	}
 }
 
 std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>> UIManager::MakeOrderedScreen() const
@@ -242,5 +370,22 @@ void UIManager::SetIsDraggingByThreshould(const Vector& nowPos)
 	if (sqLen > kDragThreshould * kDragThreshould)
 	{
 		m_isDragging = safeCaptured->OnDragBegin(nowPos);
+	}
+}
+
+void UIManager::SetIsRightClickDraggingByThreshould(const Vector& nowPos)
+{
+	const auto safeCaptured = m_rightClickCapturedElement.lock();
+
+	if (!safeCaptured) return;
+
+	if (m_isRightDragging) return;
+
+	const Vector diff = nowPos - m_rightPressScreenPos;
+	const float sqLen = diff.SqLength();
+
+	if (sqLen > kDragThreshould * kDragThreshould)
+	{
+		m_isRightDragging = safeCaptured->OnRightClickDragBegin(nowPos);
 	}
 }

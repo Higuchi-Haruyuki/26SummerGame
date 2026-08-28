@@ -49,9 +49,17 @@ public:
 
 	void SetOnMoveItem(std::weak_ptr<ItemSlot> itemSlot, int index);
 
+	void SetOnSelectHalfItem(std::weak_ptr<ItemSlot> itemSlot, int index);
+
+	void SetOnMoveHalfItem(std::weak_ptr<ItemSlot> itemSlot, int index);
+
 	void SetOnClickEvent(const std::function<void()>& onClick);
 	void SetOnDragBeginEvent(const std::function<void()>& onDragBegin);
 	void SetOnDropEvent(const std::function<void()>& onDragEnd);
+
+	void SetOnRightClickEvent(const std::function<void()>& onClick);
+	void SetOnRightDragBeginEvent(const std::function<void()>& onDragBegin);
+	void SetOnRightDropEvent(const std::function<void()>& onDragEnd);
 
 private:
 	UIManager& m_uiManager;

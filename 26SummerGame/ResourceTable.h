@@ -86,6 +86,8 @@ namespace ResourceTable
 		{ GraphicId::kArrow, "image/icon/arrow.png" },
 		{ GraphicId::kPlus, "image/icon/plus.png" },
 
+		{ GraphicId::kTitleImage,"image/tenohira_factory_logo.png"},
+
 		{ GraphicId::kMouseLeft, ResourceName::kMouseLeft.c_str() },
 	} };
 

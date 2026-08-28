@@ -134,6 +134,18 @@ public:
 		}
 	}
 
+	int GetListerCount() const
+	{
+		int count = 0;
+		
+		for (const auto& slot : m_slots)
+		{
+			if (slot.func) count++;
+		}
+
+		return count;
+	}
+
 private:
 	std::optional<int> FindEmptyID() const
 	{
@@ -163,6 +175,8 @@ private:
 
 	static const int kMaxListener = 10;
 	std::array<Slot, kMaxListener> m_slots{};
+
+	//再利用された同じIDを古いConnectionが解除するのを防ぐ世代番号
 	std::uint64_t m_nextGeneration = 1;
 };
 
