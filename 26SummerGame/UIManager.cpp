@@ -175,6 +175,12 @@ bool UIManager::MoveHalfItem(std::weak_ptr<ItemSlot> toItemSlot, int toindex)
 	return true;
 }
 
+void UIManager::RemoveScreen(const std::string& screenName)
+{
+	m_screens.erase(screenName);
+	m_screenLayers.erase(screenName);
+}
+
 
 std::shared_ptr<UIPanel> UIManager::GetScreen(const std::string& screenName)
 {

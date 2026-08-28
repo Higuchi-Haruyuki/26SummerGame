@@ -9,6 +9,7 @@
 #include "Color.h"
 #include "UISquare.h"
 #include "UIText.h"
+#include"MainScene.h"
 
 namespace
 {
@@ -56,6 +57,11 @@ void TitleScene::BuildUI()
 	for (auto& [square, text] : m_choiceBox) 
 	{
 		square = UIFactory::MakeUIToPanel<UISquare>(m_mainUIPanel,pos,kChoiceBoxSize,color,0);
+		square.lock()->SubscribeOnClick([this]() 
+			{
+				m_uiManager.RemoveScreen("titleSceneMain");
+				m_sceneManager.SetNextScene(std::make_shared<MainScene>());
+			});
 		text = UIFactory::MakeUIToPanel<UIText>(m_mainUIPanel,
 			TextArgs{
 			pos

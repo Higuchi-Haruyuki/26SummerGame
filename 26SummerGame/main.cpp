@@ -6,6 +6,7 @@
 #include "Game.h"
 #include "UIManager.h"
 #include <memory>
+#include "TitleScene.h"
 // プログラムは WinMain から始まります
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
@@ -44,7 +45,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	auto& sceneManager = SceneManager::GetInstance();
 	//シーンをタイトルシーンに設定する
-	sceneManager.SetNextScene(std::make_shared<MainScene>());
+	sceneManager.SetNextScene(std::make_shared<TitleScene>());
 	sceneManager.CheckChangeScene();
 
 	auto& uiManager = UIManager::GetInstance();

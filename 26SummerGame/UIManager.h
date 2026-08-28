@@ -66,6 +66,8 @@ public:
 	void SelectHalfItem(std::weak_ptr<ItemSlot> itemSlot, int idx);
 
 	bool MoveHalfItem(std::weak_ptr<ItemSlot> itemSlot, int idx);
+	
+	void RemoveScreen(const std::string& screenName);
 
 private:
 	UIManager() = default;
