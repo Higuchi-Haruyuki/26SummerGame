@@ -9,6 +9,9 @@
 #include "Color.h"
 #include "UISquare.h"
 #include "UIText.h"
+#include "PlayerInput.h"
+#include "MainScene.h"
+
 
 namespace
 {
@@ -25,7 +28,8 @@ namespace
 TitleScene::TitleScene() :
 	Scene(),
 	m_uiManager(UIManager::GetInstance()),
-	m_sceneManager(SceneManager::GetInstance())
+	m_sceneManager(SceneManager::GetInstance()),
+	m_playerInput(PlayerInput::GetInstance())
 {}
 
 TitleScene::~TitleScene()
@@ -56,14 +60,25 @@ void TitleScene::BuildUI()
 	for (auto& [square, text] : m_choiceBox) 
 	{
 		square = UIFactory::MakeUIToPanel<UISquare>(m_mainUIPanel,pos,kChoiceBoxSize,color,0);
+		square.lock()->SubscribeOnClick([this]() 
+			{
+				m_sceneManager.SetNextScene(std::make_shared<MainScene>());
+			});
 		text = UIFactory::MakeUIToPanel<UIText>(m_mainUIPanel,
 			TextArgs{
 			pos
 			});
 
 		pos += Vector{0, kChoiceBoxSize.m_y} + kChoiceBoxOffset;
+		text.lock()->SetText("こんにちは");
+
 	}
 }
 
 void TitleScene::UpdateUI()
 {}
+
+void TitleScene::InputAction()
+{
+	if (m_playerInput.GetAction(""));
+}

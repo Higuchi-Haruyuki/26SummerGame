@@ -132,7 +132,7 @@ protected:
 
 	//コンポーネントへのポインタ
 	std::weak_ptr<Shape> m_shape;
-	//std::weak_ptr<Collider> m_collider;
+	std::weak_ptr<Collider> m_collider;
 
 	//プレビューモードかのフラグ
 	bool m_isPreviewMode = false;

@@ -44,9 +44,10 @@ void FactoryComponent::Init()
 
 	m_factoryManager.AddToFactoryComponents(std::dynamic_pointer_cast<FactoryComponent>(shared_from_this()));
 
-	/*m_collider = GetComponent<SquareCollider3D>();
+	m_collider = GetComponent<SquareCollider3D>();
 	if (!m_collider.lock())
-		m_collider = AddComponent<SquareCollider3D>();*/
+		m_collider = AddComponent<SquareCollider3D>();
+	m_collider.lock()->SetTrigger(true);
 }
 
 void FactoryComponent::Update()
@@ -132,9 +133,9 @@ void FactoryComponent::SetSizeAndColorAndMaxSlot(const Vector& siz, unsigned int
 {
 	m_shape.lock()->SetSize(siz);
 	m_shape.lock()->SetColor(col);
-	/*m_collider.lock()->SetSize(siz);
+	m_collider.lock()->SetSize(siz);
 	m_collider.lock()->IsVisible(true);
-	m_collider.lock()->SetMass(0);*/
+	m_collider.lock()->SetMass(0);
 
 	m_inputSlot = std::make_shared<ItemSlot>(maxInputSlot);
 	m_outputSlot = std::make_shared<ItemSlot>(maxOutputSlot);

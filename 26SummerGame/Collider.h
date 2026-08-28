@@ -37,6 +37,7 @@ public:
 	Vector GetAccel() const { return m_accel; }
 	std::vector<std::weak_ptr<Object>> GetCollideObjectThisFrame() const { return m_collideObjectThisFrame; }
 	Vector GetOffset() const { return m_offset; }
+	bool IsTrigger() const { return m_isTrigger; }
 
 
 	/// <summary>
@@ -89,7 +90,7 @@ public:
 	//Visible: trueにするとコライダーの範囲が見えるようになる
 	void IsVisible(const bool& isVisible) { m_isVisible = isVisible; }
 	//Trigger: trueにすると当たり判定はあるが押し戻しはしなくなる
-	void IsTrigger(const bool& isTrigger) { m_isTrigger = isTrigger; }
+	void SetTrigger(const bool& isTrigger) { m_isTrigger = isTrigger; }
 
 	/// <summary>
 	/// 当たり判定を無視するタグを追加する

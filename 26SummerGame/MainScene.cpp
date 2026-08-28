@@ -41,14 +41,6 @@ void MainScene::Init()
 
 	const auto& player = m_player.lock();
 
-	//m_playerCollider = player->AddComponent<SquareCollider3D>();
-	//
-	//const auto& collider = m_playerCollider.lock();
-	//
-	//collider->SetSize(Vector{ 150,150,150 });
-	//collider->SetOffset({ 0,0,0 });
-	//collider->IsTrigger(true);
-
 	m_stateManager = player->AddComponent<CharactorStateManager>();
 
 	player->AddComponent<PlayerController>();

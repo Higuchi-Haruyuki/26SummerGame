@@ -5,6 +5,7 @@
 #include "ResourceManager.h"
 #include "Game.h"
 #include "UIManager.h"
+#include "TitleScene.h"
 #include <memory>
 // プログラムは WinMain から始まります
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
@@ -44,7 +45,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 	auto& sceneManager = SceneManager::GetInstance();
 	//シーンをタイトルシーンに設定する
-	sceneManager.SetNextScene(std::make_shared<MainScene>());
+	sceneManager.SetNextScene(std::make_shared<TitleScene>());
 	sceneManager.CheckChangeScene();
 
 	auto& uiManager = UIManager::GetInstance();
@@ -76,7 +77,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		ScreenFlip();	// 裏画面の内容を表画面に反映させる
 
 		//次のシーンが設定されているかチェックする
-		//sceneManager.CheckChangeScene();
+		sceneManager.CheckChangeScene();
 
 		//経過時間が指定した時間以下のとき待つ
 		while ((GetNowHiPerformanceCount() - startTime) <= Game::kTimePerFrame) continue;

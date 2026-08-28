@@ -8,6 +8,7 @@ class UIManager;
 class UISquare;
 class UIText;
 class SceneManager;
+class PlayerInput;
 
 
 class TitleScene :
@@ -27,10 +28,13 @@ private:
 
     void UpdateUI();
 
+    void InputAction();
+
 private:
     //シングルトンへの参照
     UIManager& m_uiManager;
     SceneManager& m_sceneManager;
+    PlayerInput& m_playerInput;
     
     std::shared_ptr<UIPanel> m_mainUIPanel;
  

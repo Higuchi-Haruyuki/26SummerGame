@@ -107,6 +107,8 @@ void Collider::CollisionAndPushBack()
 	const auto& parentObject = GetParentObject().lock();
 	if (!parentObject) return;
 
+	if (IsTrigger()) return;
+
 	//ステージのColliderを取得する
 	const auto& sceneCol = SceneManager::GetInstance().GetCurrentScene()->GetSceneColliders();
 	//ステージColliderの要素数が0のときは関数を終了する
@@ -131,6 +133,8 @@ void Collider::CollisionAndPushBack()
 
 		//当たり判定を無視するタグとしてもっているとき処理をスキップする
 		if (HasIgnoreTag(col->GetParentObject().lock()->GetTag()) || col->HasIgnoreTag(myTag)) continue;
+
+		if (col->IsTrigger()) continue;
 
 		//このコンポーネントがSquareCollider3D
 		if (std::shared_ptr<SquareCollider3D> mySquare = std::dynamic_pointer_cast<SquareCollider3D>(shared_from_this()))
