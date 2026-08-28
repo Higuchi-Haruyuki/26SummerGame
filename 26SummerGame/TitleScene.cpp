@@ -11,10 +11,7 @@
 #include "UIText.h"
 #include "PlayerInput.h"
 #include "MainScene.h"
-
-=======
 #include"MainScene.h"
->>>>>>> e6f7b27791a41be2c924706b75c5d30b0d9d15a6
 
 namespace
 {
@@ -65,10 +62,7 @@ void TitleScene::BuildUI()
 		square = UIFactory::MakeUIToPanel<UISquare>(m_mainUIPanel,pos,kChoiceBoxSize,color,0);
 		square.lock()->SubscribeOnClick([this]() 
 			{
-<<<<<<< HEAD
-=======
 				m_uiManager.RemoveScreen("titleSceneMain");
->>>>>>> e6f7b27791a41be2c924706b75c5d30b0d9d15a6
 				m_sceneManager.SetNextScene(std::make_shared<MainScene>());
 			});
 		text = UIFactory::MakeUIToPanel<UIText>(m_mainUIPanel,
