@@ -4,6 +4,8 @@
 #include "TransportSystem.h"
 #include "Object.h"
 #include "Debug.h"
+#include "ItemStack.h"
+#include "ItemSlot.h"
 
 TransportSystem::TransportSystem(std::weak_ptr<Object> parentObject) :
 	Component(parentObject),
@@ -74,7 +76,12 @@ void TransportSystem::TransportItem(std::shared_ptr<FactoryComponent> input, std
 
 	if (!moveItem) return;
 
-	output->TryInsert(moveItem, 1);
+	if (!output->TryInsert(moveItem, 1))return;
+
+	if (moveItem->GetItemCount() <= 0)
+	{
+		input->GetOutputItemSlot().lock()->RemoveItem(0);
+	}
 
 }
 

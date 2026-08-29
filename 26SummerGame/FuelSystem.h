@@ -45,6 +45,8 @@ public:
 
 	std::weak_ptr<ItemSlot> GetFuelSlot() const { return m_fuelSlot; }
 
+	void GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result);
+
 private:
 	/// <summary>
 	/// 引数で与えられたアイテム名と現在の燃料名が同一かを返す。

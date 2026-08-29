@@ -36,7 +36,7 @@ RecipeMap RecipeManager::GetSortedRecipeList(RecipeType recipeType)
 	case RecipeType::kPlayerCraft:
 		sortTable = &RecipeList::kPlayerCraftRecipe;
 		break;
-	case RecipeType::kCraftMachine:
+	case RecipeType::kAssemblingMachine:
 		sortTable = &RecipeList::kCraftMachineRecipe;
 		break;
 	default:
@@ -87,7 +87,7 @@ std::weak_ptr<Recipe> RecipeManager::GetRecipeFromItemType(RecipeType recipeType
 	case RecipeType::kPlayerCraft:
 		if (!IsContainsPlayerCraftRecipe(recipeName)) return std::weak_ptr<Recipe>();
 		break;
-	case RecipeType::kCraftMachine:
+	case RecipeType::kAssemblingMachine:
 		if (!IsContainsCraftMachineRecipe(recipeName)) return std::weak_ptr<Recipe>();
 		break;
 	default:

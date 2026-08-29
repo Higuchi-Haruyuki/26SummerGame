@@ -105,3 +105,16 @@ int FuelSystem::GetFuelRemain() const
 
 	return fuelItem->GetItemCount();
 }
+
+void FuelSystem::GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result)
+{
+	if (!m_fuelSlot) return;
+
+	for (int i = 0; i < m_fuelSlot->GetSlotCount(); i++)
+	{
+		auto item = m_fuelSlot->GetItemOwnership(i);
+		if (!item) continue;
+		auto itemCount = item->GetItemCount();
+		result->push_back(std::make_pair(std::move(item), itemCount));
+	}
+}

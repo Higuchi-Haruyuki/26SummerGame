@@ -3,6 +3,7 @@
 #include "ResourceType.h"
 #include <string>
 #include <algorithm>
+#include "Color.h"
 
 class ResourceManager;
 
@@ -32,9 +33,9 @@ struct TextArgs
 	//テキスト
 	std::string Text = "";
 	//文字列の色
-	unsigned int MainColor = 0xffffff;
+	unsigned int MainColor = static_cast<unsigned int>(Color::kMainCharColor);
 	//文字列の縁色
-	unsigned int EdgeColor = 0x000000;
+	unsigned int EdgeColor = static_cast<unsigned int>(Color::kSubCharColor);
 	//透明度
 	unsigned int Alpha = 255;
 

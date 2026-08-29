@@ -631,8 +631,8 @@ void PlayerUI::SetUIVisible(const CharactorState& state, bool visible)
 
 void PlayerUI::IsEnableCameraControll(bool enable) const
 {
-	/*Camera::GetInstance().SetIsEnableMovement(enable);
-	Camera::GetInstance().SetIsEnableRotation(enable);*/
+	/*Camera::GetInstance().SetEnableMovement(enable);
+	Camera::GetInstance().SetEnableRotation(enable);*/
 }
 
 bool PlayerUI::IsCurrentState(CharactorState state) const

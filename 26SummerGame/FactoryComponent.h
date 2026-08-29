@@ -32,6 +32,9 @@ class FactoryComponent :
 	public Component
 {
 public:
+	
+	using ItemContainer = std::vector<std::pair<std::unique_ptr<ItemStack>, int>>;
+
 	FactoryComponent(std::weak_ptr<Object> parentObject);
 	virtual ~FactoryComponent();
 
@@ -58,6 +61,12 @@ public:
 	/// </summary>
 	virtual void UpdateUIPanel() {};
 
+	/// <summary>
+	/// アイテムのすべての所有権を引数で受け取った配列に移動する。
+	/// </summary>
+	/// <param name="result"></param>
+	virtual void GetAllItemOwnership(ItemContainer* result);
+
 	//SETTER
 
 	virtual void SetRotationAngle(Radian angle);
@@ -73,8 +82,6 @@ public:
 	bool GetIsPreviewMode()const {return m_isPreviewMode; }
 
 	Item GetItemType() const { return m_itemType; }
-
-	virtual std::unique_ptr<ItemStack> MakeItemStackFromThisComponent();
 
 	std::weak_ptr<ItemSlot> GetInputItemSlot() const { return m_inputSlot; }
 

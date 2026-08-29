@@ -21,6 +21,7 @@
 #include "InstallationMode.h"
 #include "DestroyMode.h"
 #include "StringUtil.h"
+#include "QuestManager.h"
 
 namespace
 {
@@ -29,11 +30,22 @@ namespace
 	const Vector kSkyDomePos = { 7900,0,7900 };
 }
 
+MainScene::MainScene():
+Scene(),
+m_mapManager(MapManager::GetInstance())
+{}
+
+MainScene::~MainScene() = default;
+
 void MainScene::Init()
 {
 	Scene::Init();
 
-	MapManager::GetInstance().Init();
+	QuestManager::GetInstance().Init();
+
+	m_mapManager.Init();
+	m_mapManager.GenerateMap();
+	m_mapManager.GenerateMapResource();
 
 	m_player = ObjectFactory::CreateObject(
 		Game::GridPosToWorldPos(kPlayerStartGridPos), "Player"
@@ -62,6 +74,8 @@ void MainScene::Update()
 {
 	Scene::Update();
 
+	QuestManager::GetInstance().Update();
+
 	const auto& player = m_player.lock();
 	if (!player) return;
 
@@ -69,19 +83,6 @@ void MainScene::Update()
 	{
 		player->SetPosition(Game::GridPosToWorldPos(kPlayerStartGridPos));
 	}
-
-
-	auto objectCount = GetSceneObjects().size();
-	Debug::Log("Object数: " + StringUtil::IntToString(objectCount));
-
-	auto colliderCount = m_sceneColliders.size();
-	Debug::Log("Collider数: " + StringUtil::IntToString(colliderCount));
-
-	auto shapeCount =  m_sceneShapes.size();
-	Debug::Log("Shape数: " + StringUtil::IntToString(shapeCount));
-
-	auto factoryCount = FactoryManager::GetInstance().GetFactoryComponentCount();
-	Debug::Log("Factory数: " + StringUtil::IntToString(factoryCount));
 
 }
 
@@ -92,7 +93,7 @@ void MainScene::Draw() const
 	if (m_stateManager.lock()->CheckCurrentState(CharactorState::INSTALLATION))
 		DrawGrid();
 
-	MapManager::GetInstance().Draw();
+	m_mapManager.Draw();
 }
 
 

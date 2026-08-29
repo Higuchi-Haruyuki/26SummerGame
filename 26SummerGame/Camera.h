@@ -16,18 +16,17 @@ public:
 	void Init() override;
 	void Update() override;
 
+	void SetPosition(const Vector& newPos) override;
+
 	float GetCameraYaw() const { return m_cameraYaw; }
 	float GetCameraPitch() const { return m_cameraPitch;}
 
-	void SetIsEnableMovement(bool b) { m_isEnableMovement = b; }
-	void SetIsEnableRotation(bool b) { m_isEnableRotation = b; }
-private:
-	//コピー禁止
-	Camera(const Camera&) = delete;
-	Camera& operator = (const Camera&) = delete;
-	//ムーブ禁止
-	Camera(Camera&&) = delete;
-	Camera& operator = (Camera&&) = delete;
+	void SetCameraPitch(float pitch);
+	void SetCameraYaw(float yaw);
+
+
+	void SetEnableMovement(bool b) { m_isEnableMovement = b; }
+	void SetEnableRotation(bool b) { m_isEnableRotation = b; }
 
 private:
 

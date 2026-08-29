@@ -32,6 +32,9 @@
 #include "ItemType.h"
 #include "ItemSlot.h"
 
+#include "AssemblingMachine.h"
+#include "ItemStackFactory.h"
+
 namespace
 {
 	//アイテムバーのアイテム数
@@ -60,16 +63,16 @@ void PlayerItem::Init()
 
 	m_inventory = std::make_shared<ItemSlot>(kInventoryWidthCount * kInventoryHeightCount);
 
-	m_itemSlot->AddItemStack(0, ItemStack::MakeItemStack<MiningMachine>("MiningMachine", Item::kMiningMachine, 100));
-	m_itemSlot->AddItemStack(1, ItemStack::MakeItemStack<BeltConveyor>("BeltConveyor", Item::kBeltconveyor, 100));
-	m_itemSlot->AddItemStack(2, ItemStack::MakeItemStack<Furnace>("Furnace", Item::kFurnace, 100));
-	m_itemSlot->AddItemStack(3, ItemStack::MakeItemStack<Inserter>("Inserter", Item::kInserter, 100));
-	m_itemSlot->AddItemStack(4, ItemStack::MakeItemStack(Item::kIronPlate, 30));
-	m_itemSlot->AddItemStack(5, ItemStack::MakeItemStack(Item::kCopperPlate, 50));
-	m_itemSlot->AddItemStack(6, ItemStack::MakeItemStack(Item::kIronOre, 100));
-	m_itemSlot->AddItemStack(7, ItemStack::MakeItemStack(Item::kRockOre, 100));
-	m_itemSlot->AddItemStack(8, ItemStack::MakeItemStack(Item::kCopperOre, 100));
-	m_itemSlot->AddItemStack(9, ItemStack::MakeItemStack(Item::kCoalOre, 50));
+	m_itemSlot->AddItemStack(0, ItemStackFactory::Make(Item::kMiningMachine,100));
+	m_itemSlot->AddItemStack(1, ItemStackFactory::Make(Item::kBeltconveyor, 100));
+	m_itemSlot->AddItemStack(2, ItemStackFactory::Make(Item::kFurnace, 100));
+	m_itemSlot->AddItemStack(3, ItemStackFactory::Make(Item::kInserter, 100));
+	m_itemSlot->AddItemStack(4, ItemStackFactory::Make(Item::kAssemblingMachine, 100));
+	m_itemSlot->AddItemStack(5, ItemStackFactory::Make(Item::kCopperPlate, 50));
+	m_itemSlot->AddItemStack(6, ItemStackFactory::Make(Item::kIronOre, 100));
+	m_itemSlot->AddItemStack(7, ItemStackFactory::Make(Item::kRockOre, 100));
+	m_itemSlot->AddItemStack(8, ItemStackFactory::Make(Item::kCopperOre, 100));
+	m_itemSlot->AddItemStack(9, ItemStackFactory::Make(Item::kCoalOre, 50));
 }
 
 void PlayerItem::Update()

@@ -41,7 +41,7 @@ namespace
 
 	const Vector kSize = { 200,200,200 };
 
-	constexpr unsigned int kColor = 0x696969;
+	constexpr unsigned int kColor = 0xb8b8b8;
 
 	constexpr int kMaxInputItemSlot = 1;
 	constexpr int kMaxOutputItemSlot = 1;
@@ -80,7 +80,7 @@ void MiningMachine::Init()
 	m_fuelSystem = AddComponent<FuelSystem>();
 
 	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape.lock());
-	square3D->SetUVScrollTexHandle(GraphicId::kMiningMachineTop);
+	square3D->SetUVScrollTexHandle(GraphicId::kMiningMachineIcon);
 	square3D->SetUVScrollOffset(1);
 
 	SetSizeAndColorAndMaxSlot(kSize, kColor, kMaxInputItemSlot, kMaxOutputItemSlot);
@@ -122,6 +122,13 @@ void MiningMachine::Update()
 	m_timer->ResetStartTime();
 }
 
+void MiningMachine::GetAllItemOwnership(FactoryComponent::ItemContainer* result)
+{
+	FactoryComponent::GetAllItemOwnership(result);
+
+	m_fuelSystem.lock()->GetAllItemOwnership(result);
+}
+
 void MiningMachine::UpdateUIPanel()
 {
 	const auto item = GetOutputItemStack(0);
@@ -155,20 +162,22 @@ void MiningMachine::UpdateUIPanel()
 
 }
 
-std::unique_ptr<ItemStack> MiningMachine::MakeItemStackFromThisComponent()
-{
-	return ItemStack::MakeItemStack<MiningMachine>(kObjectTag, kItemType, 1);
-}
-
 void MiningMachine::BuildUIPanel()
 {
 	m_itemUI = std::make_shared<UIItemBox>(m_uiPanel, kInputUIPos, kUISize);
 	m_itemUI->SetOnSelectItem(GetOutputItemSlot(), 0);
 	m_itemUI->SetOnMoveItem(GetOutputItemSlot(), 0);
 
+	m_itemUI->SetOnSelectHalfItem(GetOutputItemSlot(), 0);
+	m_itemUI->SetOnMoveHalfItem(GetOutputItemSlot(), 0);
+
 	m_fuelItemUI = std::make_shared<UIItemBox>(m_uiPanel, kFuelUIPos, kUISize);
 	m_fuelItemUI->SetEnableFilterItem(true);
 	m_fuelItemUI->SetFilterItem(kFuelItemType);
 	m_fuelItemUI->SetOnSelectItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 	m_fuelItemUI->SetOnMoveItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
+
+	m_fuelItemUI->SetOnSelectHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
+	m_fuelItemUI->SetOnMoveHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
+
 }

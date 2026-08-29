@@ -105,7 +105,11 @@ void Square3D::Draw() const {
 		// 矩形を2三角形のインデックスで表現
 		WORD idx[6] = { 0, 3, 1, 3, 2, 1 };
 
-		DrawPolygonIndexed3D(v, 4, idx, 2, m_uvScrollTexHandle, TRUE);
+		DrawTriangle3D(p1.ToVECTOR(), p2.ToVECTOR(), p3.ToVECTOR(), m_color, true);
+		DrawTriangle3D(p3.ToVECTOR(), p2.ToVECTOR(), p4.ToVECTOR(), m_color, true);
+
+		DrawPolygonIndexed3D(v, 4, idx, 2, m_uvScrollTexHandle, true);
+
 	}
 	else
 	{

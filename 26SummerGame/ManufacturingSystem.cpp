@@ -13,6 +13,7 @@
 #include "UIFactory.h"
 #include "ItemManager.h"
 #include "StringUtil.h"
+#include "Color.h"
 
 namespace
 {
@@ -20,12 +21,12 @@ namespace
 	//windowの定数
 	const Vector kWindowPos = { Game::kDisplaySize.m_x * 0.75f , Game::kDisplaySize.m_y * 0.5f };
 	const Vector kWindowSize = { 600,800,0 };
-	constexpr unsigned int kWindowColor = 0xd3d3d3;
+	constexpr unsigned int kWindowColor = static_cast<unsigned int>(Color::kMainColor);
 	constexpr int kWindowAlpha = 200;
 
 	//1レシピあたりの四角
 	const Vector kRecipeSize = { 580,100,0 };
-	constexpr unsigned int kRecipeColor = 0xffffff;
+	constexpr unsigned int kRecipeColor = static_cast<unsigned int>(Color::kDarkSubColor);
 	constexpr int kRecipeAlpha = 255;
 
 	//レシピ間のオフセット

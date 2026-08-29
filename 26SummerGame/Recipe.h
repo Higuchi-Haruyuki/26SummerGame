@@ -21,7 +21,7 @@ enum class RecipeType
 	kNone = 0,
 	kFurnace,
 	kPlayerCraft,
-	kCraftMachine
+	kAssemblingMachine
 
 };
 

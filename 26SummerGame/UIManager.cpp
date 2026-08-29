@@ -281,14 +281,15 @@ void UIManager::MouseLeftProcess(const Vector& nowPos,
 void UIManager::MouseRightProcess(const Vector& nowPos,
 	const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens)
 {
+	const auto& hitElement = FindHitElement(orderedScreens, nowPos);
+	if(hitElement)	hitElement->OnHoverUI();
+
 	//押した瞬間に最前面をキャプチャする。
 	if (m_pointer.IsRightButtonTrigger())
 	{
 		ResetRightDrag();
 		m_rightPressScreenPos = nowPos;
 		m_rightLastScreenPos = nowPos;
-
-		const auto& hitElement = FindHitElement(orderedScreens, nowPos);
 
 		if (hitElement)
 		{
@@ -318,8 +319,6 @@ void UIManager::MouseRightProcess(const Vector& nowPos,
 		{
 			if (m_isRightDragging)
 			{
-				const auto& hitElement = FindHitElement(orderedScreens, nowPos);
-
 				if (hitElement) hitElement->OnRightClickDrop(nowPos);
 
 				captured->OnRightClickDragEnd(nowPos);
@@ -331,7 +330,6 @@ void UIManager::MouseRightProcess(const Vector& nowPos,
 		}
 
 		ResetRightDrag();
-
 	}
 }
 

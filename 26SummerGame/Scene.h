@@ -10,6 +10,8 @@ class Collider;
 class Camera;
 class Object;
 class TileMap;
+class Camera;
+
 class Scene : public std::enable_shared_from_this<Scene>
 {
 public:
@@ -33,6 +35,10 @@ public:
 	std::vector<std::shared_ptr<Object>> GetSceneObjects() const { return m_sceneObjects; }
 	std::vector<std::shared_ptr<Shape>> GetSceneShapes()  const { return m_sceneShapes; }
 	std::vector<std::shared_ptr<Collider>> GetSceneColliders() const { return m_sceneColliders; }
+
+	//SETTER
+	void SetCameraControll(bool isEnable);
+
 
 	//ADD
 
@@ -143,6 +149,8 @@ protected:
 	std::vector<std::shared_ptr<Shape>> m_sceneShapes;
 	//そのシーン内に存在するすべてのColliderが格納されている配列
 	std::vector<std::shared_ptr<Collider>> m_sceneColliders;
+
+	std::weak_ptr<Camera> m_camera;
 
 private:
 

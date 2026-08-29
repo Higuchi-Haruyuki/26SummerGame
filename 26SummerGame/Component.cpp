@@ -25,6 +25,16 @@ Vector Component::GetPosition() const
 	return parent->GetPosition();
 }
 
+void Component::SetPosition(const Vector& newPos)
+{
+	const auto& parent = m_parentObject.lock();
+	if (!parent) {
+		assert(false && "親オブジェクトないです");
+		return;
+	}
+	return parent->SetPosition(newPos);
+}
+
 void Component::OnCollisionStay(const HitPoint& hitPoint, const std::weak_ptr<Object> object)
 {
 

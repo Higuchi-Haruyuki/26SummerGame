@@ -48,6 +48,15 @@ public:
 	// ポインタ(マウス)イベント群。
 	// 戻り値がtrueのとき「入力を消費した」ことを表し、それ以上他要素へ伝播させない。
 
+	virtual bool OnHoverUI()
+	{
+		m_onHoverUI.Invoke();
+		if (m_onHoverUI.GetListerCount())
+		{
+			return true;
+		}
+		return false;
+	}
 	/// <summary>
 	/// UI要素クリック時に呼ばれる。
 	/// </summary>
@@ -190,6 +199,11 @@ public:
 		m_onRightClickConnections.emplace_back(m_onRightClick.AddListener(onClick));
 	}
 
+	void SubscribeHover(const std::function<void()>& onClick)
+	{
+		m_onHoverUIConnections.emplace_back(m_onHoverUI.AddListener(onClick));
+	}
+
 	//GETTER
 	bool GetIsVisible() const { return m_isVisible; }
 	Vector GetPosition() const { return m_position; }
@@ -239,6 +253,9 @@ protected:
 
 	Event<> m_onRightClick;
 	std::vector<Event<>::Connection> m_onRightClickConnections;
+
+	Event<> m_onHoverUI;
+	std::vector<Event<>::Connection> m_onHoverUIConnections;
 
 protected:
 	/// <summary>

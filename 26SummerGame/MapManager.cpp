@@ -26,9 +26,8 @@ MapManager& MapManager::GetInstance()
 void MapManager::Init()
 {
 	m_resourceGenerator = std::make_unique<ResourceGenerator>();
-	m_map = std::make_unique<Map>();
-
-	GenerateMap();
+	m_gridResources = {};
+	m_gridResources.reserve(Game::kChankSize * Game::kChankSize);
 }
 
 
@@ -76,15 +75,13 @@ Item MapManager::GetResourceAtGridPos(const VectorInt& gridPos)
 
 void MapManager::GenerateMap()
 {
-	std::array<Chunk, kChunkCount> map = {};
-
 	//チャンク単位での生成ループ
-	for (int i = 0; i < kChunkCount; i++)
+	for (int i = 0; i < Map::kChunkCount; i++)
 	{
 		//ロープ変数から地面のオブジェクトを置く座標を取得する。
 		//取得した座標にオブジェクトを置く。
 		int chunkX = 0, chunkZ = 0;
-		m_map->ToChunkPos(i, &chunkX, &chunkZ);
+		Map::ToChunkPos(i, &chunkX, &chunkZ);
 
 		auto worldPos = Game::GridPosToWorldPos(Game::ChankPosToGridPos({chunkX,0,chunkZ}));
 		float chankSize = Game::kChankSize * Game::kGridSize;
@@ -99,13 +96,25 @@ void MapManager::GenerateMap()
 		);
 
 		//このチャンクにランダムで資源を設定する。
-		map[i] = m_resourceGenerator->GenerateChunk({chunkX,0,chunkZ},&m_gridResources);
+		m_resourceGenerator->GenerateChunk({chunkX,0,chunkZ},&m_gridResources);
 
 	}
-	
-	//マップに設定する。
-	m_map->SetMap(map);
+}
 
+void MapManager::GenerateMapResource()
+{
+	//チャンク単位での生成ループ
+	for (int i = 0; i < Map::kChunkCount; i++)
+	{
+		//ロープ変数から地面のオブジェクトを置く座標を取得する。
+		//取得した座標にオブジェクトを置く。
+		int chunkX = 0, chunkZ = 0;
+		Map::ToChunkPos(i, &chunkX, &chunkZ);
+
+		//このチャンクにランダムで資源を設定する。
+		m_resourceGenerator->GenerateChunk({ chunkX,0,chunkZ }, &m_gridResources);
+
+	}
 }
 
 void MapManager::CreateStageObject(const Vector& pos, const Vector& siz, unsigned int col)

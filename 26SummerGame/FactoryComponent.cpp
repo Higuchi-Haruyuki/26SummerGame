@@ -97,6 +97,31 @@ std::shared_ptr<UIPanel> FactoryComponent::GetOrBuildUIPanel()
 	return m_uiPanel;
 }
 
+void FactoryComponent::GetAllItemOwnership(ItemContainer* result)
+{
+	const auto& inputItemSlot = GetInputItemSlot().lock();
+
+	if (!inputItemSlot) return;
+
+	for (int i = 0; i < inputItemSlot->GetSlotCount(); i++)
+	{
+		auto item = inputItemSlot->GetItemOwnership(i);
+		if (!item) continue;
+		auto itemCount = item->GetItemCount();
+		result->push_back(std::make_pair(std::move(item), itemCount));
+	}
+
+	const auto& outputItemSlot = GetOutputItemSlot().lock();
+
+	for (int i = 0; i < outputItemSlot->GetSlotCount(); i++)
+	{
+		auto item = outputItemSlot->GetItemOwnership(i);
+		if (!item) continue;
+		auto itemCount = item->GetItemCount();
+		result->push_back(std::make_pair(std::move(item), itemCount));
+	}
+}
+
 void FactoryComponent::SetRotationAngle(Radian angle)
 {
 	m_shape.lock()->SetRotationAngle(-angle);
@@ -108,11 +133,6 @@ void FactoryComponent::SetIsPreviewMode(bool b,int alpha)
 	//m_collider.lock()->IsEnable(!b);
 	m_shape.lock()->SetAlpha(alpha);
 	m_isPreviewMode = true;
-}
-
-std::unique_ptr<ItemStack> FactoryComponent::MakeItemStackFromThisComponent()
-{
-	return nullptr;
 }
 
 ItemStack* FactoryComponent::GetInputItemStack(int index) const

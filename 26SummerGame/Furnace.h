@@ -23,9 +23,13 @@ public:
     void Init() override;
     void Update() override;
 
-    void UpdateUIPanel() override;
+    /// <summary>
+    /// アイテムのすべての所有権を引数で受け取った配列に移動する。
+    /// </summary>
+    /// <param name="result"></param>
+    void GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result) override;
 
-    std::unique_ptr<ItemStack> MakeItemStackFromThisComponent() override;
+    void UpdateUIPanel() override;
 
 protected:
 

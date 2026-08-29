@@ -28,6 +28,8 @@ public:
 
 	Vector GetPosition() const;
 
+	virtual void SetPosition(const Vector& newPos);
+
 	/// <summary>
 	/// 指定した型のコンポーネントを検索し、見つかった場合は共有ポインタとして返す。
 	/// </summary>

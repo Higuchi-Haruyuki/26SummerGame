@@ -13,6 +13,7 @@
 #include "vector.h"
 #include <algorithm>
 #include "ItemSlot.h"
+#include "ItemStackFactory.h"
 
 	DestroyMode::DestroyMode(std::shared_ptr<Object> parentObject):
 		Component(parentObject),
@@ -76,27 +77,19 @@
 		if (!safePlayerItem) return;
 
 		//アイテムバーに追加
-		safePlayerItem->AddItem(factoryCom->MakeItemStackFromThisComponent(), 1);
+		const auto itemType = factoryCom->GetItemType();
 
-		const auto& inputItemSlot = factoryCom->GetInputItemSlot().lock();
+		safePlayerItem->AddItem(ItemStackFactory::Make(itemType,1), 1);
 
-		if (!inputItemSlot) return;
+		//格納用配列の宣言と初期化
+		std::vector<std::pair<std::unique_ptr<ItemStack>, int>> allItem = {};
+		
+		//工業オブジェクトからすべてのアイテムの所有権を取得
+		factoryCom->GetAllItemOwnership(&allItem);
 
-		for (int i = 0; i < inputItemSlot->GetSlotCount(); i++)
+		//プレイヤーにアイテムを移動する
+		for (auto& [item,itemCount] : allItem)
 		{
-			auto item = inputItemSlot->GetItemOwnership(i);
-			if (!item) continue;
-			auto itemCount = item->GetItemCount();
-			safePlayerItem->AddItem(std::move(item), itemCount);
-		}
-
-		const auto& outputItemSlot = factoryCom->GetOutputItemSlot().lock();
-
-		for (int i = 0; i < outputItemSlot->GetSlotCount(); i++)
-		{
-			auto item = outputItemSlot->GetItemOwnership(i);
-			if (!item) continue;
-			auto itemCount = item->GetItemCount();
 			safePlayerItem->AddItem(std::move(item), itemCount);
 		}
 

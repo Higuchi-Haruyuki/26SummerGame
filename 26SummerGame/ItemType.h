@@ -13,5 +13,7 @@ enum class Item
 	kBeltconveyor,
 	kInserter,
 	kFurnace,
+	kRockChest,
+	kAssemblingMachine,
 	kItemTypeCount
 };

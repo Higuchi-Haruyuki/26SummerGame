@@ -102,6 +102,25 @@ void Camera::Update() {
 	));
 }
 
+void Camera::SetPosition(const Vector& newPos)
+{
+	Component::SetPosition(newPos);
+	m_targetPos = newPos;
+}
+
+void Camera::SetCameraPitch(float pitch)
+{
+	auto afterPitch = std::clamp(pitch, kMinPitch, kMaxPitch);
+	m_targetCameraPitch = afterPitch;
+	m_cameraPitch = afterPitch;
+}
+
+void Camera::SetCameraYaw(float yaw)
+{
+	m_targetCameraYaw = yaw;
+	m_cameraYaw = yaw;
+}
+
 void Camera::UpdateZoom()
 {
 	m_zoomOffset = 0.0f;

@@ -39,7 +39,8 @@ namespace ItemTable
 		{Item::kBeltconveyor,ItemType::kNormal,"beltconveyor","ベルトコンベア",GraphicId::kBeltconveyorIcon,ModelId::kBeltConveyor},
 		{Item::kInserter,ItemType::kNormal,"inserter","インサータ",GraphicId::kInserterIcon,ModelId::kNone},
 		{Item::kFurnace,ItemType::kNormal,"furnace","溶鉱炉",GraphicId::kFurnaceIcon,ModelId::kNone},
-		
+		{Item::kRockChest,ItemType::kNormal,"rock_chest","鉄製チェスト",GraphicId::kRockChestIcon,ModelId::kNone},
+		{Item::kAssemblingMachine,ItemType::kNormal,"assemblingMachine","組立機",GraphicId::kAssemblingMachineIcon,ModelId::kNone},
 		}};
 
 	static_assert(kItemTypeTable.size() == static_cast<size_t>(Item::kItemTypeCount),

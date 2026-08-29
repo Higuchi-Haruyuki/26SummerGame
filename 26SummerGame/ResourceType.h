@@ -26,6 +26,8 @@ enum class GraphicId
 	kFurnaceIcon,
 	kMiningMachineIcon,
 	kInserterIcon,
+	kRockChestIcon,
+	kAssemblingMachineIcon,
 
 	kFurnaceTop,
 	kMiningMachineTop,

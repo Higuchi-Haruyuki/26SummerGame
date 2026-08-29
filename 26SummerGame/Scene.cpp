@@ -14,10 +14,11 @@
 #include "Game.h"
 #include "SquareCollider3D.h"
 #include "FactoryManager.h"
-#include "QuestManager.h"
 #include "vector.h"
 #include "Camera.h"
 #include "ObjectFactory.h"
+#include "StringUtil.h"
+
 namespace
 {
 	constexpr int kGridNum = 159;
@@ -26,16 +27,12 @@ void Scene::Init()
 {
 	//カメラの初期化処理
 	const auto& camera = ObjectFactory::CreateObject().lock();
-	camera->AddComponent<Camera>();
-
-	QuestManager::GetInstance().Init();
+	m_camera = camera->AddComponent<Camera>();
 
 }
 void Scene::Update()
 {
 	Debug::Log(std::format("FPS: {}", GetFPS()));
-
-	QuestManager::GetInstance().Update();
 
 	if (m_sceneObjects.size() == 0) return;
 
@@ -45,6 +42,20 @@ void Scene::Update()
 		if (IsRemoveReserved(object)) continue;
 		object->Update();
 	}
+
+
+	auto objectCount = GetSceneObjects().size();
+	Debug::Log("Object数: " + StringUtil::IntToString(objectCount));
+
+	auto colliderCount = m_sceneColliders.size();
+	Debug::Log("Collider数: " + StringUtil::IntToString(colliderCount));
+
+	auto shapeCount = m_sceneShapes.size();
+	Debug::Log("Shape数: " + StringUtil::IntToString(shapeCount));
+
+	auto factoryCount = FactoryManager::GetInstance().GetFactoryComponentCount();
+	Debug::Log("Factory数: " + StringUtil::IntToString(factoryCount));
+
 }
 void Scene::LateUpdate()
 {
@@ -87,6 +98,14 @@ void Scene::Finalize()
 	m_sceneColliders.clear();
 	m_sceneShapes.clear();
 	m_sceneObjects.clear();
+}
+
+void Scene::SetCameraControll(bool isEnable)
+{
+	const auto& safeCamera = m_camera.lock();
+	if (!safeCamera) return;
+	safeCamera->SetEnableMovement(isEnable);
+	safeCamera->SetEnableRotation(isEnable);
 }
 
 void Scene::AddToSceneObjectsFromReserved()

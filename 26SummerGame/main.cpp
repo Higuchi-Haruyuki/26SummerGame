@@ -60,11 +60,12 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 
 		//Update処理
 		PlayerInput::GetInstance().Update(1);
-		//UIの更新処理
-		uiManager.Update(1);
 
 		//シーンの更新処理
 		sceneManager.GetCurrentScene()->Update();
+
+		//UIの更新処理
+		uiManager.Update(1);
 
 		//update後の処理
 		PlayerInput::GetInstance().LateUpdate();

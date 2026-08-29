@@ -32,10 +32,7 @@ PlayerController::PlayerController(std::weak_ptr<Object> parentObject)
 	: Component(parentObject), m_playerInput(PlayerInput::GetInstance())
 {}
 
-PlayerController::~PlayerController()
-{
-
-}
+PlayerController::~PlayerController() = default;
 
 void PlayerController::Init()
 {

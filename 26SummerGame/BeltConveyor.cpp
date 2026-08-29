@@ -127,11 +127,6 @@ void BeltConveyor::UpdateUIPanel()
 
 }
 
-std::unique_ptr<ItemStack> BeltConveyor::MakeItemStackFromThisComponent()
-{
-	return ItemStack::MakeItemStack<BeltConveyor>(kObjectTag, kItemType, 1);
-}
-
 Radian BeltConveyor::GetRotationAngle() const
 {
 	const auto& safeTransport = m_transport.lock();

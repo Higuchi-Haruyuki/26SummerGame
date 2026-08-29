@@ -8,7 +8,6 @@
 class ResourceGenerator;
 enum class Item;
 class VectorInt;
-class Map;
 struct GridResource;
 
 
@@ -29,7 +28,18 @@ public:
 	/// <returns></returns>
 	Item GetResourceAtGridPos(const VectorInt& gridPos);
 
+	/// <summary>
+	/// マップを生成する。
+	/// </summary>
+	void GenerateMap();
+
+	/// <summary>
+	/// 資源を配置する。
+	/// </summary>
+	void GenerateMapResource();
+
 private:
+
 	MapManager() = default;
 	~MapManager() = default;
 
@@ -39,12 +49,6 @@ private:
 	// ムーブ禁止
 	MapManager(MapManager&&) = delete;
 	MapManager& operator=(MapManager&&) = delete;
-
-
-	/// <summary>
-	/// 指定したチャンク座標にチャンクを作成する。
-	/// </summary>
-	void GenerateMap();
 
 	/// <summary>
 /// ステージオブジェクトを作る関数
@@ -57,7 +61,6 @@ private:
 private:
 
 	std::unique_ptr<ResourceGenerator> m_resourceGenerator;
-	std::unique_ptr<Map> m_map;
 
 	//リソースが配置されたグリッドを保存する。
 	std::vector<GridResource> m_gridResources;

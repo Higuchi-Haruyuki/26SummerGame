@@ -44,8 +44,6 @@ public:
 
     void UpdateUIPanel() override;
 
-    std::unique_ptr<ItemStack> MakeItemStackFromThisComponent() override;
-
     //SETTER
     void SetRotationAngle(Radian angle) override;
 

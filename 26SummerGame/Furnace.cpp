@@ -32,9 +32,6 @@
 
 namespace
 {
-	//オブジェクトのタグ
-	const std::string kObjectTag = "Furnace";
-
 	//アイテムの名前
 	const Item kItemType = Item::kFurnace;
 
@@ -55,9 +52,6 @@ namespace
 
 	//UIの透明度
 	constexpr int kUIAlpha = 180;
-
-	//UI要素の名前
-	const std::string kItemBarUIName = "furnaceUI";
 
 	const Vector kInputUIPos = { Game::kDisplaySize.m_x / 3 , Game::kDisplaySize.m_y / 2  };
 
@@ -80,9 +74,6 @@ void Furnace::Init()
 	m_shape = GetComponent<Square3D>();
 	if (!m_shape.lock())
 		m_shape = AddComponent<Square3D>();
-	//m_collider = GetComponent<SquareCollider3D>();
-	//if (!m_collider.lock())
-	//	m_collider = AddComponent<SquareCollider3D>();
 
 	m_fuelSystem = AddComponent<FuelSystem>();
 
@@ -91,7 +82,7 @@ void Furnace::Init()
 	m_manufacturingSystem.lock()->SetAllowRecipeType(RecipeType::kFurnace);
 
 	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape.lock());
-	square3D->SetUVScrollTexHandle(GraphicId::kFurnaceTop);
+	square3D->SetUVScrollTexHandle(GraphicId::kFurnaceIcon);
 	square3D->SetUVScrollOffset(1);
 
 	SetSizeAndColorAndMaxSlot(kSize, kColor, kMaxInputItemSlot, kMaxOutputItemSlot);
@@ -131,6 +122,14 @@ void Furnace::Update()
 	if(result) m_fuelSystem.lock()->UseFuel();
 
 	m_timer->ResetStartTime();
+}
+
+void Furnace::GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result)
+{
+	FactoryComponent::GetAllItemOwnership(result);
+
+	m_fuelSystem.lock()->GetAllItemOwnership(result);
+
 }
 
 void Furnace::UpdateUIPanel()
@@ -178,20 +177,19 @@ void Furnace::UpdateUIPanel()
 
 }
 
-std::unique_ptr<ItemStack> Furnace::MakeItemStackFromThisComponent()
-{
-	return  ItemStack::MakeItemStack<Furnace>(kObjectTag, kItemType, 1);
-	//return nullptr;
-}
-
 void Furnace::BuildUIPanel()
 {
 	m_inputItemUI = std::make_shared<UIItemBox>(m_uiPanel, kInputUIPos, kUISize);
 	m_inputItemUI->SetOnSelectItem(GetInputItemSlot(), 0);
 	m_inputItemUI->SetOnMoveItem(GetInputItemSlot(), 0);
 
+	m_inputItemUI->SetOnSelectHalfItem(GetInputItemSlot(), 0);
+	m_inputItemUI->SetOnMoveHalfItem(GetInputItemSlot(), 0);
+
 	m_outputItemUI = std::make_shared<UIItemBox>(m_uiPanel, kOutputUIPos, kUISize);
 	m_outputItemUI->SetOnSelectItem(GetOutputItemSlot(), 0);
+
+	m_outputItemUI->SetOnSelectHalfItem(GetOutputItemSlot(), 0);
 
 	m_fuelItemUI = std::make_shared<UIItemBox>(m_uiPanel, kFuelUIPos, kUISize);
 	m_fuelItemUI->SetEnableFilterItem(true);
@@ -199,4 +197,6 @@ void Furnace::BuildUIPanel()
 	m_fuelItemUI->SetOnSelectItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 	m_fuelItemUI->SetOnMoveItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 
+	m_fuelItemUI->SetOnSelectHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
+	m_fuelItemUI->SetOnMoveHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 }

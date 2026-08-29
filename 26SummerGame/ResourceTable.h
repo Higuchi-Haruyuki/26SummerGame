@@ -49,6 +49,8 @@ namespace ResourceTable
 		{ GraphicId::kFurnaceIcon,      ResourceName::kFurnaceGraph.c_str() },
 		{ GraphicId::kMiningMachineIcon,ResourceName::kMiningMachineGraph.c_str() },
 		{ GraphicId::kInserterIcon, "image/icon/inserter.png"},
+		{ GraphicId::kRockChestIcon,"image/icon/rock_chest.png"},
+		{ GraphicId::kAssemblingMachineIcon, "image/icon/assemblingMachine.png"},
 
 		{ GraphicId::kInserterTop, ResourceName::kInserterTop.c_str() },
 		{ GraphicId::kFurnaceTop,      ResourceName::kFurnaceTop.c_str() },

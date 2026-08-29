@@ -11,15 +11,13 @@
 
 namespace
 {
-	//オブジェクトにつけるタグ
-	const std::string kObjectTag = "Inserter";
 
 	//アイテムの名前
 	const Item kItemType = Item::kInserter;
 
 	const Vector kSize = { 200,100,100 };
 
-	constexpr unsigned int kColor = 0xFFA500;
+	constexpr unsigned int kColor = 0xfde8aa;
 
 	constexpr int kMaxInputItemSlot = 1;
 
@@ -50,7 +48,7 @@ void Inserter::Init()
 	m_transport = AddComponent<TransportSystem>();
 
 	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape.lock());
-	square3D->SetUVScrollTexHandle(GraphicId::kInserterTop);
+	square3D->SetUVScrollTexHandle(GraphicId::kInserterIcon);
 	square3D->SetUVScrollOffset(1);
 
 	SetSizeAndColorAndMaxSlot(kSize, kColor, kMaxInputItemSlot, kMaxOutputItemSlot);

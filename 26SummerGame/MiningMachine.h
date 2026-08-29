@@ -18,9 +18,9 @@ public:
     void Init() override;
     void Update() override;
 
-    void UpdateUIPanel() override;
+    void GetAllItemOwnership(FactoryComponent::ItemContainer* result) override;
 
-    std::unique_ptr<ItemStack> MakeItemStackFromThisComponent() override;
+    void UpdateUIPanel() override;
 
 protected:
 

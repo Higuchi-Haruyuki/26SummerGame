@@ -316,10 +316,12 @@ void PlayerCraft::UpdateUIPanel()
 		if (CanAddCraftQueue(recipeName))
 		{
 			ui.lock()->SetColor(kRecipeEnableColor);
+			ui.lock()->SetAlpha(255);
 		}
 		else
 		{
 			ui.lock()->SetColor(kRecipeDisableColor);
+			ui.lock()->SetAlpha(100);
 		}
 
 	}
