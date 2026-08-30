@@ -124,6 +124,16 @@ void Furnace::Update()
 	m_timer->ResetStartTime();
 }
 
+bool Furnace::TryInsert(ItemStack* item, int count)
+{
+	if (item->GetItemType() == kFuelItemType)
+	{
+		const auto fuelSlot = m_fuelSystem.lock()->GetFuelSlot().lock();
+		return FactoryComponent::TryInsert(fuelSlot.get(), item, count);
+	}
+	return FactoryComponent::TryInsert(m_inputSlot.get(), item, count);
+}
+
 void Furnace::GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result)
 {
 	FactoryComponent::GetAllItemOwnership(result);

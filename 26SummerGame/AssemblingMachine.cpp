@@ -40,7 +40,7 @@ namespace
 
 	constexpr unsigned int kColor = 0xd3d3d3;
 
-	constexpr int kMaxInputItemSlot = 1;
+	constexpr int kMaxInputItemSlot = 2;
 	constexpr int kMaxOutputItemSlot = 1;
 
 	//一秒間当たりどのくらいのアイテムを処理するか
@@ -54,7 +54,11 @@ namespace
 	//UIの透明度
 	constexpr int kUIAlpha = 180;
 
-	const Vector kInputUIPos = { Game::kDisplaySize.m_x / 3 , Game::kDisplaySize.m_y / 2 };
+	const Vector kInputUIStartPos = { Game::kDisplaySize.m_x / 3 , Game::kDisplaySize.m_y / 2 };
+
+	const Vector kInputUIOffset = { Game::kDisplaySize.m_x / 20 };
+
+	constexpr int kInputUICount = 2;
 
 	const Vector kOutputUIPos = { Game::kDisplaySize.m_x / 3 * 2, Game::kDisplaySize.m_y / 2 };
 
@@ -113,7 +117,6 @@ void AssemblingMachine::Update()
 	if (!m_timer->IsTimeOver())
 	{
 		//アイテムスタックからアイテムタイプを取得する。
-		m_manufacturingSystem.lock()->SetRecipe(m_inputSlot.get());
 		return;
 	}
 
@@ -133,25 +136,48 @@ void AssemblingMachine::GetAllItemOwnership(FactoryComponent::ItemContainer* res
 
 void AssemblingMachine::UpdateUIPanel()
 {
-	const auto input = GetInputItemStack(0);
+	const auto recipe = m_manufacturingSystem.lock()->GetCurrentRecipe().lock();
 
-	if (input)
+	for (int i = 0; i < m_inputUIs.size(); i++)
 	{
-		m_inputItemUI->SetGraphicID(input->GetItemIconGraphicID());
-		m_inputItemUI->SetText("x{}", input->GetItemCount());
-	}
-	else
-	{
-		m_inputItemUI->SetGraphicID(GraphicId::kNone);
-		m_inputItemUI->SetText("");
+		const auto input = GetInputItemStack(i);
+
+		if (input)
+		{
+			m_inputUIs.at(i)->SetGraphicID(input->GetItemIconGraphicID());
+			m_inputUIs.at(i)->SetText("x{}", input->GetItemCount());
+			m_inputUIs.at(i)->SetImageAlpha(255);
+		}
+		else if (recipe && i < recipe->GetRecipeInput().size())
+		{
+			auto currentRecipe = recipe->GetRecipeInput().at(i);
+			auto graphicId = ItemTable::GetGraphicID(currentRecipe.first);
+			m_inputUIs.at(i)->SetGraphicID(graphicId);
+			m_inputUIs.at(i)->SetText("");
+			m_inputUIs.at(i)->SetImageAlpha(50);
+		}
+		else
+		{
+			m_inputUIs.at(i)->SetGraphicID(GraphicId::kNone);
+			m_inputUIs.at(i)->SetText("");
+		}
+
 	}
 
 	const auto output = GetOutputItemStack(0);
-
 	if (output)
 	{
 		m_outputItemUI->SetGraphicID(output->GetItemIconGraphicID());
 		m_outputItemUI->SetText("x{}", output->GetItemCount());
+		m_outputItemUI->SetImageAlpha(255);
+	}
+	else if (recipe)
+	{
+		auto currentRecipe = recipe->GetRecipeOutput().at(0);
+		auto graphicId = ItemTable::GetGraphicID(currentRecipe.first);
+		m_outputItemUI->SetGraphicID(graphicId);
+		m_outputItemUI->SetText("");
+		m_outputItemUI->SetImageAlpha(50);
 	}
 	else
 	{
@@ -175,14 +201,33 @@ void AssemblingMachine::UpdateUIPanel()
 	}
 }
 
+bool AssemblingMachine::TryInsert(ItemStack* item, int count)
+{
+	if (item->GetItemType() == kFuelItemType)
+	{
+		const auto fuelSlot = m_fuelSystem.lock()->GetFuelSlot().lock();
+		return FactoryComponent::TryInsert(fuelSlot.get(), item, count);
+	}
+	return FactoryComponent::TryInsert(m_inputSlot.get(), item, count);
+}
+
 void AssemblingMachine::BuildUIPanel()
 {
-	m_inputItemUI = std::make_shared<UIItemBox>(m_uiPanel, kInputUIPos, kUISize);
-	m_inputItemUI->SetOnSelectItem(GetInputItemSlot(), 0);
-	m_inputItemUI->SetOnMoveItem(GetInputItemSlot(), 0);
+	auto pos = kInputUIStartPos;
 
-	m_inputItemUI->SetOnSelectHalfItem(GetInputItemSlot(), 0);
-	m_inputItemUI->SetOnMoveHalfItem(GetInputItemSlot(), 0);
+	for (int i = 0; i < kInputUICount; i++)
+	{
+		const auto& inputUI = std::make_shared<UIItemBox>(m_uiPanel, pos, kUISize);
+		inputUI->SetOnSelectItem(GetInputItemSlot(), i);
+		inputUI->SetOnMoveItem(GetInputItemSlot(), i);
+
+		inputUI->SetOnSelectHalfItem(GetInputItemSlot(), i);
+		inputUI->SetOnMoveHalfItem(GetInputItemSlot(), i);
+		
+		m_inputUIs.push_back(inputUI);
+
+		pos += Vector{ kUISize.m_x * 0.5f } + kInputUIOffset;
+	}
 
 	m_outputItemUI = std::make_shared<UIItemBox>(m_uiPanel, kOutputUIPos, kUISize);
 	m_outputItemUI->SetOnSelectItem(GetOutputItemSlot(), 0);

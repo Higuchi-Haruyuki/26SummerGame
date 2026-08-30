@@ -111,7 +111,7 @@ void MiningMachine::Update()
 	auto myGridPos = GetParentObject().lock()->GetGridPosition();
 	Item resource = m_mapManager.GetResourceAtGridPos(myGridPos);
 
-	bool result = TryInsert(m_outputSlot.get(), std::make_unique<ItemStack>(resource, 1));
+	bool result = FactoryComponent::TryInsert(m_outputSlot.get(), std::make_unique<ItemStack>(resource, 1));
 
 	if (result) 
 	{
@@ -120,6 +120,16 @@ void MiningMachine::Update()
 	}
 
 	m_timer->ResetStartTime();
+}
+
+bool MiningMachine::TryInsert(ItemStack* item, int count)
+{
+	if (item->GetItemType() == kFuelItemType)
+	{
+		const auto fuelSlot = m_fuelSystem.lock()->GetFuelSlot().lock();
+		return FactoryComponent::TryInsert(fuelSlot.get(), item, count);
+	}
+	return false;
 }
 
 void MiningMachine::GetAllItemOwnership(FactoryComponent::ItemContainer* result)

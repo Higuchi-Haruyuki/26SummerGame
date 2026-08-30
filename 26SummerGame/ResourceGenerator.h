@@ -43,7 +43,7 @@ public:
 	const std::unordered_map<Item, ResourceSetting>& GetResourceSettingMap() const ; 
 
 
-	const ResourceSetting& GetResourceSetting(const Item& mapResource) const; 
+	ResourceSetting GetResourceSetting(const Item& mapResource) const; 
 
 
 	/// <summary>

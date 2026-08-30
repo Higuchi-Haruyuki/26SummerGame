@@ -2,6 +2,7 @@
 #include <memory>
 #include "vector.h"
 #include "Event.h"
+#include "Timer.h"
 
 class PlayerInput;
 
@@ -14,7 +15,7 @@ public:
 
 	virtual ~Base_UIElement() = default;
 
-	virtual void Update(float deltaTime) {}
+	virtual void Update(float deltaTime) { m_timer.IsTimeOver(); }
 
 	virtual void Draw() const {}
 
@@ -34,13 +35,6 @@ public:
 		bool isInBottom = screenPos.m_y <= Bottom();
 
 		bool isInUIMouseCursor = isInLeft && isInRight && isInTop && isInBottom;
-
-#if _DEBUG 
-	#if false
-		DrawBox(Left(), Top(), Right(), Bottom(), 0xff0000, false);
-	#endif // true or false
-#endif // _DEBUG
-
 
 		return isInUIMouseCursor;
 	}
@@ -168,7 +162,7 @@ public:
 	/// <summary>
 	/// ドラッグ中に呼び出される
 	/// </summary>
-	/// <param name="onClick"></param>
+	/// <param name="onFinished"></param>
 	void SubscribeOnDrag(const std::function<void(const Vector& screenPos)>& onDrag)
 	{
 		m_onDragConnections.emplace_back(m_onDrag.AddListener(onDrag));
@@ -204,6 +198,14 @@ public:
 		m_onHoverUIConnections.emplace_back(m_onHoverUI.AddListener(onClick));
 	}
 
+	void SubscribeOnTimerFinished(const std::function<void()>& onFinished)
+	{
+		m_timer.SubscribeOnFinished(onFinished);
+	}
+
+	//
+	void ResetTimer() { m_timer.ResetStartTime(); }
+
 	//GETTER
 	bool GetIsVisible() const { return m_isVisible; }
 	Vector GetPosition() const { return m_position; }
@@ -215,6 +217,7 @@ public:
 	void SetPosition(const Vector& position) { m_position = position; }
 	void SetSize(const Vector& size) { m_size = size; }
 	void SetIsHitTarget(bool isHitTarget) { m_isHitTarget = isHitTarget; }
+	void SetTimerDuration(Second duration) { m_timer.SetDuration(duration); }
 
 protected:
 	float Left() const { return m_position.m_x - m_size.m_x * 0.5f; }
@@ -277,5 +280,7 @@ protected:
 	/// falseのときHitTestが対象外になる
 	/// </summary>
 	bool m_isHitTarget = true;
+
+	Timer m_timer = {0};
 };
 

@@ -17,6 +17,7 @@ enum class TextPivot
 	CenterTop,
 	RightBottom,
 	RightCenter,
+	LeftCenter,
 };
 
 /// <summary>
@@ -85,6 +86,8 @@ private:
 	void DrawRightBottom(int x, int y, int handle) const;
 
 	void DrawRightCenter(int x, int y, int handle) const;
+
+	void DrawLeftCenter(int x, int y, int handle) const;
 private:
 
 	ResourceManager& m_resourceManager;

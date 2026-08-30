@@ -11,6 +11,7 @@ class FactoryManager;
 class ItemManager;
 class ItemSlot;
 class UIPanel;
+class UISquare;
 class UIItemBox;
 
 /// <summary>
@@ -29,6 +30,11 @@ public:
 
     std::shared_ptr<UIPanel> GetOrBuidUIPanel();
 
+    std::weak_ptr<Recipe> GetCurrentRecipe() const
+    {
+        return m_currentRecipe;
+    }
+
     /// <summary>
     /// 引数のアイテムの配列からレシピを設定する。
     /// </summary>
@@ -41,7 +47,19 @@ public:
 
 private:
 
-    int CalcNeedItemCount(const ItemSlot* items) const;
+    /// <summary>
+    /// レシピが必要とするアイテムがアイテムスロットに入っているか
+    /// </summary>
+    /// <param name="recipe"></param>
+    /// <param name="itemSlot"></param>
+    /// <returns></returns>
+    bool HasRequiedItem(std::shared_ptr<Recipe> recipe, const ItemSlot* itemSlot) const;
+
+    bool CanStoreOutput(std::shared_ptr<Recipe> recipe, const ItemSlot* outputSlot) const;
+
+    void ConsumeRequiredItems(std::shared_ptr<Recipe> recipe,ItemSlot* itemSlot);
+
+    void StoreOutput(std::shared_ptr<Recipe> recipe, ItemSlot* outputSlot);
 
     void BuildUIPanel();
 
@@ -61,6 +79,8 @@ private:
 
     //レシピ設定用のパネル
     std::shared_ptr<UIPanel> m_uiPanel;
+
+    std::unordered_map<RecipeName, std::weak_ptr<UISquare>> m_recipeSquares;
 
     std::unordered_map<RecipeName, std::shared_ptr<Recipe>> m_recipeList;
 

@@ -18,6 +18,8 @@ public:
     void Init() override;
     void Update() override;
 
+    bool TryInsert(ItemStack* item, int count) override;
+
     void GetAllItemOwnership(FactoryComponent::ItemContainer* result) override;
 
     void UpdateUIPanel() override;

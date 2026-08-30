@@ -55,20 +55,20 @@ void FactoryComponent::Update()
 	Component::Update();
 
 #if false
-	if (auto item = GetInputItemStack(0))
+	if (auto toItem = GetInputItemStack(0))
 	{
 		Debug::Log(std::format("tag: {}, type: {}, count: {}",
 			GetParentObject()->GetTag(),
-			ItemTable::ItemTypeToDisplayName(item->GetItemType()),
-			item->GetItemCount()));
+			ItemTable::ItemTypeToDisplayName(toItem->GetItemType()),
+			toItem->GetItemCount()));
 	}
 
-	if (auto item = GetOutputItemStack(0))
+	if (auto toItem = GetOutputItemStack(0))
 	{
 		Debug::Log(std::format("tag: {}, type: {}, count: {}",
 			GetParentObject()->GetTag(),
-			ItemTable::ItemTypeToDisplayName(item->GetItemType()),
-			item->GetItemCount()));
+			ItemTable::ItemTypeToDisplayName(toItem->GetItemType()),
+			toItem->GetItemCount()));
 	}
 #endif
 
@@ -139,12 +139,16 @@ ItemStack* FactoryComponent::GetInputItemStack(int index) const
 {
 	if (!m_inputSlot) return nullptr;
 	
+	if (index < 0 || index >= m_inputSlot->GetSlotCount()) return nullptr;
+
 	return m_inputSlot->GetItem(index);
 }
 
 ItemStack* FactoryComponent::GetOutputItemStack(int index) const
 {
 	if (!m_outputSlot) return nullptr;
+
+	if (index < 0 || index >= m_outputSlot->GetSlotCount()) return nullptr;
 
 	return m_outputSlot->GetItem(index);
 }
@@ -173,7 +177,7 @@ bool FactoryComponent::TryInsert(ItemSlot* itemSlot, std::unique_ptr<ItemStack> 
 	if (!myItemStack)
 	{
 		//アイテム追加に失敗したときに処理を終了する。
-		if (itemSlot->AddItemStack(std::move(item))) return false;
+		if (itemSlot->AddItem(std::move(item))) return false;
 
 	}
 	else
@@ -183,42 +187,53 @@ bool FactoryComponent::TryInsert(ItemSlot* itemSlot, std::unique_ptr<ItemStack> 
 	return true;
 }
 
-bool FactoryComponent::TryInsert(ItemSlot* itemSlot, ItemStack* item, int count)
+bool FactoryComponent::TryInsert(ItemSlot* toItemSlot, ItemStack* fromItem, int count)
 {
-	auto myItemStack = itemSlot->GetItem(item->GetItemType());
+	auto myItemStacks = toItemSlot->GetItems(fromItem->GetItemType());
 
-	if (!myItemStack)
+	if (!myItemStacks.size())
 	{
 		//新しくアイテムスタックを作成して追加する。
 		//渡されたアイテムの個数か指定された個数のうち小さい値で作成する。
-		auto newItemStack = std::make_unique<ItemStack>(item->GetItemType(), min(item->GetItemCount(), count));
+		auto newItemStack = std::make_unique<ItemStack>(fromItem->GetItemType(), min(fromItem->GetItemCount(), count));
 
 		//アイテム追加に失敗したときに処理を終了する。
-		if (itemSlot->AddItemStack(std::move(newItemStack))) return false;
+		if (toItemSlot->AddItem(std::move(newItemStack))) return false;
 
 		//呼び出し元のアイテムの数をカウント分減少させる。
-		item->MinusItemCount(count);
+		fromItem->MinusItemCount(count);
 
-		if (item->GetItemCount()) itemSlot->RemoveItem(item);
+		if (fromItem->GetItemCount()) toItemSlot->RemoveItem(fromItem);
 
 		return true;
 	}
 	else
 	{
-		//このコンポーネントのアイテム数がいくつ増加するかをチェックする
-		int checkAddCount = myItemStack->CheckAddItemCount(count);
 
-		//呼び出し元のアイテム数がいくつ減少するかをチェックする。
-		int checkMinusCount = item->CheckMinusItemCount(count);
+		auto remainCount = count;
+		for (auto toItem : myItemStacks)
+		{
+			if (remainCount <= 0) break;
 
-		//小さいほうの値を取得
-		int smallerValue = min(checkAddCount, checkMinusCount);
+			//このコンポーネントのアイテム数がいくつ増加するかをチェックする
+			auto checkAddCount = toItem->CheckAddItemCount(remainCount);
 
-		myItemStack->AddItemCount(smallerValue);
+			//呼び出し元のアイテム数がいくつ減少するかをチェックする。
+			auto checkMinusCount = fromItem->CheckMinusItemCount(remainCount);
 
-		item->MinusItemCount(smallerValue);
+			//小さいほうの値を取得
+			auto smallerValue = min(checkAddCount, checkMinusCount);
 
-		if (item->GetItemCount()) itemSlot->RemoveItem(item);
+			toItem->AddItemCount(smallerValue);
+
+			fromItem->MinusItemCount(smallerValue);
+
+			remainCount -= smallerValue;
+
+			if (remainCount <= 0) break;
+		}
+
+		if (fromItem->GetItemCount()) toItemSlot->RemoveItem(fromItem);
 
 		return true;
 	}

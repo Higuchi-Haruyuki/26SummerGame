@@ -5,6 +5,7 @@
 #include <vector>
 #include <string>
 #include "RayCastResult.h"
+#include "Event.h"
 
 class Object;
 class PlayerInput;
@@ -68,17 +69,6 @@ public:
 	void SetItemBarChoiceIndex(int index);
 
 
-	/// <summary>
-	/// アイテムバーにアイテムをcount個追加する。
-	/// 成功時はnullptrを返す。
-	/// 失敗時と溢れたときはそのアイテムのポインタのunique_ptrを返す。
-	/// </summary>
-	/// <param name="item"></param>
-	/// <param name="count"></param>
-	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItemToItemBar(std::unique_ptr<ItemStack> item, int count);
-
-	bool CanAddToItemBar(Item itemType, int count) const;
 	/*Inventory関連関数*/
 
 	std::weak_ptr<ItemSlot> GetInventory() const { return m_inventory; }
@@ -113,18 +103,6 @@ public:
 	void SetInventoryChoiceIndex(int index);
 
 	/// <summary>
-	/// アイテムバーにアイテムをcount個追加する。
-	/// 成功時はnullptrを返す。
-	/// 失敗時と溢れたときはそのアイテムのポインタのunique_ptrを返す。
-	/// </summary>
-	/// <param name="item"></param>
-	/// <param name="count"></param>
-	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItemToInventory(std::unique_ptr<ItemStack> item, int count);
-
-	bool CanAddToInventory(Item itemType, int count) const;
-
-	/// <summary>
 	/// プレイヤーにアイテムを追加する。
 	/// アイテムバー優先で、溢れたらインベントリに追加する。
 	/// </summary>
@@ -134,6 +112,12 @@ public:
 	std::unique_ptr<ItemStack> AddItem(std::unique_ptr<ItemStack> item, int count);
 
 	bool CanAddItem(Item itemType, int count) const;
+
+	void SubscribeOnAddItem(std::function<void(Item, int)> func)
+	{
+		m_onAddItemConnections.push_back(m_onAddItem.AddListener(func));
+	}
+
 private:
 
 	/// <summary>
@@ -143,7 +127,32 @@ private:
 
 	void ChoiceInventorySlot();
 
+	/// <summary>
+	/// アイテムバーにアイテムをcount個追加する。
+	/// 成功時はnullptrを返す。
+	/// 失敗時と溢れたときはそのアイテムのポインタのunique_ptrを返す。
+	/// </summary>
+	/// <param name="item"></param>
+	/// <param name="count"></param>
+	/// <returns></returns>
+	std::unique_ptr<ItemStack> AddItemToItemBar(std::unique_ptr<ItemStack> item, int count);
+
+	/// <summary>
+	/// アイテムバーにアイテムをcount個追加する。
+	/// 成功時はnullptrを返す。
+	/// 失敗時と溢れたときはそのアイテムのポインタのunique_ptrを返す。
+	/// </summary>
+	/// <param name="item"></param>
+	/// <param name="count"></param>
+	/// <returns></returns>
+	std::unique_ptr<ItemStack> AddItemToInventory(std::unique_ptr<ItemStack> item, int count);
+
 	bool CanAddToItemSlot(const std::weak_ptr<ItemSlot> itemSlot, Item itemType, int count) const;
+
+	bool CanAddToItemBar(Item itemType, int count) const;
+
+	bool CanAddToInventory(Item itemType, int count) const;
+
 private:
 	//シングルトンへの参照
 	PlayerInput& m_input;
@@ -165,6 +174,9 @@ private:
 	ItemStack* m_selectedItemBar = nullptr;
 
 	ItemStack* m_selectedInventoryItem = nullptr;
+
+	Event<Item,int> m_onAddItem;
+	std::vector<Event<Item, int>::Connection> m_onAddItemConnections;
 
 };
 

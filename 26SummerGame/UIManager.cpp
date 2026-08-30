@@ -86,7 +86,7 @@ bool UIManager::MoveItem(std::weak_ptr<ItemSlot> toItemSlot, int toindex)
 	//移動先にアイテムがないとき
 	if (!toItemSlot.lock()->GetItem(toindex))
 	{
-		toItemSlot.lock()->AddItemStack(toindex, std::move(referenceItem));
+		toItemSlot.lock()->AddItem(toindex, std::move(referenceItem));
 		result = true;
 	}
 	else
@@ -97,10 +97,10 @@ bool UIManager::MoveItem(std::weak_ptr<ItemSlot> toItemSlot, int toindex)
 		{
 			std::swap(referenceItem, toItemOwerShip);
 
-			m_referenceItemSlot.lock()->AddItemStack(m_referenceIndex,
+			m_referenceItemSlot.lock()->AddItem(m_referenceIndex,
 				std::move(referenceItem));
 
-			toItemSlot.lock()->AddItemStack(toindex,
+			toItemSlot.lock()->AddItem(toindex,
 				std::move(toItemOwerShip));
 
 			result = true;
@@ -111,11 +111,11 @@ bool UIManager::MoveItem(std::weak_ptr<ItemSlot> toItemSlot, int toindex)
 
 			if (referenceItem->GetItemCount() != 0)
 			{
-				m_referenceItemSlot.lock()->AddItemStack(m_referenceIndex,
+				m_referenceItemSlot.lock()->AddItem(m_referenceIndex,
 					std::move(referenceItem));
 			}
 
-			toItemSlot.lock()->AddItemStack(toindex, std::move(toItemOwerShip));
+			toItemSlot.lock()->AddItem(toindex, std::move(toItemOwerShip));
 		}
 	}
 
@@ -151,7 +151,7 @@ bool UIManager::MoveHalfItem(std::weak_ptr<ItemSlot> toItemSlot, int toindex)
 	if (!toItem)
 	{
 
-		toItemSlot.lock()->AddItemStack(toindex,
+		toItemSlot.lock()->AddItem(toindex,
 			ItemStackFactory::Make(referenceItem->GetItemType(), moveCount));
 
 		referenceItem->MinusItemCount(moveCount);

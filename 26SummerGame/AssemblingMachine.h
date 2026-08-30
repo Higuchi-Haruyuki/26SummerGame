@@ -28,13 +28,15 @@ public:
 
     void UpdateUIPanel() override;
 
+    bool TryInsert(ItemStack* item, int count) override;
+
 protected:
 
     void BuildUIPanel() override;
 
 private:
 
-    std::shared_ptr<UIItemBox> m_inputItemUI;
+    std::vector<std::shared_ptr<UIItemBox>> m_inputUIs;
     std::shared_ptr<UIItemBox> m_outputItemUI;
     std::shared_ptr<UIItemBox> m_fuelItemUI;
 

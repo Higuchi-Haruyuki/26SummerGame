@@ -23,13 +23,19 @@
 #include <map>
 #include <memory>
 #include <vector>
+#include "MiningSystem.h"
+#include "ItemStack.h"
+#include "MouseCursorPoint.h"
+
 namespace
 {
-
+	constexpr Second kMiningTimer = 2.0f;
 }
 
 PlayerController::PlayerController(std::weak_ptr<Object> parentObject)
-	: Component(parentObject), m_playerInput(PlayerInput::GetInstance())
+	: Component(parentObject), 
+	m_playerInput(PlayerInput::GetInstance()),
+	m_miningTimer(kMiningTimer)
 {}
 
 PlayerController::~PlayerController() = default;
@@ -50,6 +56,8 @@ void PlayerController::Init()
 	playerCraft->AddCraftConsumeSlot(m_playerItem.lock()->GetInventory());
 
 	m_playerUI = AddComponent<PlayerUI>();
+
+	m_miningSystem = AddComponent<MiningSystem>();
 }
 
 void PlayerController::Update()
@@ -61,9 +69,6 @@ void PlayerController::Update()
 
 	//プレイヤーの状態をデバックログで描画
 	Debug::Log(std::format("PlayerState: {}", m_state.lock()->CurrentStateToString()));
-
-	RayCastResult raycast;
-	raycast.RaycastFromMousePoint();
 
 }
 
@@ -152,6 +157,16 @@ void PlayerController::InputAction()
 		ExitDestroyMode();
 	}
 
+	if (m_playerInput.GetAction("RightClick")->GetPhase() == ButtonPhase::kPressed)
+	{
+		MiningAction();
+	}
+	else
+	{
+		m_miningTimer.ResetStartTime();
+		m_playerUI.lock()->SetVisibleMiningProgressBar(false);
+	}
+
 	SetChoiceIndex();
 }
 
@@ -223,6 +238,28 @@ void PlayerController::ChangeState(const CharactorState& newState)
 	const auto& safeState = m_state.lock();
 	if (!safeState) return;
 	safeState->ChangeState(newState);
+}
+
+void PlayerController::MiningAction()
+{
+	m_playerUI.lock()->UpdateMiningProgressBar( 
+		m_miningTimer.GetElapsedTime() / m_miningTimer.GetDuration());
+	
+	m_playerUI.lock()->SetVisibleMiningProgressBar(true);
+	
+	if (m_miningTimer.IsTimeOver())
+	{
+		auto item = m_miningSystem.lock()->Mining(1);
+
+		if (item) 
+		{ 
+			auto count = item->GetItemCount();
+			m_playerItem.lock()->AddItem(std::move(item), count); 
+		}
+		
+		m_miningTimer.ResetStartTime();
+	}
+
 }
 
 bool PlayerController::IsInstallationState() const

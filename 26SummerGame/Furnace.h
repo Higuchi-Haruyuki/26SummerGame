@@ -23,6 +23,8 @@ public:
     void Init() override;
     void Update() override;
 
+    bool TryInsert(ItemStack* item, int count) override;
+
     /// <summary>
     /// アイテムのすべての所有権を引数で受け取った配列に移動する。
     /// </summary>

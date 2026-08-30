@@ -38,6 +38,7 @@ void PlayerInput::Init()
 
 	//マウス操作
 	AddActionMouseAndGamepad("LeftClick", InputValueType::kButton, MOUSE_INPUT_LEFT, -1);
+	AddActionMouseAndGamepad("RightClick", InputValueType::kButton, MOUSE_INPUT_RIGHT, -1);
 
 	//アイテムバーの選択
 	AddActionKeyboardAndGamepad("ItemBar0", InputValueType::kButton, KEY_INPUT_1, -1);

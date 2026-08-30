@@ -46,7 +46,7 @@ bool FuelSystem::IsNeedAddNew() const
 
 bool FuelSystem::AddNewFuel(std::unique_ptr<ItemStack> item)
 {
-	m_fuelSlot->AddItemStack(std::move(item));
+	m_fuelSlot->AddItem(std::move(item));
 	return true;
 }
 
@@ -81,6 +81,8 @@ bool FuelSystem::AddFuel(std::unique_ptr<ItemStack> item)
 bool FuelSystem::UseFuel()
 {
 	if (!GetFuelRemain()) return false;
+
+	if (!IsEqualFuelType(m_fuelSlot->GetItem(0)->GetItemType())) return false;
 
 	m_useCount++;
 	if (m_useCount % kConsumeItemPerUse) return false;

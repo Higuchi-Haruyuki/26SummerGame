@@ -146,6 +146,7 @@
     <ClCompile Include="BeltConveyor.cpp" />
     <ClCompile Include="Camera.cpp" />
     <ClCompile Include="CharactorStateManager.cpp" />
+    <ClCompile Include="Chest.cpp" />
     <ClCompile Include="Collider.cpp" />
     <ClCompile Include="Component.cpp" />
     <ClCompile Include="Debug.cpp" />
@@ -166,6 +167,7 @@
     <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="MiningMachine.cpp" />
+    <ClCompile Include="MiningSystem.cpp" />
     <ClCompile Include="Model.cpp" />
     <ClCompile Include="MouseDevice.cpp" />
     <ClCompile Include="PlayerController.cpp" />
@@ -210,6 +212,7 @@
     <ClInclude Include="BeltConveyor.h" />
     <ClInclude Include="Camera.h" />
     <ClInclude Include="CharactorStateManager.h" />
+    <ClInclude Include="Chest.h" />
     <ClInclude Include="Collider.h" />
     <ClInclude Include="Color.h" />
     <ClInclude Include="Component.h" />
@@ -241,7 +244,9 @@
     <ClInclude Include="Map.h" />
     <ClInclude Include="MapManager.h" />
     <ClInclude Include="MiningMachine.h" />
+    <ClInclude Include="MiningSystem.h" />
     <ClInclude Include="Model.h" />
+    <ClInclude Include="MouseCursorPoint.h" />
     <ClInclude Include="MouseDevice.h" />
     <ClInclude Include="PlayerController.h" />
     <ClInclude Include="PlayerCraft.h" />

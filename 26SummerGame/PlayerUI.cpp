@@ -35,6 +35,8 @@
 #include "PlayerCraft.h"
 #include "ItemSlot.h"
 #include "Color.h"
+#include "UIProgressBar.h"
+#include "MouseCursorPoint.h"
 
 namespace
 {
@@ -82,12 +84,23 @@ namespace
 	constexpr unsigned int kInventoryColor = static_cast<unsigned int>(Color::kMainColor);
 	constexpr int kInventoryAlpha = 130;
 
-	constexpr int kInventoryItemCountWidth = 10;
-	constexpr int kInventoryItemCountHeight = 10;
+	constexpr int kItemBoxCountWidth = 10;
+	constexpr int kItemBoxCountHeight = 10;
 	constexpr int kInventorySlotOffsetX = 10;
 	constexpr int kInventorySlotOffsetY = 10;
 
 	constexpr unsigned int kItemBarBoxHighlight = static_cast<unsigned int>(Color::kMainAccentColor);
+
+	/*資源採掘UI*/
+	const Vector kMiningProgressBarSize = Vector{ 80,10 };
+	constexpr unsigned int kMiningProgressBarColor = static_cast<unsigned int>(Color::kSubColor);
+	const Vector kMiningProgressBarOffset = Vector{0,20};
+
+	//アイテム取得UI
+	const Vector kItemGetUIPos = Vector{ 25,Game::kDisplaySize.m_y * 0.5f };
+	constexpr Second kItemGetUIExistTime = 3.0f;
+	const Vector kItemGetUIImageSize = Vector{ 50,50 };
+	const Vector kItemGetUITextOffset = Vector{ 30.0f };
 }
 
 PlayerUI::PlayerUI(std::weak_ptr<Object> parentObject) :
@@ -139,6 +152,25 @@ void PlayerUI::Update()
 
 	UpdateUIPanel();
 
+}
+
+void PlayerUI::UpdateMiningProgressBar(float progress)
+{
+	const auto& safeBar = m_miningProgressBar.lock();
+	if (!safeBar) return;
+
+	auto pos = MouseCursorPoint::GetCurrentMousePos() + kMiningProgressBarOffset;
+
+	safeBar->SetProgress(progress);
+	safeBar->SetPosition(pos);
+
+}
+
+void PlayerUI::SetVisibleMiningProgressBar(bool visible)
+{
+	const auto& safeBar = m_miningProgressBar.lock();
+	if (!safeBar) return;
+	safeBar->SetVisible(visible);
 }
 
 void PlayerUI::GetComponentReference()
@@ -195,7 +227,16 @@ void PlayerUI::InitIdleUIPanel()
 		m_playerController.lock()->EnterDestroyMode();
 		});
 
-	m_factoryUIPrompt = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, kKeyPromptFactoryUIPos, kKeyPromptSize, GraphicId::kMouseLeft, "null");
+	m_factoryUIPrompt = UIFactory::MakeUIToPanel<UIKeyPrompt>(
+		m_idleKeyPanel, 
+		kKeyPromptFactoryUIPos, kKeyPromptSize, GraphicId::kMouseLeft, "null");
+
+	//破壊ゲージ
+
+	m_miningProgressBar = UIFactory::MakeUIToPanel<UIProgressBar>(
+		m_idleKeyPanel, 
+		Vector{}, kMiningProgressBarSize,kMiningProgressBarColor,150 );
+	m_miningProgressBar.lock()->SetVisible(false);
 }
 
 void PlayerUI::InitInstallationUIPanel()
@@ -284,6 +325,55 @@ void PlayerUI::InitItemBarUIPanel()
 
 	/*アイテムバーのアイテムスロットの部分*/
 	InitItemBarItemSlot();
+
+	/*アイテム取得のUI*/
+	InitItemGetUI();
+}
+
+void PlayerUI::InitItemGetUI()
+{
+	auto& [image, text] = m_getItemUI;
+
+		image = UIFactory::MakeUIToPanel<UIImage>(m_itemBarUIPanel,
+			kItemGetUIPos, kItemGetUIImageSize, GraphicId::kNone);
+
+		text = UIFactory::MakeUIToPanel<UIText>(m_itemBarUIPanel,
+			TextArgs{
+				kItemGetUIPos + kItemGetUITextOffset,
+				TextPivot::LeftCenter
+			});
+
+		image.lock()->SetTimerDuration(kItemGetUIExistTime);
+		image.lock()->SubscribeOnTimerFinished([this]()
+			{
+				auto& [image, text] = m_getItemUI;
+				m_lastGetItem = std::make_pair(Item::kNone,0);
+				image.lock()->SetVisible(false);
+				text.lock()->SetVisible(false);
+			});
+		m_playerItem.lock()->SubscribeOnAddItem([this](Item item, int count)
+			{
+				auto& [image, text] = m_getItemUI;
+				auto& [lastItem, lastCount] = m_lastGetItem;
+
+				if (lastItem != item)
+				{
+					lastCount = count;
+					lastItem = item;
+				}
+				else
+				{
+					lastCount += count;
+				}
+
+				image.lock()->ResetTimer();
+				image.lock()->SetVisible(true);
+				image.lock()->SetGraphicID(ItemTable::GetGraphicID(item));
+				text.lock()->SetVisible(true);
+				text.lock()->SetText("{}: x{}", ItemTable::ItemTypeToDisplayName(item), lastCount);
+			}
+		);
+
 }
 
 void PlayerUI::InitQuestUIPanel()
@@ -553,6 +643,12 @@ void PlayerUI::UpdateItemBar()
 		else
 			m_itemBarBoxes.at(i)->SetText("x{}", itemStack->GetItemCount());
 	}
+
+	UpdateItemGetUI();
+}
+
+void PlayerUI::UpdateItemGetUI()
+{
 
 }
 

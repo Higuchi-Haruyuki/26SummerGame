@@ -7,6 +7,7 @@
 #include "BeltConveyor.h"
 #include "Inserter.h"
 #include "AssemblingMachine.h"
+#include "Chest.h"
 
 namespace ItemStackFactory
 {
@@ -24,6 +25,8 @@ namespace ItemStackFactory
 			return ItemStack::MakeItemStack<Furnace>("Furnace",itemType, count);
 		case Item::kAssemblingMachine:
 			return ItemStack::MakeItemStack<AssemblingMachine>("AssemblingMachine", itemType, count);
+		case Item::kRockChest:
+			return ItemStack::MakeItemStack<Chest>("Chest", itemType, count);
 		default:
 			return ItemStack::MakeItemStack(itemType, count);
 		}

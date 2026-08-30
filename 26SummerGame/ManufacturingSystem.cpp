@@ -14,19 +14,21 @@
 #include "ItemManager.h"
 #include "StringUtil.h"
 #include "Color.h"
+#include "ItemStackFactory.h"
 
 namespace
 {
 	/*UI*/
 	//windowの定数
-	const Vector kWindowPos = { Game::kDisplaySize.m_x * 0.75f , Game::kDisplaySize.m_y * 0.5f };
-	const Vector kWindowSize = { 600,800,0 };
+	const Vector kWindowPos = { Game::kDisplaySize.m_x * 0.87f , Game::kDisplaySize.m_y * 0.5f };
+	const Vector kWindowSize = { 400,800,0 };
 	constexpr unsigned int kWindowColor = static_cast<unsigned int>(Color::kMainColor);
 	constexpr int kWindowAlpha = 200;
 
 	//1レシピあたりの四角
-	const Vector kRecipeSize = { 580,100,0 };
+	const Vector kRecipeSize = { 380,100,0 };
 	constexpr unsigned int kRecipeColor = static_cast<unsigned int>(Color::kDarkSubColor);
+	constexpr unsigned int kRecipeAccentColor = static_cast<unsigned int>(Color::kMainAccentColor);
 	constexpr int kRecipeAlpha = 255;
 
 	//レシピ間のオフセット
@@ -94,27 +96,81 @@ void ManufacturingSystem::SetRecipe(const ItemSlot* items)
 	m_currentRecipe = m_recipeManager.GetRecipeFromItemType(m_allowRecipeType, currentItemType);
 }
 
-int ManufacturingSystem::CalcNeedItemCount(const ItemSlot* items) const
+bool ManufacturingSystem::HasRequiedItem(std::shared_ptr<Recipe> recipe, const ItemSlot* itemSlot) const
 {
-	if (!items->GetSlotCount()) return 0;
-
-	if (!items->GetItem(0)) return 0;
-
-	const auto& recipe = m_currentRecipe.lock();
-	if (!recipe) return 0;
+	if (!recipe) return false;
+	
+	const auto sumItemCount = itemSlot->SumItemCount();
 
 	//そのレシピの必要素材と数を取得
 	const auto& input = recipe->GetRecipeInput();
 
-	for (const auto& inputItem : input)
+	for (const auto& [item, count] : input)
 	{
-		//アイテムタイプが違うときは不可
-		if (inputItem.first != items->GetItem(0)->GetItemType()) continue;
-		//アイテム数が足りないときは不可
-		if (inputItem.second <= items->GetItem(0)->GetItemCount()) return inputItem.second;
+		//所有アイテムから必要アイテムを探す
+		auto it = sumItemCount.find(item);
+		//見つからないとき
+		if (it == sumItemCount.end()) return false;
+
+		//所有個数が必要数より小さい時
+		if (it->second < count) return false;
 	}
 
-	return 0;
+	return true;
+}
+
+bool ManufacturingSystem::CanStoreOutput(std::shared_ptr<Recipe> recipe, const ItemSlot* outputSlot) const
+{
+	if (!recipe) return false;
+
+	const auto& recipeOutput = recipe->GetRecipeOutput();
+
+	const auto sumItemCount = outputSlot->SumItemCount();
+
+	for (const auto& [recipeItem, recipeCount] : recipeOutput)
+	{
+		if (!outputSlot->CanAddItem(recipeItem, recipeCount)) return false;
+	}
+
+	return true;
+}
+
+void ManufacturingSystem::ConsumeRequiredItems(std::shared_ptr<Recipe> recipe, ItemSlot* itemSlot)
+{
+	for (const auto& [needItem, needCount] : recipe->GetRecipeInput())
+	{
+		int remainCount = needCount;
+			if (remainCount <= 0) break;
+
+
+			for (int i = 0; i < itemSlot->GetSlotCount(); i++)
+			{
+				if (remainCount <= 0) break;
+
+				auto* itemStack = itemSlot->GetItem(i);
+				if (!itemStack) continue;
+				if (itemStack->GetItemType() != needItem) continue;
+
+				remainCount -= itemStack->MinusItemCount(remainCount);
+
+				if (itemStack->GetItemCount() <= 0) itemSlot->RemoveItem(i);
+			}
+		
+	}
+
+}
+
+void ManufacturingSystem::StoreOutput(std::shared_ptr<Recipe> recipe, ItemSlot* outputSlot)
+{
+	for (const auto& [outItem, outCount] : recipe->GetRecipeOutput())
+	{
+		auto item = ItemStackFactory::Make(outItem, outCount);
+
+		if (outputSlot->CanAddItem(outItem, outCount))
+			outputSlot->AddItem(std::move(item), outCount);
+
+	}
+
 }
 
 void ManufacturingSystem::BuildUIPanel()
@@ -152,6 +208,8 @@ void ManufacturingSystem::BuildUIPanel()
 				m_currentRecipe = recipe.second;
 			});
 
+		m_recipeSquares.emplace(recipe.first, recipeSquare);
+
 		BuildRecipeUI(leftUpPos, recipe.second);
 		index++;
 	}
@@ -162,6 +220,21 @@ void ManufacturingSystem::UpdateUIPanel()
 {
 	const auto& safeRecipe = m_currentRecipe.lock();
 	if (!safeRecipe) return;
+
+	for (const auto& [recipeName, square] : m_recipeSquares)
+	{
+		const auto& safeSquare = square.lock();
+		if (!safeSquare) continue;
+
+		if (recipeName == safeRecipe->GetRecipeName())
+		{
+			safeSquare->SetColor(kRecipeAccentColor);
+		}
+		else
+		{
+			safeSquare->SetColor(kRecipeColor);
+		}
+	}
 
 }
 
@@ -224,65 +297,17 @@ void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Reci
 	}
 }
 
-bool ManufacturingSystem::Manufacture(ItemSlot* inputItems, ItemSlot* outputItemSlot)
+bool ManufacturingSystem::Manufacture(ItemSlot* inputItemSlot, ItemSlot* outputItemSlot)
 {
 	const auto& safeRecipe = m_currentRecipe.lock();
 	if (!safeRecipe) return false;
 
-	int needItemCount = CalcNeedItemCount(inputItems);
-	if (!needItemCount) return false;
+	if (!HasRequiedItem(safeRecipe, inputItemSlot)) return false;
 
-	//出力用スロットを取得
-	const auto& outputItem = outputItemSlot->GetItem(0);
+	if (!CanStoreOutput(safeRecipe, outputItemSlot)) return false;
 
-	//入力用スロットを取得
-	const auto& inputItem = inputItems->GetItem(0);
-
-	//レシピの出力する素材と個数を取得
-	const auto& output = safeRecipe->GetRecipeOutput();
-
-	//出力可能かのフラグ
-	bool isOk = false;
-
-	//レシピが出力する個数の取得
-	int recipeOutputCount = 0;
-
-	//何かアイテムが入っている
-	if (outputItem)
-	{
-		for (const auto& recipeOutputItem : output)
-		{
-			if (recipeOutputItem.first != outputItem->GetItemType()) continue;
-			recipeOutputCount = recipeOutputItem.second;
-			//出力用スロットにちゃんとレシピでついかされるぶんが追加できるかを確認する。
-			if (recipeOutputCount != outputItem->CheckAddItemCount(recipeOutputCount)) continue;
-			isOk = true;
-		}
-		if (!isOk) return false;
-
-		inputItem->MinusItemCount(needItemCount);
-		outputItem->AddItemCount(recipeOutputCount);
-	}
-	//出力用スロットが空の時
-	else
-	{
-		Item recipeOutputType;
-		for (const auto& outputItem : output)
-		{
-			recipeOutputType = outputItem.first;
-			recipeOutputCount = outputItem.second;
-		}
-
-		inputItem->MinusItemCount(needItemCount);
-		outputItemSlot->AddItemStack(0, std::make_unique<ItemStack>(recipeOutputType, recipeOutputCount));
-	}
-
-	for (const auto& outputItem : output)
-	{
-		m_factoryManager.OnMakeItem(outputItem.first, outputItem.second);
-	}
-
-	if(!inputItem->GetItemCount()) inputItems->RemoveItem(0);
+	ConsumeRequiredItems(safeRecipe, inputItemSlot);
+	StoreOutput(safeRecipe, outputItemSlot);
 
 	return true;
 }

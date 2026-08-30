@@ -42,6 +42,9 @@ void UIText::Draw() const
 	case TextPivot::RightCenter:
 		DrawRightCenter(x, y, handle);
 		break;
+	case TextPivot::LeftCenter:
+		DrawLeftCenter(x, y, handle);
+		break;
 	default:
 		break;
 	}
@@ -100,4 +103,14 @@ void UIText::DrawRightCenter(int x, int y, int handle) const
 		return;
 	}
 	text::DrawRightCenterFormatStringToHandleWithEdge(x, y, m_mainColor, m_edgeColor, handle, "{}", m_text);
+}
+
+void UIText::DrawLeftCenter(int x, int y, int handle) const
+{
+	if (handle == -1 || m_edgeColor == -1)
+	{
+		assert(false && "無効なUIのテキスト指定です");
+		return;
+	}
+	text::DrawLeftCenterFormatStringToHandleWithEdge(x, y, m_mainColor, m_edgeColor, handle, "{}", m_text);
 }

@@ -2,6 +2,7 @@
 #include "Component.h"
 
 #include <memory>
+#include "Timer.h"
 
 class PlayerInput;
 class PlayerItem;
@@ -13,6 +14,7 @@ class Model;
 class Animation3D;
 class CharactorStateManager;
 class PlayerUI;
+class MiningSystem;
 
 enum class CharactorState;
 
@@ -58,15 +60,12 @@ private:
 	void InputAction();
 
 	void OpenFactoryComponentUI();
-
 	
 	void OpenInventoryUI();
 
-
-
-
-
 	void ChangeState(const CharactorState& newState);
+
+	void MiningAction();
 
 	/*ステートの確認*/
 	bool IsInstallationState() const;
@@ -81,8 +80,12 @@ private:
 	//
 	PlayerInput& m_playerInput;
 
+
+	Timer m_miningTimer;
+
 	//コンポーネントのポインタ
 	std::weak_ptr<CharactorStateManager> m_state;
 	std::weak_ptr<PlayerUI> m_playerUI;
 	std::weak_ptr<PlayerItem> m_playerItem;
+	std::weak_ptr<MiningSystem> m_miningSystem;
 };

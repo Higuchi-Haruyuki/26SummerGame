@@ -10,6 +10,7 @@
 #include <map>
 #include <concepts>
 #include <type_traits>
+#include "ItemType.h"
 
 class FactoryComponent;
 class UIManager;
@@ -30,6 +31,7 @@ class UIText;
 class QuestManager;
 class UIItemBox;
 class PlayerCraft;
+class UIProgressBar;
 
 /// <summary>
 /// UI表示を行う。
@@ -43,6 +45,9 @@ public:
 
 	void Init() override;
 	void Update() override;
+
+	void UpdateMiningProgressBar(float progress);
+	void SetVisibleMiningProgressBar(bool visible);
 
 private:
 
@@ -87,6 +92,11 @@ private:
 	void InitItemBarUIPanel();
 
 	/// <summary>
+	/// アイテム取得時のUIの初期設定をする
+	/// </summary>
+	void InitItemGetUI();
+
+	/// <summary>
 	/// QuestUIパネルの初期設定をする
 	/// </summary>
 	void InitQuestUIPanel();
@@ -100,6 +110,7 @@ private:
 	/// インベントリUIのアイテムスロットの初期化処理
 	/// </summary>
 	void InitInventoryItemPanel();
+
 
 	/// <summary>
 	/// 指定番目のアイテムバーのアイテムスロットの位置を計算する。
@@ -140,6 +151,11 @@ private:
 	/// アイテムバーUIの更新処理
 	/// </summary>
 	void UpdateItemBar();
+
+	/// <summary>
+	/// アイテム取得時のUIの更新処理
+	/// </summary>
+	void UpdateItemGetUI();
 
 	/// <summary>
 	/// インベントリUIの更新処理
@@ -246,6 +262,13 @@ private:
 	std::vector<std::shared_ptr<UIItemBox>> m_inventoryBoxes;
 
 	std::map<CharactorState, std::vector<std::shared_ptr<UIPanel>>> m_activePanelByState;
+
+	//資源採掘ゲージ
+	std::weak_ptr<UIProgressBar> m_miningProgressBar;
+
+	//取得アイテムの表示
+	std::pair<std::weak_ptr<UIImage>, std::weak_ptr<UIText>> m_getItemUI;
+	std::pair<Item,int> m_lastGetItem;
 };
 
 

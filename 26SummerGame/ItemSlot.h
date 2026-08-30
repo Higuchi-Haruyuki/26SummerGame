@@ -19,6 +19,8 @@ public:
 
 	ItemStack* GetItem(Item itemType) const;
 
+	std::vector<ItemStack*> GetItems(Item itemType) const;
+
 	std::unique_ptr<ItemStack> GetItemOwnership(int index);
 
 	void RemoveItem(int index) 
@@ -55,7 +57,7 @@ public:
 	/// <param name="itemType"></param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItemStack(std::unique_ptr<ItemStack> itemType, int count);
+	std::unique_ptr<ItemStack> AddItem(std::unique_ptr<ItemStack> itemType, int count);
 
 	/// <summary>
 	/// アイテムスタックのunique_ptrを追加する。
@@ -65,14 +67,14 @@ public:
 	/// <param name="itemType"></param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItemStack(std::unique_ptr<ItemStack> item);
+	std::unique_ptr<ItemStack> AddItem(std::unique_ptr<ItemStack> item);
 
 	/// <summary>
 	/// アイテムスタックを指定した場所に上書きする。
 	/// </summary>
 	/// <param name="index"></param>
 	/// <param name="item"></param>
-	void AddItemStack(int index, std::unique_ptr<ItemStack> item);
+	void AddItem(int index, std::unique_ptr<ItemStack> item);
 
 	/// <summary>
 	/// 何も入っていないアイテムスタックのインデックスを返す。全部埋まっているなら-1を返す。
@@ -92,6 +94,14 @@ public:
 	/// </summary>
 	/// <returns></returns>
 	std::map<Item, int> SumItemCount() const;
+
+	/// <summary>
+	/// アイテムを指定個数で追加可能かを返す
+	/// </summary>
+	/// <param name="checkItem"></param>
+	/// <param name="checkCount"></param>
+	/// <returns></returns>
+	bool CanAddItem(Item checkItem, int checkCount) const;
 
 private:
 	std::vector<std::unique_ptr<ItemStack>> m_items;

@@ -104,4 +104,20 @@ namespace text
 			str.c_str(), color, fontHandle,
 			edgeColor);
 	}
+
+	//指定座標を左中央座標として描画する
+	template<typename... Args>
+	inline void DrawLeftCenterFormatStringToHandleWithEdge
+	(int x, int y, unsigned int color, unsigned int edgeColor, int fontHandle, const std::format_string<Args...>& fmt, Args&&... args)
+	{
+		std::string str = std::vformat(fmt.get(), std::make_format_args(args...));
+		int length = static_cast<int>(str.length());
+		int width = 0, height = 0;
+		GetDrawStringSizeToHandle(&width, &height, NULL, str.c_str(), length, fontHandle);
+		DrawStringToHandle(
+			x,
+			y - height / 2,
+			str.c_str(), color, fontHandle,
+			edgeColor);
+	}
 }

@@ -32,7 +32,7 @@ const std::unordered_map<Item, ResourceSetting>& ResourceGenerator::GetResourceS
 	return kResourceMap;
 }
 
-const ResourceSetting& ResourceGenerator::GetResourceSetting(const Item& mapResource) const
+ResourceSetting ResourceGenerator::GetResourceSetting(const Item& mapResource) const
 {
 	for (const auto& resourceSetting : kResourceMap)
 	{

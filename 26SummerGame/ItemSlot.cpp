@@ -24,6 +24,19 @@ ItemStack* ItemSlot::GetItem(Item itemType) const
 	return nullptr;
 }
 
+std::vector<ItemStack*> ItemSlot::GetItems(Item itemType) const
+{
+	std::vector<ItemStack*> result;
+
+	for (const auto& itemStack : m_items)
+	{
+		if (!itemStack) continue;
+		if (itemStack->GetItemType() == itemType) result.push_back(itemStack.get());
+	}
+
+	return result;
+}
+
 std::unique_ptr<ItemStack> ItemSlot::GetItemOwnership(int index)
 {
 	if (!m_items.size()) return nullptr;
@@ -32,7 +45,7 @@ std::unique_ptr<ItemStack> ItemSlot::GetItemOwnership(int index)
 
 }
 
-std::unique_ptr<ItemStack> ItemSlot::AddItemStack(std::unique_ptr<ItemStack> item, int count)
+std::unique_ptr<ItemStack> ItemSlot::AddItem(std::unique_ptr<ItemStack> item, int count)
 {
 	if (!item) return nullptr;
 	if (count <= 0) return item;
@@ -61,10 +74,10 @@ std::unique_ptr<ItemStack> ItemSlot::AddItemStack(std::unique_ptr<ItemStack> ite
 	if (item->GetItemCount() <= 0) return nullptr;
 
 	//余った分は空きスロットへ
-	return AddItemStack(std::move(item));
+	return AddItem(std::move(item));
 }
 
-std::unique_ptr<ItemStack> ItemSlot::AddItemStack(std::unique_ptr<ItemStack> item)
+std::unique_ptr<ItemStack> ItemSlot::AddItem(std::unique_ptr<ItemStack> item)
 {
 
 	const int index = FindEmptyItemSlot();
@@ -78,9 +91,29 @@ std::unique_ptr<ItemStack> ItemSlot::AddItemStack(std::unique_ptr<ItemStack> ite
 	return nullptr;
 }
 
-void ItemSlot::AddItemStack(int index, std::unique_ptr<ItemStack> item)
+void ItemSlot::AddItem(int index, std::unique_ptr<ItemStack> item)
 {
 	m_items.at(index) = std::move(item);
+}
+
+bool ItemSlot::CanAddItem(Item checkItem, int checkCount) const
+{
+	for (int i = 0; i < GetSlotCount(); i++)
+	{
+		const auto* item = GetItem(i);
+		if (!item) return true;
+
+		if (checkItem == item->GetItemType())
+		{
+			auto successCount = item->CheckAddItemCount(checkCount);
+
+			if (successCount < checkCount) return false;
+
+			return true;
+		}
+
+	}
+	return false;
 }
 
 std::map<Item, int> ItemSlot::SumItemCount() const
@@ -89,6 +122,8 @@ std::map<Item, int> ItemSlot::SumItemCount() const
 
 	for (const auto& item : m_items)
 	{
+		if (!item) continue;
+
 		//すでにそのアイテムがキーとしてあるか
 		auto it = result.find(item->GetItemType());
 
@@ -96,6 +131,7 @@ std::map<Item, int> ItemSlot::SumItemCount() const
 		if (it == result.end())
 		{
 			result.emplace(item->GetItemType(), item->GetItemCount());
+			continue;
 		}
 
 		//あるときは個数追加
