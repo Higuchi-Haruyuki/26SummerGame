@@ -19,3 +19,14 @@ void Quest_MakeItem::ClearCheck()
 	if (m_onClear) m_onClear();
 
 }
+
+float Quest_MakeItem::GetProgress() const
+{
+	//現在の個数を取得
+	auto currentCount = static_cast<float>(m_factoryManager.GetItemMakeCount(m_itemType));
+
+	auto progressCount = static_cast<float>(currentCount - m_startCount);
+	
+	return progressCount / m_targetCount;
+	
+}

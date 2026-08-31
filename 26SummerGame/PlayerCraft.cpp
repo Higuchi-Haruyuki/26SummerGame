@@ -42,7 +42,7 @@ namespace
 	const Vector kClosePos = GetWindowRightUp() + Vector{-kCloseSize.m_x * 0.5f, kCloseSize.m_y * 0.5f} + kCloseOffset;
 
 	//1レシピあたりの四角
-	const Vector kRecipeSize = { 580,100,0 };
+	const Vector kRecipeSize = { 580,70,0 };
 	constexpr unsigned int kRecipeDisableColor = static_cast<unsigned int>(Color::kDarkSubColor);
 	constexpr unsigned int kRecipeEnableColor = static_cast<unsigned int>(Color::kMainAccentColor);
 	constexpr int kRecipeAlpha = 255;
@@ -223,9 +223,9 @@ void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> reci
 	const auto& outputs = safeRecipe->GetRecipeOutput();
 	const auto& inputs = safeRecipe->GetRecipeInput();
 
-	auto startOffset = Vector{ 10,kRecipeSize.m_y * 0.25f };
+	auto startOffset = Vector{ 10,(kRecipeSize.m_y - kItemBoxSize.m_y)*0.5f };
 
-	auto startPos = leftUpDrawPos + kItemBoxSize * 0.5f + startOffset;
+	auto startPos = leftUpDrawPos + kItemBoxSize* 0.5f + startOffset;
 
 	auto pos = Vector{};
 

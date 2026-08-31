@@ -35,6 +35,10 @@ namespace ItemTable
 		{Item::kCopperOre,ItemType::kOre,"copper_ore","銅",GraphicId::kCopperOreIcon,ModelId::kIronOre},
 		{Item::kIronPlate,ItemType::kNormal,"iron_plate","鉄板",GraphicId::kIronPlateIcon,ModelId::kIronPlate},
 		{Item::kCopperPlate,ItemType::kNormal,"copper_plate","銅板",GraphicId::kCopperPlateIcon,ModelId::kCopperPlate},
+		//新規分
+		{Item::kCopperCable,ItemType::kNormal,"copper_cable","銅線",GraphicId::kCopperCableIcon,ModelId::kCopperPlate},
+		{Item::kElectronicCircuit,ItemType::kNormal,"electonic_circuit","電子基盤",GraphicId::kElectonicCircuit,ModelId::kCopperPlate},
+		
 		{Item::kMiningMachine,ItemType::kNormal,"miningMachine","採掘機",GraphicId::kMiningMachineIcon,ModelId::kNone},
 		{Item::kBeltconveyor,ItemType::kNormal,"beltconveyor","ベルトコンベア",GraphicId::kBeltconveyorIcon,ModelId::kBeltConveyor},
 		{Item::kInserter,ItemType::kNormal,"inserter","インサータ",GraphicId::kInserterIcon,ModelId::kNone},

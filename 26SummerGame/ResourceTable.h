@@ -44,6 +44,8 @@ namespace ResourceTable
 		{ GraphicId::kCopperOreIcon,	"image/icon/copper_ore.png" },
 		{ GraphicId::kIronPlateIcon,	"image/icon/iron_plate.png" },
 		{ GraphicId::kCopperPlateIcon,	"image/icon/copper_plate.png" },
+		{ GraphicId::kCopperCableIcon,	"image/icon/copper_cable.png" },
+		{ GraphicId::kElectonicCircuit,	"image/icon/electonic_circuit.png" },
 
 		{ GraphicId::kBeltconveyorIcon, ResourceName::kBeltConveyorGraph.c_str() },
 		{ GraphicId::kFurnaceIcon,      ResourceName::kFurnaceGraph.c_str() },
@@ -108,5 +110,16 @@ namespace ResourceTable
 		{ ModelId::kSkyDome, "model/skyDome.mv1",200.0f},
 		{ ModelId::kSkyBox, "model/skyBox.mv1",80.0f }
 	} };
+
+	struct SoundInfo
+	{
+		SoundId Id;
+		const char* Path;
+		float Volume;
+	};
+
+	inline const std::array<SoundInfo, static_cast<size_t>(SoundId::kCount)> kSoundTable = { {
+		{ SoundId::kMiningSound,     "sound/se/mining.mp3",      1.0f},
+} };
 
 }

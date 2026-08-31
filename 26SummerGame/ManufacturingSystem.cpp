@@ -26,7 +26,7 @@ namespace
 	constexpr int kWindowAlpha = 200;
 
 	//1レシピあたりの四角
-	const Vector kRecipeSize = { 380,100,0 };
+	const Vector kRecipeSize = { 380,70,0 };
 	constexpr unsigned int kRecipeColor = static_cast<unsigned int>(Color::kDarkSubColor);
 	constexpr unsigned int kRecipeAccentColor = static_cast<unsigned int>(Color::kMainAccentColor);
 	constexpr int kRecipeAlpha = 255;
@@ -167,7 +167,10 @@ void ManufacturingSystem::StoreOutput(std::shared_ptr<Recipe> recipe, ItemSlot* 
 		auto item = ItemStackFactory::Make(outItem, outCount);
 
 		if (outputSlot->CanAddItem(outItem, outCount))
+		{
 			outputSlot->AddItem(std::move(item), outCount);
+			m_factoryManager.OnMakeItem(outItem, outCount);
+		}
 
 	}
 
@@ -244,7 +247,7 @@ void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Reci
 	const auto& outputs = safeRecipe->GetRecipeOutput();
 	const auto& inputs = safeRecipe->GetRecipeInput();
 
-	auto startOffset = Vector{10,kRecipeSize.m_y * 0.25f };
+	auto startOffset = Vector{10,(kRecipeSize.m_y - kItemBoxSize.m_y) * 0.5f };
 
 	auto startPos = leftUpDrawPos + kItemBoxSize * 0.5f + startOffset;
 

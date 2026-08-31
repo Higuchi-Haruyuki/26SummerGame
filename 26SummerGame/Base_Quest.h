@@ -15,6 +15,7 @@ public:
 
 	virtual void ClearCheck() {};
 
+	virtual float GetProgress() const { return 0.0f; };
 	/// <summary>
 	/// 説明を取得
 	/// </summary>

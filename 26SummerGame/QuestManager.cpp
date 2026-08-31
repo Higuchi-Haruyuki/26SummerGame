@@ -39,6 +39,9 @@ Base_Quest* QuestManager::GetCurrentQuest() const
 
 void QuestManager::QuestClearCheck()
 {
+	if (m_questQueue.empty()) {
+		return;
+	}
 	const auto& quest = m_questQueue.front();
 	quest->ClearCheck();
 
@@ -62,6 +65,9 @@ void QuestManager::GenerateQuest()
 
 void QuestManager::SetActiveQuest()
 {
+	if (m_questQueue.empty()) {
+		return;
+	}
 	m_questQueue.front()->Init();
 }
 
@@ -75,6 +81,10 @@ void QuestManager::ListenQuestClearEvent()
 
 void QuestManager::NextQuest()
 {
+	if (m_questQueue.empty()) {
+		return;
+	}
+
 	m_questQueue.pop();
 	SetActiveQuest();
 	ListenQuestClearEvent();

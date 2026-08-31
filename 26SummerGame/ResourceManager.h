@@ -48,6 +48,12 @@ public:
 		return m_modelHandles[static_cast<size_t>(id)]; 
 	}
 
+	int GetHandle(SoundId id) const
+	{
+		if (id == SoundId::kNone) return -1;
+		return m_soundHandles[static_cast<size_t>(id)];
+	}
+
 	/// <summary>
 	/// グラフィックのサイズを取得する
 	/// </summary>
@@ -70,7 +76,6 @@ private:
 	std::array<int, static_cast<size_t>(FontId::kCount)> m_fontHandles{};
 	std::array<int, static_cast<size_t>(GraphicId::kCount)> m_graphicHandles{};
 	std::array<int, static_cast<size_t>(ModelId::kCount)> m_modelHandles{};
+	std::array<int, static_cast<size_t>(SoundId::kCount)> m_soundHandles{};
 
-	//パス文字列でしか引けない動的リソース(Itemのモデル/アイコン等)用
-	std::unordered_map<std::string, int> m_pathToHandle;
 };

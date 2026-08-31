@@ -10,10 +10,14 @@ enum class RecipeName
 	kNone = 0,
 	kMakeIronPlate,
 	kMakeCopperPlate,
+	kMakeCopperCable,
+	kMakeElectronicCircuit,
 	kMakeBeltconveyor,
 	kMakeInserter,
 	kMakeMiningMachine,
 	kMakeFurnace,
+	kMakeAssemblingMachine,
+	kMakeRockChest
 };
 
 enum class RecipeType

@@ -80,6 +80,7 @@ private:
 	//
 	PlayerInput& m_playerInput;
 
+	bool isMiningLastFrame = false;
 
 	Timer m_miningTimer;
 

@@ -9,6 +9,8 @@ enum class Item
 	kCopperOre,
 	kIronPlate,
 	kCopperPlate,
+	kCopperCable,
+	kElectronicCircuit,
 	kMiningMachine,
 	kBeltconveyor,
 	kInserter,

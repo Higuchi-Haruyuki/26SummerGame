@@ -252,8 +252,11 @@ private:
 	
 	std::weak_ptr<UIText> m_factoryUITitleText;
 	
+	//クエスト関連
 	std::weak_ptr<UIText> m_questText;
-	
+	std::weak_ptr<UIProgressBar> m_questProgressBar;
+	std::weak_ptr<UIText> m_questProgressText;
+
 	//工業オブジェクト特有のUIパネルのポインタ
 	std::weak_ptr<UIPanel> m_originalFactoryUIPanel;
 

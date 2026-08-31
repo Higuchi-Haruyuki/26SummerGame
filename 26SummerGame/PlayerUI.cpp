@@ -383,7 +383,7 @@ void PlayerUI::InitQuestUIPanel()
 		static_cast<unsigned int>(Color::kMainColor), 200);
 
 	m_questText = UIFactory::MakeUIToPanel<UIText>(m_questUIPanel, TextArgs{
-				kQuestUIPos + Vector{0,kQuestUISize.m_y * 0.4f},
+				kQuestUIPos + Vector{0,kQuestUISize.m_y * 0.2f},
 				TextPivot::CenterBottom,
 				FontId::kQuestUIText,
 				"",
@@ -399,6 +399,18 @@ void PlayerUI::InitQuestUIPanel()
 				static_cast<unsigned int>(Color::kSubCharColor),
 				static_cast<unsigned int>(Color::kMainCharColor),
 				255
+		});
+
+	const Vector kQuestProgressBarSize = {kQuestUISize.m_x,10};
+
+	m_questProgressBar = UIFactory::MakeUIToPanel<UIProgressBar>(m_questUIPanel, 
+		kQuestUIPos + Vector{0,kQuestUISize.m_y * 0.45f}, kQuestProgressBarSize,
+		static_cast<unsigned int>(Color::kMainAccentColor), 200);
+
+	m_questProgressText = UIFactory::MakeUIToPanel<UIText>(m_questUIPanel, 
+		TextArgs{
+			kQuestUIPos + Vector{kQuestUISize.m_x * 0.5f ,kQuestUISize.m_y * 0.5f},
+			TextPivot::RightBottom
 		});
 
 }
@@ -687,11 +699,25 @@ void PlayerUI::UpdateInventory()
 
 void PlayerUI::UpdateQuestUI()
 {
-	const auto& safeQuestUI = m_questText.lock();
-	if (!safeQuestUI) return;
+	const auto& safeQuestDesc = m_questText.lock();
+	if (!safeQuestDesc) return;
 
 	const Base_Quest* quest = m_questManager.GetCurrentQuest();
-	safeQuestUI->SetText(quest->GetDescription());
+	if (quest)
+	{
+		safeQuestDesc->SetText(quest->GetDescription());
+
+		auto progress = quest->GetProgress();
+
+		m_questProgressBar.lock()->SetProgress(progress);
+		m_questProgressText.lock()->SetText("{} %", static_cast<int>(progress * 100.0f));
+	}
+	else
+	{
+		safeQuestDesc->SetText("楽しもう！！");
+		m_questProgressBar.lock()->SetVisible(false);
+		m_questProgressText.lock()->SetVisible(false);
+	}
 
 }
 

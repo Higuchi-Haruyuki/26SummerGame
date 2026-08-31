@@ -159,7 +159,6 @@
     <ClCompile Include="InputAction.cpp" />
     <ClCompile Include="Inserter.cpp" />
     <ClCompile Include="InstallationMode.cpp" />
-    <ClCompile Include="ItemManager.cpp" />
     <ClCompile Include="ItemSlot.cpp" />
     <ClCompile Include="ItemStack.cpp" />
     <ClCompile Include="KeyBoardDevice.cpp" />
@@ -189,6 +188,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="SceneManager.cpp" />
     <ClCompile Include="Shape.cpp" />
+    <ClCompile Include="SoundManager.cpp" />
     <ClCompile Include="Square3D.cpp" />
     <ClCompile Include="SquareCollider3D.cpp" />
     <ClCompile Include="Timer.cpp" />
@@ -272,6 +272,7 @@
     <ClInclude Include="Scene.h" />
     <ClInclude Include="SceneManager.h" />
     <ClInclude Include="Shape.h" />
+    <ClInclude Include="SoundManager.h" />
     <ClInclude Include="Square3D.h" />
     <ClInclude Include="SquareCollider3D.h" />
     <ClInclude Include="Base_UIElement.h" />

@@ -16,7 +16,8 @@ UIKeyPrompt::UIKeyPrompt(const Vector& position, const Vector& size, GraphicId r
 	Base_UIElement(position, size),
 	m_resourceManager(ResourceManager::GetInstance()),
 	m_resourceId(resourceId),
-	m_text(text)
+	m_text(text),
+	m_color(kBoxColor)
 {
 }
 
@@ -29,7 +30,7 @@ void UIKeyPrompt::Draw() const
 	DrawBox(
 		static_cast<int>(m_position.m_x - halfWidth), static_cast<int>(m_position.m_y - halfHeight),
 		static_cast<int>(m_position.m_x + halfWidth), static_cast<int>(m_position.m_y + halfHeight),
-		kBoxColor, true);
+		m_color, true);
 	SetDrawBlendMode(DX_BLENDMODE_NOBLEND, 100);
 
 	text::DrawRightCenterFormatStringToHandleWithEdge(
@@ -49,5 +50,15 @@ bool UIKeyPrompt::OnClick(const Vector& screenPos)
 {
 	m_onClick.Invoke();
 	return true;
+}
+
+void UIKeyPrompt::SetBackGroundDefaultColor()
+{
+	m_color = kBoxColor;
+}
+
+void UIKeyPrompt::SetBackGroundColor(Color color)
+{
+	m_color = static_cast<unsigned int>(color);
 }
 

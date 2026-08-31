@@ -10,6 +10,7 @@
 #include "ItemManager.h"
 #include "UIManager.h"
 #include "CharactorStateManager.h"
+#include "FactoryManager.h"
 
 MiningSystem::MiningSystem(std::weak_ptr<Object> obj) :
 	Component(obj),
@@ -60,6 +61,8 @@ std::unique_ptr<ItemStack> MiningSystem::Mining(int count) const
 	const auto item = m_mapManager.GetResourceAtGridPos(hitGridPos);
 
 	if (item == Item::kNone) return nullptr;
+
+	FactoryManager::GetInstance().OnMakeItem(item, count);
 
 	return ItemStackFactory::Make(item, count);
 

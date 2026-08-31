@@ -21,6 +21,8 @@ enum class GraphicId
 	kCopperOreIcon,
 	kIronPlateIcon,
 	kCopperPlateIcon,
+	kCopperCableIcon,
+	kElectonicCircuit,
 
 	kBeltconveyorIcon,
 	kFurnaceIcon,
@@ -82,5 +84,12 @@ enum class ModelId
 	kBeltConveyor,
 	kSkyDome,
 	kSkyBox,
+	kCount
+};
+
+enum class SoundId
+{
+	kNone = -1,
+	kMiningSound,
 	kCount
 };

@@ -20,6 +20,8 @@ public:
 
     void ClearCheck() override;
 
+    float GetProgress() const override;
+
 private:
 
     Item m_itemType;

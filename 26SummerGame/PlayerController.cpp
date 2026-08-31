@@ -26,10 +26,13 @@
 #include "MiningSystem.h"
 #include "ItemStack.h"
 #include "MouseCursorPoint.h"
+#include "ResourceType.h"
+#include "SoundManager.h"
 
 namespace
 {
 	constexpr Second kMiningTimer = 2.0f;
+	const SoundId kMiningSe = SoundId::kMiningSound;
 }
 
 PlayerController::PlayerController(std::weak_ptr<Object> parentObject)
@@ -160,11 +163,22 @@ void PlayerController::InputAction()
 	if (m_playerInput.GetAction("RightClick")->GetPhase() == ButtonPhase::kPressed)
 	{
 		MiningAction();
+		if (!isMiningLastFrame)
+		{
+			SoundManager::GetInstance().PlayLoop(kMiningSe);
+			isMiningLastFrame = true;
+		}
 	}
 	else
 	{
 		m_miningTimer.ResetStartTime();
 		m_playerUI.lock()->SetVisibleMiningProgressBar(false);
+
+		if (isMiningLastFrame)
+		{
+			SoundManager::GetInstance().StopLoop(kMiningSe);
+		}
+		isMiningLastFrame = false;
 	}
 
 	SetChoiceIndex();
