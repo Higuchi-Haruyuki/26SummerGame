@@ -18,12 +18,6 @@ class UIImage;
 class UIText;
 class UIItemBox;
 
-struct BeltItem
-{
-    std::shared_ptr<ItemStack> m_item;
-    float m_progress = 0.0f;
-};
-
 class BeltConveyor :
     public FactoryComponent
 {
@@ -59,18 +53,6 @@ protected:
     void BuildUIPanel() override;
 
 private:
-    
-    void AdvanceItems(float deltaTime);
-
-    void TryOutput();
-
-    void DrawItems() const;
-
-    Vector GetItemWorldPos(float progress) const;
-
-private:
-
-    std::deque<BeltItem> m_beltItems;
 
     std::shared_ptr<UIItemBox> m_itemUI;
 

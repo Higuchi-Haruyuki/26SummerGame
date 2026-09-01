@@ -16,6 +16,7 @@ QuestManager& QuestManager::GetInstance()
 
 void QuestManager::Init()
 {
+	m_questQueue = {};
 	GenerateQuest();
 
 	SetActiveQuest();

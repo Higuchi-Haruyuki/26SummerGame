@@ -86,7 +86,7 @@ public:
 	/// 現在選択中のインデックスを返す。
 	/// </summary>
 	/// <returns></returns>
-	int GetInventoryChoiceIndex() const { return m_itemBarChoiceIndex; }
+	int GetInventoryChoiceIndex() const { return m_inventoryChoiceIndex; }
 
 	/// <summary>
 	/// 指定されたインデックスのアイテムバーのアイテムのポインタを返す。

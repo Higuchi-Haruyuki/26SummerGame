@@ -86,7 +86,7 @@ void MapManager::GenerateMap()
 		);
 
 		//このチャンクにランダムで資源を設定する。
-		m_resourceGenerator->GenerateChunk({chunkX,0,chunkZ},&m_gridResources);
+		//m_resourceGenerator->GenerateChunk({chunkX,0,chunkZ},&m_gridResources);
 
 	}
 }

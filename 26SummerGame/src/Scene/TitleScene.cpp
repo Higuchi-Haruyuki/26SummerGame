@@ -99,6 +99,7 @@ void TitleScene::Update()
 
 void TitleScene::Finalize()
 {
+	Scene::Finalize();
 	SoundManager::GetInstance().StopLoop(SoundId::kTitleBGM);
 }
 

@@ -38,21 +38,21 @@ namespace ResourceTable
 	};
 
 	inline const std::array<GraphicInfo, static_cast<size_t>(GraphicId::kCount)> kGraphicTable = { {
-		{ GraphicId::kIronOreIcon,		"image/icon/iron_ore.png" },
-		{ GraphicId::kCoalOreIcon,      "image/icon/coal_ore.png" },
-		{ GraphicId::kRockIcon,			"image/icon/rock.png" },
-		{ GraphicId::kCopperOreIcon,	"image/icon/copper_ore.png" },
-		{ GraphicId::kIronPlateIcon,	"image/icon/iron_plate.png" },
-		{ GraphicId::kCopperPlateIcon,	"image/icon/copper_plate.png" },
-		{ GraphicId::kCopperCableIcon,	"image/icon/copper_cable.png" },
-		{ GraphicId::kElectonicCircuit,	"image/icon/electonic_circuit.png" },
+		{ GraphicId::kIronOreIcon,		"assets/textures/icon/iron_ore.png" },
+		{ GraphicId::kCoalOreIcon,      "assets/textures/icon/coal_ore.png" },
+		{ GraphicId::kRockIcon,			"assets/textures/icon/rock.png" },
+		{ GraphicId::kCopperOreIcon,	"assets/textures/icon/copper_ore.png" },
+		{ GraphicId::kIronPlateIcon,	"assets/textures/icon/iron_plate.png" },
+		{ GraphicId::kCopperPlateIcon,	"assets/textures/icon/copper_plate.png" },
+		{ GraphicId::kCopperCableIcon,	"assets/textures/icon/copper_cable.png" },
+		{ GraphicId::kElectonicCircuit,	"assets/textures/icon/electonic_circuit.png" },
 
 		{ GraphicId::kBeltconveyorIcon, ResourceName::kBeltConveyorGraph.c_str() },
 		{ GraphicId::kFurnaceIcon,      ResourceName::kFurnaceGraph.c_str() },
 		{ GraphicId::kMiningMachineIcon,ResourceName::kMiningMachineGraph.c_str() },
-		{ GraphicId::kInserterIcon, "image/icon/inserter.png"},
-		{ GraphicId::kRockChestIcon,"image/icon/rock_chest.png"},
-		{ GraphicId::kAssemblingMachineIcon, "image/icon/assemblingMachine.png"},
+		{ GraphicId::kInserterIcon, "assets/textures/icon/inserter.png"},
+		{ GraphicId::kRockChestIcon,"assets/textures/icon/rock_chest.png"},
+		{ GraphicId::kAssemblingMachineIcon, "assets/textures/icon/assemblingMachine.png"},
 
 		{ GraphicId::kInserterTop, ResourceName::kInserterTop.c_str() },
 		{ GraphicId::kFurnaceTop,      ResourceName::kFurnaceTop.c_str() },
@@ -83,14 +83,14 @@ namespace ResourceTable
 		{ GraphicId::kKeyboard1,   ResourceName::kKeyboardButton1.c_str() },
 		{ GraphicId::kKeyboard2,   ResourceName::kKeyboardButton2.c_str() },
 		{ GraphicId::kKeyboardTab, ResourceName::kKeyboardButtonTab.c_str() },
-		{ GraphicId::kKeyboardZ, "image/icon/key/keyboard_z.png" },
-		{ GraphicId::kKeyboardX, "image/icon/key/keyboard_x.png" },
+		{ GraphicId::kKeyboardZ, "assets/textures/icon/key/keyboard_z.png" },
+		{ GraphicId::kKeyboardX, "assets/textures/icon/key/keyboard_x.png" },
 
-		{ GraphicId::kUIClose, "image/icon/close.png" },
-		{ GraphicId::kArrow, "image/icon/arrow.png" },
-		{ GraphicId::kPlus, "image/icon/plus.png" },
+		{ GraphicId::kUIClose, "assets/textures/icon/close.png" },
+		{ GraphicId::kArrow, "assets/textures/icon/arrow.png" },
+		{ GraphicId::kPlus, "assets/textures/icon/plus.png" },
 
-		{ GraphicId::kTitleImage,"image/tenohira_factory_logo.png"},
+		{ GraphicId::kTitleImage,"assets/textures/tenohira_factory_logo.png"},
 
 		{ GraphicId::kMouseLeft, ResourceName::kMouseLeft.c_str() },
 	} };
@@ -105,10 +105,10 @@ namespace ResourceTable
 	inline const std::array<ModelInfo, static_cast<size_t>(ModelId::kCount)> kModelTable = { {
 		{ ModelId::kIronOre,      ResourceName::kIronOreModel.c_str(),      0.1f },
 		{ ModelId::kIronPlate,    ResourceName::kIronPlateModel.c_str(),    0.3f },
-		{ ModelId::kCopperPlate,   "model/copper_plate.mv1",    0.3f },
+		{ ModelId::kCopperPlate,   "assets/models/copper_plate.mv1",    0.3f },
 		{ ModelId::kBeltConveyor, ResourceName::kBeltConveyorModel.c_str(), 1.0f },
-		{ ModelId::kSkyDome, "model/skyDome.mv1",200.0f},
-		{ ModelId::kSkyBox, "model/skyBox.mv1",80.0f }
+		{ ModelId::kSkyDome, "assets/models/skyDome.mv1",200.0f},
+		{ ModelId::kSkyBox, "assets/models/skyBox.mv1",80.0f }
 	} };
 
 	struct SoundInfo
@@ -119,13 +119,13 @@ namespace ResourceTable
 	};
 
 	inline const std::array<SoundInfo, static_cast<size_t>(SoundId::kCount)> kSoundTable = { {
-		{ SoundId::kMiningSe,     "sound/se/mining.mp3",      0.5f},
-		{ SoundId::kClickSe,     "sound/se/click.mp3",      0.5f},
-		{ SoundId::kOnQuestEndSe,     "sound/se/quest_end.mp3",      0.5f},
-		{ SoundId::kEnterInstallationModeSe,     "sound/se/enter_installation_mode.mp3",      0.5f },
-		{ SoundId::kEnterDestroyModeSe,     "sound/se/enter_destroy_mode.mp3",      0.5f },
-		{SoundId::kTitleBGM,         "sound/bgm/title2.mp3",      0.2f },
-		{ SoundId::kMainBGM,         "sound/bgm/main1.mp3",       0.2f }
+		{ SoundId::kMiningSe,     "assets/audio/se/mining.mp3",      0.5f},
+		{ SoundId::kClickSe,     "assets/audio/se/click.mp3",      0.5f},
+		{ SoundId::kOnQuestEndSe,     "assets/audio/se/quest_end.mp3",      0.5f},
+		{ SoundId::kEnterInstallationModeSe,     "assets/audio/se/enter_installation_mode.mp3",      0.5f },
+		{ SoundId::kEnterDestroyModeSe,     "assets/audio/se/enter_destroy_mode.mp3",      0.5f },
+		{SoundId::kTitleBGM,         "assets/audio/bgm/title2.mp3",      0.2f },
+		{ SoundId::kMainBGM,         "assets/audio/bgm/main1.mp3",       0.2f }
 } };
 
 }

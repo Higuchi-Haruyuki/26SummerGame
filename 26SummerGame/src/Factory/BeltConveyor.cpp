@@ -147,61 +147,6 @@ void BeltConveyor::BuildUIPanel()
 
 }
 
-void BeltConveyor::AdvanceItems(float deltaTime)
-{
-	float limit = 1.0f;
-
-	for (auto& beltItem : m_beltItems)
-	{
-		beltItem.m_progress = min(beltItem.m_progress + kBeltSpeed * deltaTime, limit);
-
-		limit = beltItem.m_progress - kItemInterval;
-	}
-
-}
-
-void BeltConveyor::TryOutput()
-{
-	if (m_beltItems.empty()) return;
-
-	auto& head = m_beltItems.front();
-	if (head.m_progress < 1.0f) return;
-
-	const auto& safeTransport = m_transport.lock();
-	if (!safeTransport) return;
-
-	const auto& output = safeTransport->GetOutputObject().lock();
-	if (!output) return;
-
-	if (!output->TryInsert(head.m_item.get(), 1))return;
-	
-	m_beltItems.pop_front();
-
-}
-
-void BeltConveyor::DrawItems() const
-{
-	for (const auto& beltItem : m_beltItems)
-	{
-		beltItem.m_item->DrawModel(
-			GetItemWorldPos(beltItem.m_progress) + kObjectOffset
-		);
-	}
-
-}
-
-Vector BeltConveyor::GetItemWorldPos(float progress) const
-{
-	Vector dir = { static_cast<float>(Game::kGridSize),0,0 };
-	dir.RotateY(GetRotationAngle());
-
-	const auto& safeParent = GetParentObject().lock();
-
-	if (!safeParent) return Vector{};
-
-	return safeParent->GetPosition() + dir * (progress - 0.5f);
-}
-
 void BeltConveyor::SetRotationAngle(Radian angle)
 {
 	FactoryComponent::SetRotationAngle(angle);
