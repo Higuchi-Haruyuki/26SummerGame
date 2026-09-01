@@ -29,7 +29,7 @@ public:
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	bool AddFuel(std::unique_ptr<ItemStack> name);
+	bool AddFuel(std::shared_ptr<ItemStack> name);
 
 	/// <summary>
 	/// 燃料を使用する。失敗したら、falseを返し、成功したらtrueを返す。
@@ -45,7 +45,7 @@ public:
 
 	std::weak_ptr<ItemSlot> GetFuelSlot() const { return m_fuelSlot; }
 
-	void GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result);
+	void GetAllItemOwnership(std::vector<std::pair<std::shared_ptr<ItemStack>, int>>* result);
 
 private:
 	/// <summary>
@@ -67,7 +67,7 @@ private:
 	/// </summary>
 	/// <param name="name"></param>
 	/// <returns></returns>
-	bool AddNewFuel(std::unique_ptr<ItemStack> name);
+	bool AddNewFuel(std::shared_ptr<ItemStack> name);
 
 	/// <summary>
 	/// 燃料スロットに燃料の個数を追加する。

@@ -395,7 +395,7 @@ void PlayerUI::InitQuestUIPanel()
 				kQuestUIPos - Vector{0,kQuestUISize.m_y * 0.4f},
 				TextPivot::CenterTop,
 				FontId::kFactoryUIText,
-				"<クエスト名>",
+				"<クエスト>",
 				static_cast<unsigned int>(Color::kSubCharColor),
 				static_cast<unsigned int>(Color::kMainCharColor),
 				255

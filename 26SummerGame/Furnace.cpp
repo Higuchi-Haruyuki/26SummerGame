@@ -134,7 +134,7 @@ bool Furnace::TryInsert(ItemStack* item, int count)
 	return FactoryComponent::TryInsert(m_inputSlot.get(), item, count);
 }
 
-void Furnace::GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result)
+void Furnace::GetAllItemOwnership(std::vector<std::pair<std::shared_ptr<ItemStack>, int>>* result)
 {
 	FactoryComponent::GetAllItemOwnership(result);
 

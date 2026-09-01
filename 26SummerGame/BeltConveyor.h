@@ -20,7 +20,7 @@ class UIItemBox;
 
 struct BeltItem
 {
-    std::unique_ptr<ItemStack> m_item;
+    std::shared_ptr<ItemStack> m_item;
     float m_progress = 0.0f;
 };
 

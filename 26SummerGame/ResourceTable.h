@@ -28,7 +28,7 @@ namespace ResourceTable
 		{ FontId::kFactoryUITitle,    kMainFont, 40, 3, DX_FONTTYPE_ANTIALIASING_EDGE_16X16 },
 		{ FontId::kFactoryUIText,     kMainFont, 20, 3, DX_FONTTYPE_ANTIALIASING_EDGE_16X16 },
 		{ FontId::kFactoryUITextMini, kMainFont, 15, 3, DX_FONTTYPE_ANTIALIASING_EDGE_16X16 },
-		{ FontId::kQuestUIText,       kMainFont, 30, 3, DX_FONTTYPE_ANTIALIASING_EDGE_16X16 },
+		{ FontId::kQuestUIText,       kMainFont, 22, 3, DX_FONTTYPE_ANTIALIASING_EDGE_16X16 },
 	} };
 
 	struct GraphicInfo
@@ -119,7 +119,8 @@ namespace ResourceTable
 	};
 
 	inline const std::array<SoundInfo, static_cast<size_t>(SoundId::kCount)> kSoundTable = { {
-		{ SoundId::kMiningSound,     "sound/se/mining.mp3",      1.0f},
+		{ SoundId::kMiningSound,     "sound/se/mining.mp3",      0.5f},
+		{ SoundId::kMainBGM,         "sound/bgm/main1.mp3",       0.2f }
 } };
 
 }

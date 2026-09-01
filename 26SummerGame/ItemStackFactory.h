@@ -11,7 +11,7 @@
 
 namespace ItemStackFactory
 {
-	inline std::unique_ptr<ItemStack> Make(Item itemType, int count)
+	inline std::shared_ptr<ItemStack> Make(Item itemType, int count)
 	{
 		switch (itemType)
 		{

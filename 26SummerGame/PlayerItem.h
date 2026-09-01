@@ -40,10 +40,10 @@ public:
 	std::weak_ptr<ItemSlot> GetItemBar() const { return m_itemSlot; }
 
 	/// <summary>
-	/// 選択中のアイテムのItemStackへのポインタを返す。
+	/// 選択中のItemStackへの弱参照を返す。
 	/// </summary>
 	/// <returns></returns>
-	ItemStack* GetSelectedItemBar() const
+	std::weak_ptr<ItemStack> GetSelectedItemBar() const
 	{
 		return m_selectedItemBar;
 	}
@@ -74,10 +74,10 @@ public:
 	std::weak_ptr<ItemSlot> GetInventory() const { return m_inventory; }
 
 	/// <summary>
-	/// 選択中のアイテムのItemStackへのポインタを返す。
+	/// 選択中のItemStackへの弱参照を返す。
 	/// </summary>
 	/// <returns></returns>
-	ItemStack* GetSelectedInventoryItem() const
+	std::weak_ptr<ItemStack> GetSelectedInventoryItem() const
 	{
 		return m_selectedInventoryItem;
 	}
@@ -109,7 +109,7 @@ public:
 	/// <param name="item"></param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItem(std::unique_ptr<ItemStack> item, int count);
+	std::shared_ptr<ItemStack> AddItem(std::shared_ptr<ItemStack> item, int count);
 
 	bool CanAddItem(Item itemType, int count) const;
 
@@ -135,7 +135,7 @@ private:
 	/// <param name="item"></param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItemToItemBar(std::unique_ptr<ItemStack> item, int count);
+	std::shared_ptr<ItemStack> AddItemToItemBar(std::shared_ptr<ItemStack> item, int count);
 
 	/// <summary>
 	/// アイテムバーにアイテムをcount個追加する。
@@ -145,7 +145,7 @@ private:
 	/// <param name="item"></param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItemToInventory(std::unique_ptr<ItemStack> item, int count);
+	std::shared_ptr<ItemStack> AddItemToInventory(std::shared_ptr<ItemStack> item, int count);
 
 	bool CanAddToItemSlot(const std::weak_ptr<ItemSlot> itemSlot, Item itemType, int count) const;
 
@@ -171,9 +171,9 @@ private:
 
 	std::weak_ptr<CharactorStateManager> m_state;
 
-	ItemStack* m_selectedItemBar = nullptr;
+	std::weak_ptr<ItemStack> m_selectedItemBar;
 
-	ItemStack* m_selectedInventoryItem = nullptr;
+	std::weak_ptr<ItemStack> m_selectedInventoryItem;
 
 	Event<Item,int> m_onAddItem;
 	std::vector<Event<Item, int>::Connection> m_onAddItemConnections;

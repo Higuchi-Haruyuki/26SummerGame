@@ -26,7 +26,7 @@
 namespace
 {
 	//プレイヤー
-	const VectorInt kPlayerStartGridPos = { 0,0,0 };
+	const Vector kPlayerStartPos = { 7900,0,7900 };
 	const Vector kSkyDomePos = { 7900,0,7900 };
 }
 
@@ -48,7 +48,7 @@ void MainScene::Init()
 	m_mapManager.GenerateMapResource();
 
 	m_player = ObjectFactory::CreateObject(
-		Game::GridPosToWorldPos(kPlayerStartGridPos), "Player"
+		kPlayerStartPos, "Player"
 	);
 
 	const auto& player = m_player.lock();
@@ -81,7 +81,7 @@ void MainScene::Update()
 
 	if (player->GetPosition().m_y < -1000)
 	{
-		player->SetPosition(Game::GridPosToWorldPos(kPlayerStartGridPos));
+		player->SetPosition(kPlayerStartPos);
 	}
 
 }

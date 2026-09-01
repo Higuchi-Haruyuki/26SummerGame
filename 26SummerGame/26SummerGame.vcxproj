@@ -132,6 +132,7 @@
       <LanguageStandard>stdcpp20</LanguageStandard>
       <AdditionalIncludeDirectories>"C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -163,7 +164,6 @@
     <ClCompile Include="ItemStack.cpp" />
     <ClCompile Include="KeyBoardDevice.cpp" />
     <ClCompile Include="ManufacturingSystem.cpp" />
-    <ClCompile Include="Map.cpp" />
     <ClCompile Include="MapManager.cpp" />
     <ClCompile Include="MiningMachine.cpp" />
     <ClCompile Include="MiningSystem.cpp" />

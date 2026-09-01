@@ -170,7 +170,7 @@ void FactoryComponent::SetTimerDuration(Second sec)
 	m_timer = std::make_unique<Timer>(sec);
 }
 
-bool FactoryComponent::TryInsert(ItemSlot* itemSlot, std::unique_ptr<ItemStack> item)
+bool FactoryComponent::TryInsert(ItemSlot* itemSlot, std::shared_ptr<ItemStack> item)
 {
 	auto myItemStack = itemSlot->GetItem(item->GetItemType());
 
@@ -195,7 +195,7 @@ bool FactoryComponent::TryInsert(ItemSlot* toItemSlot, ItemStack* fromItem, int 
 	{
 		//新しくアイテムスタックを作成して追加する。
 		//渡されたアイテムの個数か指定された個数のうち小さい値で作成する。
-		auto newItemStack = std::make_unique<ItemStack>(fromItem->GetItemType(), min(fromItem->GetItemCount(), count));
+		auto newItemStack = std::make_shared<ItemStack>(fromItem->GetItemType(), min(fromItem->GetItemCount(), count));
 
 		//アイテム追加に失敗したときに処理を終了する。
 		if (toItemSlot->AddItem(std::move(newItemStack))) return false;

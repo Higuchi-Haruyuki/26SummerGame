@@ -29,7 +29,7 @@ public:
     /// アイテムのすべての所有権を引数で受け取った配列に移動する。
     /// </summary>
     /// <param name="result"></param>
-    void GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result) override;
+    void GetAllItemOwnership(std::vector<std::pair<std::shared_ptr<ItemStack>, int>>* result) override;
 
     void UpdateUIPanel() override;
 

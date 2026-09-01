@@ -40,11 +40,6 @@ private:
 	/// </summary>
 	void SetActiveQuest();
 
-	/// <summary>
-	/// キューの一番前のクエストのクリアイベントを購読する。
-	/// </summary>
-	void ListenQuestClearEvent();
-
 	void NextQuest();
 
 private:

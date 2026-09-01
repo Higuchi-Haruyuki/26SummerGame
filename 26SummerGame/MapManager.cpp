@@ -41,10 +41,10 @@ void MapManager::Draw() const
 		unsigned int color = 0x000000;
 		switch (gridResource.m_mapResource)
 		{
-		case Item::kCoalOre:   color = 0x33383d; break; // 青みの暗い炭色（純黒は避ける）
-		case Item::kIronOre:   color = 0x8fa8c8; break; // 青灰色
-		case Item::kRockOre:   color = 0xc2ab86; break; // 砂色・ベージュ
-		case Item::kCopperOre: color = 0xc87137; break; // 明るい銅色
+		case Item::kCoalOre:   color = 0x33383d; break;
+		case Item::kIronOre:   color = 0x496580; break;
+		case Item::kRockOre:   color = 0xA0805C; break;
+		case Item::kCopperOre: color = 0xF34F1D; break;
 		}
 
 		DrawSphere3D(worldPos.ToVECTOR(), 100, 16, color, color, true);

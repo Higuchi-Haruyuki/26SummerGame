@@ -1,5 +1,4 @@
 ﻿#pragma once
-#include <functional>
 #include <string>
 
 class FactoryManager;
@@ -13,7 +12,7 @@ public:
 
 	virtual void Init() {};
 
-	virtual void ClearCheck() {};
+	virtual bool ClearCheck() { return false; };
 
 	virtual float GetProgress() const { return 0.0f; };
 	/// <summary>
@@ -22,16 +21,9 @@ public:
 	/// <returns></returns>
 	const std::string& GetDescription() const { return m_description; }
 
-	void SetOnClear(const std::function<void()>& onClear)
-	{
-		m_onClear = onClear;
-	}
-
 protected:
 
 	FactoryManager& m_factoryManager;
-
-	std::function<void()> m_onClear;
 
 private:
 

@@ -44,7 +44,7 @@ bool FuelSystem::IsNeedAddNew() const
 	return false;
 }
 
-bool FuelSystem::AddNewFuel(std::unique_ptr<ItemStack> item)
+bool FuelSystem::AddNewFuel(std::shared_ptr<ItemStack> item)
 {
 	m_fuelSlot->AddItem(std::move(item));
 	return true;
@@ -67,7 +67,7 @@ bool FuelSystem::AddFuelCount(const std::shared_ptr<ItemStack>& item)
 	return true;
 }
 
-bool FuelSystem::AddFuel(std::unique_ptr<ItemStack> item)
+bool FuelSystem::AddFuel(std::shared_ptr<ItemStack> item)
 {
 	//追加するアイテムが使用可能な燃料でないとき
 	if (!IsEqualFuelType(item->GetItemType())) return false;
@@ -108,7 +108,7 @@ int FuelSystem::GetFuelRemain() const
 	return fuelItem->GetItemCount();
 }
 
-void FuelSystem::GetAllItemOwnership(std::vector<std::pair<std::unique_ptr<ItemStack>, int>>* result)
+void FuelSystem::GetAllItemOwnership(std::vector<std::pair<std::shared_ptr<ItemStack>, int>>* result)
 {
 	if (!m_fuelSlot) return;
 

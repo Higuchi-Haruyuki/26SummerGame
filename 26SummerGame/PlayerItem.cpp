@@ -63,16 +63,16 @@ void PlayerItem::Init()
 
 	m_inventory = std::make_shared<ItemSlot>(kInventoryWidthCount * kInventoryHeightCount);
 
-	m_itemSlot->AddItem(0, ItemStackFactory::Make(Item::kMiningMachine,100));
-	m_itemSlot->AddItem(1, ItemStackFactory::Make(Item::kBeltconveyor, 100));
-	m_itemSlot->AddItem(2, ItemStackFactory::Make(Item::kFurnace, 100));
-	m_itemSlot->AddItem(3, ItemStackFactory::Make(Item::kInserter, 100));
-	m_itemSlot->AddItem(4, ItemStackFactory::Make(Item::kAssemblingMachine, 100));
-	m_itemSlot->AddItem(5, ItemStackFactory::Make(Item::kCopperPlate, 50));
-	m_itemSlot->AddItem(6, ItemStackFactory::Make(Item::kIronPlate, 100));
-	m_itemSlot->AddItem(7, ItemStackFactory::Make(Item::kRockOre, 100));
-	m_itemSlot->AddItem(8, ItemStackFactory::Make(Item::kRockChest, 100));
-	m_itemSlot->AddItem(9, ItemStackFactory::Make(Item::kCoalOre, 50));
+	//m_itemSlot->AddItem(0, ItemStackFactory::Make(Item::kMiningMachine,100));
+	//m_itemSlot->AddItem(1, ItemStackFactory::Make(Item::kBeltconveyor, 100));
+	//m_itemSlot->AddItem(2, ItemStackFactory::Make(Item::kFurnace, 100));
+	//m_itemSlot->AddItem(3, ItemStackFactory::Make(Item::kInserter, 100));
+	//m_itemSlot->AddItem(4, ItemStackFactory::Make(Item::kAssemblingMachine, 100));
+	//m_itemSlot->AddItem(5, ItemStackFactory::Make(Item::kCopperPlate, 50));
+	//m_itemSlot->AddItem(6, ItemStackFactory::Make(Item::kIronPlate, 100));
+	//m_itemSlot->AddItem(7, ItemStackFactory::Make(Item::kRockOre, 100));
+	//m_itemSlot->AddItem(8, ItemStackFactory::Make(Item::kRockChest, 100));
+	//m_itemSlot->AddItem(9, ItemStackFactory::Make(Item::kCoalOre, 50));
 }
 
 void PlayerItem::Update()
@@ -95,7 +95,7 @@ void PlayerItem::SetItemBarChoiceIndex(int index)
 	m_itemBarChoiceIndex = index;
 }
 
-std::unique_ptr<ItemStack> PlayerItem::AddItem(std::unique_ptr<ItemStack> item, int count)
+std::shared_ptr<ItemStack> PlayerItem::AddItem(std::shared_ptr<ItemStack> item, int count)
 {
 	auto itemType = item->GetItemType();
 	auto remainItem = AddItemToItemBar(std::move(item), count);
@@ -129,7 +129,7 @@ bool PlayerItem::CanAddItem(Item itemType, int count) const
 	return false;
 }
 
-std::unique_ptr<ItemStack> PlayerItem::AddItemToItemBar(std::unique_ptr<ItemStack> item, int count)
+std::shared_ptr<ItemStack> PlayerItem::AddItemToItemBar(std::shared_ptr<ItemStack> item, int count)
 {
 	return m_itemSlot->AddItem(std::move(item), count);
 }
@@ -167,7 +167,7 @@ ItemStack* PlayerItem::GetItemFromItemBar(int idx) const
 	return m_itemSlot->GetItem(idx);
 }
 
-std::unique_ptr<ItemStack> PlayerItem::AddItemToInventory(std::unique_ptr<ItemStack> item, int count)
+std::shared_ptr<ItemStack> PlayerItem::AddItemToInventory(std::shared_ptr<ItemStack> item, int count)
 {
 	return m_inventory->AddItem(std::move(item), count);
 }
@@ -179,14 +179,14 @@ bool PlayerItem::CanAddToInventory(Item itemType, int count) const
 
 void PlayerItem::ChoiceItemSlot()
 {
-	m_selectedItemBar = m_itemSlot->GetItem(m_itemBarChoiceIndex);
+	m_selectedItemBar = m_itemSlot->GetItemReference(m_itemBarChoiceIndex);
 
 	Debug::Log(std::format("選択中のアイテムバーのインデックス: {}", m_itemBarChoiceIndex));
 }
 
 void PlayerItem::ChoiceInventorySlot()
 {
-	m_selectedInventoryItem = m_inventory->GetItem(m_inventoryChoiceIndex);
+	m_selectedInventoryItem = m_inventory->GetItemReference(m_inventoryChoiceIndex);
 
 	Debug::Log(std::format("選択中のインベントリのインデックス: {}", m_inventoryChoiceIndex));
 }

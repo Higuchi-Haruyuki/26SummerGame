@@ -46,7 +46,7 @@ namespace
 
 	//カメラ座標の限界値(暫定)
 
-	constexpr float kStartCameraPosY = 1000;
+	const Vector kStartCameraPos = { 7900,1000,7900 };
 
 	const Vector kMinCameraPos = { 500,400,500 };
 
@@ -66,7 +66,8 @@ void Camera::Init() {
 	//バックカリングを行う
 	SetUseBackCulling(true);
 
-	m_targetPos.m_y = kStartCameraPosY;
+	SetPosition(kStartCameraPos);
+	m_targetPos = kStartCameraPos;
 
 }
 

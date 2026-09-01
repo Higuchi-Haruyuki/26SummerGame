@@ -17,7 +17,7 @@ public:
 	void Init() override;
 	void Update() override;
 
-	std::unique_ptr<ItemStack> Mining(int count) const;
+	std::shared_ptr<ItemStack> Mining(int count) const;
 
 private:
 	MapManager& m_mapManager;

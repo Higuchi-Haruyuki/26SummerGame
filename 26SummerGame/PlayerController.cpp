@@ -32,7 +32,8 @@
 namespace
 {
 	constexpr Second kMiningTimer = 2.0f;
-	const SoundId kMiningSe = SoundId::kMiningSound;
+	constexpr SoundId kMiningSe = SoundId::kMiningSound;
+	constexpr SoundId kMainBGM = SoundId::kMainBGM;
 }
 
 PlayerController::PlayerController(std::weak_ptr<Object> parentObject)
@@ -61,6 +62,8 @@ void PlayerController::Init()
 	m_playerUI = AddComponent<PlayerUI>();
 
 	m_miningSystem = AddComponent<MiningSystem>();
+
+	SoundManager::GetInstance().PlayLoop(kMainBGM);
 }
 
 void PlayerController::Update()
@@ -73,6 +76,11 @@ void PlayerController::Update()
 	//プレイヤーの状態をデバックログで描画
 	Debug::Log(std::format("PlayerState: {}", m_state.lock()->CurrentStateToString()));
 
+}
+
+void PlayerController::Finalize()
+{
+	SoundManager::GetInstance().StopLoop(kMainBGM);
 }
 
 std::weak_ptr<FactoryComponent>  PlayerController::GetScreenCenterFactoryObject()

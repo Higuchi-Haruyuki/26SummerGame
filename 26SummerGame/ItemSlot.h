@@ -16,12 +16,13 @@ public:
 	int GetSlotCount() const { return m_items.size(); }
 
 	ItemStack* GetItem(int index) const;
+	std::weak_ptr<ItemStack> GetItemReference(int index) const;
 
 	ItemStack* GetItem(Item itemType) const;
 
 	std::vector<ItemStack*> GetItems(Item itemType) const;
 
-	std::unique_ptr<ItemStack> GetItemOwnership(int index);
+	std::shared_ptr<ItemStack> GetItemOwnership(int index);
 
 	void RemoveItem(int index) 
 	{ 
@@ -50,31 +51,31 @@ public:
 	/*アイテムを追加する関数群*/
 
 	/// <summary>
-	/// アイテムスタックのunique_ptrをcount分追加する。
+	/// アイテムスタックのshared_ptrをcount分追加する。
 	/// 成功時はnullptrを返す。
-	/// 失敗時と溢れたときはそのアイテムのポインタのunique_ptrを返す。
+	/// 失敗時と溢れたときはそのアイテムのshared_ptrを返す。
 	/// </summary>
 	/// <param name="itemType"></param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItem(std::unique_ptr<ItemStack> itemType, int count);
+	std::shared_ptr<ItemStack> AddItem(std::shared_ptr<ItemStack> itemType, int count);
 
 	/// <summary>
-	/// アイテムスタックのunique_ptrを追加する。
+	/// アイテムスタックのshared_ptrを追加する。
 	/// 成功時はnullptrを返す。
-	/// 失敗時はそのアイテムのポインタのunique_ptrを返す。
+	/// 失敗時はそのアイテムのshared_ptrを返す。
 	/// </summary>
 	/// <param name="itemType"></param>
 	/// <param name="count"></param>
 	/// <returns></returns>
-	std::unique_ptr<ItemStack> AddItem(std::unique_ptr<ItemStack> item);
+	std::shared_ptr<ItemStack> AddItem(std::shared_ptr<ItemStack> item);
 
 	/// <summary>
 	/// アイテムスタックを指定した場所に上書きする。
 	/// </summary>
 	/// <param name="index"></param>
 	/// <param name="item"></param>
-	void AddItem(int index, std::unique_ptr<ItemStack> item);
+	void AddItem(int index, std::shared_ptr<ItemStack> item);
 
 	/// <summary>
 	/// 何も入っていないアイテムスタックのインデックスを返す。全部埋まっているなら-1を返す。
@@ -104,6 +105,6 @@ public:
 	bool CanAddItem(Item checkItem, int checkCount) const;
 
 private:
-	std::vector<std::unique_ptr<ItemStack>> m_items;
+	std::vector<std::shared_ptr<ItemStack>> m_items;
 };
 

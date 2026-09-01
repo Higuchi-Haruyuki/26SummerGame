@@ -13,6 +13,12 @@ ItemStack* ItemSlot::GetItem(int index) const
 	return m_items.at(index).get();
 }
 
+std::weak_ptr<ItemStack> ItemSlot::GetItemReference(int index) const
+{
+	if (index < 0 || index >= static_cast<int>(m_items.size())) return {};
+	return m_items.at(index);
+}
+
 
 ItemStack* ItemSlot::GetItem(Item itemType) const
 {
@@ -37,7 +43,7 @@ std::vector<ItemStack*> ItemSlot::GetItems(Item itemType) const
 	return result;
 }
 
-std::unique_ptr<ItemStack> ItemSlot::GetItemOwnership(int index)
+std::shared_ptr<ItemStack> ItemSlot::GetItemOwnership(int index)
 {
 	if (!m_items.size()) return nullptr;
 
@@ -45,7 +51,7 @@ std::unique_ptr<ItemStack> ItemSlot::GetItemOwnership(int index)
 
 }
 
-std::unique_ptr<ItemStack> ItemSlot::AddItem(std::unique_ptr<ItemStack> item, int count)
+std::shared_ptr<ItemStack> ItemSlot::AddItem(std::shared_ptr<ItemStack> item, int count)
 {
 	if (!item) return nullptr;
 	if (count <= 0) return item;
@@ -77,7 +83,7 @@ std::unique_ptr<ItemStack> ItemSlot::AddItem(std::unique_ptr<ItemStack> item, in
 	return AddItem(std::move(item));
 }
 
-std::unique_ptr<ItemStack> ItemSlot::AddItem(std::unique_ptr<ItemStack> item)
+std::shared_ptr<ItemStack> ItemSlot::AddItem(std::shared_ptr<ItemStack> item)
 {
 
 	const int index = FindEmptyItemSlot();
@@ -91,7 +97,7 @@ std::unique_ptr<ItemStack> ItemSlot::AddItem(std::unique_ptr<ItemStack> item)
 	return nullptr;
 }
 
-void ItemSlot::AddItem(int index, std::unique_ptr<ItemStack> item)
+void ItemSlot::AddItem(int index, std::shared_ptr<ItemStack> item)
 {
 	m_items.at(index) = std::move(item);
 }

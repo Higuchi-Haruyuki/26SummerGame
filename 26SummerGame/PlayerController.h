@@ -26,6 +26,7 @@ public:
 
 	void Init() override;
 	void Update() override;
+	void Finalize() override;
 
 	/// <summary>
 	/// 画面の中心にいるFactoryComponentを持つオブジェクトを返す。

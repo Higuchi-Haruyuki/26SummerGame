@@ -35,7 +35,7 @@ using Radian = float;
 		/// <summary>
 		/// PlayerItemコンポーネントから選択中のアイテムへの弱参照を取得する。
 		/// </summary>
-		ItemStack* GetSelectedItemReference();
+		std::weak_ptr<ItemStack> GetSelectedItemReference();
 
 		/// <summary>
 		/// PlayerItemコンポーネントから選択中のアイテムを取得し、m_selectedItemにセットする。
@@ -105,8 +105,8 @@ using Radian = float;
 		//UIを表示するコンポーネントへの弱参照
 		std::weak_ptr<PlayerUI> m_playerUI;
 		
-		//選択中のアイテムへのポインタ
-		ItemStack* m_selectedItem = nullptr;
+		//選択中のアイテムへの弱参照
+		std::weak_ptr<ItemStack> m_selectedItem;
 
 		//プレビューオブジェクトへの弱参照
 		std::weak_ptr<Object> m_previewObject;

@@ -86,7 +86,7 @@ private:
 	/// <returns></returns>
 	int CountItemAtCraftQueue(Item item) const;
 
-	const std::pair<std::weak_ptr<Recipe>, int>& GetCraftQueue(int index) const;
+	std::pair<std::weak_ptr<Recipe>, int> GetCraftQueue(int index) const;
 
 private:
 	//シングルトンへの参照

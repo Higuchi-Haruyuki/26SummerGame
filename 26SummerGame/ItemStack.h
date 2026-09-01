@@ -37,7 +37,7 @@ public:
 	/// <param name="itemCount"></param>
 	/// <returns>ItemStack型のポインタ</returns>
 	template<std::derived_from<FactoryComponent> T>
-	static std::unique_ptr<ItemStack> MakeItemStack(
+	static std::shared_ptr<ItemStack> MakeItemStack(
 	const std::string& objTag, Item itemType, int itemCount)
 	{
 		auto installationFunc = [objTag](const VectorInt& gridPos, float rotationAngle)
@@ -49,13 +49,13 @@ public:
 				return ObjectFactory::CreateObject<T>({0,0,0}, objTag);
 			};
 
-		return std::make_unique<ItemStack>(itemType, itemCount, installationFunc, previewFunc);
+		return std::make_shared<ItemStack>(itemType, itemCount, installationFunc, previewFunc);
 	}
 
-	static std::unique_ptr<ItemStack> MakeItemStack(
+	static std::shared_ptr<ItemStack> MakeItemStack(
 		Item itemType, int itemCount)
 	{
-		return std::make_unique<ItemStack>(itemType, itemCount);
+		return std::make_shared<ItemStack>(itemType, itemCount);
 	}
 
 	//GETTER

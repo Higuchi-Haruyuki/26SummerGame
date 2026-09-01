@@ -22,6 +22,7 @@
 #include "UIText.h"
 #include "ContainerUtil.h"
 #include "Color.h"
+#include "FactoryManager.h"
 
 namespace
 {
@@ -462,8 +463,11 @@ void PlayerCraft::StoreOutput()
 	{
 		auto item = ItemStackFactory::Make(outItem, outCount);
 
-		if(m_playerItem.lock()->CanAddItem(outItem, outCount)) 
+		if(m_playerItem.lock()->CanAddItem(outItem, outCount))
+		{
 			m_playerItem.lock()->AddItem(std::move(item), outCount);
+			FactoryManager::GetInstance().OnMakeItem(outItem, outCount);
+		}
 
 	}
 
@@ -565,7 +569,7 @@ int PlayerCraft::CountItemAtCraftQueue(Item item) const
 
 
 
-const std::pair<std::weak_ptr<Recipe>, int>& PlayerCraft::GetCraftQueue(int index) const
+std::pair<std::weak_ptr<Recipe>, int> PlayerCraft::GetCraftQueue(int index) const
 {
 	if (index < 0 || index >= m_craftQueue.size()) return std::make_pair(std::weak_ptr<Recipe>(), -1);
 	return m_craftQueue.at(index);

@@ -66,22 +66,25 @@ namespace
 		if (!m_playerUI.lock()) m_playerUI = GetComponent<PlayerUI>();
 	}
 
-	ItemStack* InstallationMode::GetSelectedItemReference()
+	std::weak_ptr<ItemStack> InstallationMode::GetSelectedItemReference()
 	{
 		const auto& safePlayerItem = m_playerItem.lock();
-		if (!safePlayerItem) return nullptr;
+		if (!safePlayerItem) return {};
 		return safePlayerItem->GetSelectedItemBar();
 	}
 
 	void InstallationMode::SetSelectedItem()
 	{
-		const auto& newSelectedItem = GetSelectedItemReference();
+		const auto newSelectedItem = GetSelectedItemReference();
+		const auto newSelectedItemShared = newSelectedItem.lock();
+		const auto currentItemShared = m_selectedItem.lock();
 
 		//アイテムの選択状態が変わっていないとき
-		if (newSelectedItem == m_selectedItem) return;
+		if (newSelectedItemShared == currentItemShared &&
+			(newSelectedItemShared || m_previewObject.expired())) return;
 		
 		//今選択されているアイテムの選択終了処理を行う
-		if (const auto& safeCurrentItem = m_selectedItem) ResetItemAndPreviewObject();
+		if (!m_selectedItem.expired() || !m_previewObject.expired()) ResetItemAndPreviewObject();
 
 		//選択されているアイテムを保存するメンバ変数に保存
 		m_selectedItem = newSelectedItem;
@@ -97,23 +100,27 @@ namespace
 		//設置モードではないとき
 		if (!IsInstallationState()) return std::weak_ptr<Object>();
 
-		if (!m_selectedItem) return std::weak_ptr<Object>();
+		const auto selectedItem = m_selectedItem.lock();
+		if (!selectedItem) return std::weak_ptr<Object>();
 
-		return m_selectedItem->GeneratePreviewObject();
+		return selectedItem->GeneratePreviewObject();
 	}
 
 	void InstallationMode::SetPositionPreviewObject(const Vector& position)
 	{
-		if (!m_selectedItem) return;
+		const auto selectedItem = m_selectedItem.lock();
+		if (!selectedItem) return;
 
-		m_selectedItem->SetPositionPreviewObject(position);
+		selectedItem->SetPositionPreviewObject(position);
 	}
 
 	void InstallationMode::RotatePreviewObject(Radian rotationValue)
 	{
 		m_previewRotationAngle += rotationValue;
-		
-		m_selectedItem->RotationPreviewObject(m_previewRotationAngle);
+		const auto selectedItem = m_selectedItem.lock();
+		if (!selectedItem) return;
+			 
+		selectedItem->RotationPreviewObject(m_previewRotationAngle);
 	}
 
 	void InstallationMode::Installation(const Vector& position)
@@ -121,10 +128,11 @@ namespace
 		//UIがクリックされたときはそのクリックでは設置しない
 		if (m_uiManager.IsPointerHoverUI()) return;
 
-		if (!m_selectedItem) return;
+		const auto selectedItem = m_selectedItem.lock();
+		if (!selectedItem) return;
 
 		//そのアイテムを持っていないとき
-		if (!m_selectedItem->GetItemCount()) return;
+		if (!selectedItem->GetItemCount()) return;
 
 		//指定座標をグリッド座標に変換
 		auto gridPos = Game::WorldPosToGridPos(position);
@@ -146,12 +154,12 @@ namespace
 		}
 
 		//アイテムの設置する関数を呼び出す。
-		const auto& obj = m_selectedItem->Installation(gridPos, m_previewRotationAngle);
+		const auto& obj = selectedItem->Installation(gridPos, m_previewRotationAngle);
 
 		if (!obj.lock()) return;
 
 		//設置に成功していたらアイテム数を1つ減らす。
-		m_selectedItem->MinusItemCount(1);
+		selectedItem->MinusItemCount(1);
 
 		//現在の回転角度を保存
 		Radian angleTemp = m_previewRotationAngle;
@@ -171,11 +179,14 @@ namespace
 
 	void InstallationMode::ResetItem()
 	{
-		if (!m_selectedItem) return;
-			
-		m_selectedItem->RemovePreviewObject();
+		if (const auto selectedItem = m_selectedItem.lock()) {
+			selectedItem->RemovePreviewObject();
+		}
+		else if (const auto previewObject = m_previewObject.lock()) {
+			previewObject->Destroy();
+		}
 
-		m_selectedItem = nullptr;
+		m_selectedItem.reset();
 	}
 
 	void InstallationMode::ResetPreviewObject()

@@ -82,7 +82,7 @@
 		safePlayerItem->AddItem(ItemStackFactory::Make(itemType,1), 1);
 
 		//格納用配列の宣言と初期化
-		std::vector<std::pair<std::unique_ptr<ItemStack>, int>> allItem = {};
+		std::vector<std::pair<std::shared_ptr<ItemStack>, int>> allItem = {};
 		
 		//工業オブジェクトからすべてのアイテムの所有権を取得
 		factoryCom->GetAllItemOwnership(&allItem);

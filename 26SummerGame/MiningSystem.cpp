@@ -48,7 +48,7 @@ Vector MiningSystem::GetHitPosFromMousePointer() const
 	return result.GetHitPoint();
 }
 
-std::unique_ptr<ItemStack> MiningSystem::Mining(int count) const
+std::shared_ptr<ItemStack> MiningSystem::Mining(int count) const
 {
 	if (UIManager::GetInstance().IsPointerHoverUI()) return nullptr;
 

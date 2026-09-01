@@ -18,7 +18,7 @@ public:
 
     void Init() override;
 
-    void ClearCheck() override;
+    bool ClearCheck() override;
 
     float GetProgress() const override;
 

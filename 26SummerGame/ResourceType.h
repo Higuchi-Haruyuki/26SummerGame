@@ -91,5 +91,6 @@ enum class SoundId
 {
 	kNone = -1,
 	kMiningSound,
+	kMainBGM,
 	kCount
 };

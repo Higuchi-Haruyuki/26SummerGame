@@ -111,7 +111,7 @@ void MiningMachine::Update()
 	auto myGridPos = GetParentObject().lock()->GetGridPosition();
 	Item resource = m_mapManager.GetResourceAtGridPos(myGridPos);
 
-	bool result = FactoryComponent::TryInsert(m_outputSlot.get(), std::make_unique<ItemStack>(resource, 1));
+	bool result = FactoryComponent::TryInsert(m_outputSlot.get(), std::make_shared<ItemStack>(resource, 1));
 
 	if (result) 
 	{

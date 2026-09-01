@@ -33,7 +33,7 @@ class FactoryComponent :
 {
 public:
 	
-	using ItemContainer = std::vector<std::pair<std::unique_ptr<ItemStack>, int>>;
+	using ItemContainer = std::vector<std::pair<std::shared_ptr<ItemStack>, int>>;
 
 	FactoryComponent(std::weak_ptr<Object> parentObject);
 	virtual ~FactoryComponent();
@@ -119,7 +119,7 @@ protected:
 	/// </summary>
 	/// <param name="item"></param>
 	/// <returns></returns>
-	bool TryInsert(ItemSlot* itemSlot, std::unique_ptr<ItemStack> item);
+	bool TryInsert(ItemSlot* itemSlot, std::shared_ptr<ItemStack> item);
 
 	/// <summary>
 	/// このコンポーネントの引数に指定されたスロットにアイテムを入れようを試みる
