@@ -32,13 +32,14 @@
 namespace
 {
 	constexpr Second kMiningTimer = 2.0f;
-	constexpr SoundId kMiningSe = SoundId::kMiningSound;
+	constexpr SoundId kMiningSe = SoundId::kMiningSe;
 	constexpr SoundId kMainBGM = SoundId::kMainBGM;
 }
 
 PlayerController::PlayerController(std::weak_ptr<Object> parentObject)
 	: Component(parentObject), 
 	m_playerInput(PlayerInput::GetInstance()),
+	m_soundManager(SoundManager::GetInstance()),
 	m_miningTimer(kMiningTimer)
 {}
 
@@ -63,7 +64,7 @@ void PlayerController::Init()
 
 	m_miningSystem = AddComponent<MiningSystem>();
 
-	SoundManager::GetInstance().PlayLoop(kMainBGM);
+	m_soundManager.PlayLoop(kMainBGM);
 }
 
 void PlayerController::Update()
@@ -80,7 +81,7 @@ void PlayerController::Update()
 
 void PlayerController::Finalize()
 {
-	SoundManager::GetInstance().StopLoop(kMainBGM);
+	m_soundManager.StopLoop(kMainBGM);
 }
 
 std::weak_ptr<FactoryComponent>  PlayerController::GetScreenCenterFactoryObject()
@@ -132,7 +133,6 @@ void PlayerController::SetChoiceIndex()
 
 void PlayerController::InputAction()
 {
-
 	if (m_playerInput.GetAction("Decide")->GetPhase() == ButtonPhase::kTrigger)
 	{
 		OpenFactoryComponentUI();
@@ -230,7 +230,10 @@ void PlayerController::EnterInstallationMode()
 {
 	if (IsOpenFactoryUIState() || IsOpenInventoryUIState()) return;
 
-	ChangeState(CharactorState::INSTALLATION);
+	if (ChangeState(CharactorState::INSTALLATION))
+	{
+		m_soundManager.Play(SoundId::kEnterInstallationModeSe);
+	}
 
 }
 
@@ -245,7 +248,10 @@ void PlayerController::EnterDestroyMode()
 {
 	if (IsOpenFactoryUIState() || IsOpenInventoryUIState()) return;
 
-	ChangeState(CharactorState::DESTROY);
+	if (ChangeState(CharactorState::DESTROY))
+	{
+		m_soundManager.Play(SoundId::kEnterDestroyModeSe);
+	}
 }
 
 void PlayerController::ExitDestroyMode()
@@ -255,11 +261,12 @@ void PlayerController::ExitDestroyMode()
 	ChangeState(CharactorState::IDLE);
 }
 
-void PlayerController::ChangeState(const CharactorState& newState)
+bool PlayerController::ChangeState(const CharactorState& newState)
 {
 	const auto& safeState = m_state.lock();
-	if (!safeState) return;
-	safeState->ChangeState(newState);
+	if (!safeState) return false;
+	
+	return safeState->ChangeState(newState);
 }
 
 void PlayerController::MiningAction()

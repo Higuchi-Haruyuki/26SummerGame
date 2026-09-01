@@ -4,6 +4,8 @@
 #include "Debug.h"
 #include <format>
 #include "ItemType.h"
+#include "SoundManager.h"
+#include "ResourceType.h"
 
 // インスタンス取得
 QuestManager& QuestManager::GetInstance()
@@ -42,6 +44,7 @@ void QuestManager::QuestClearCheck()
 	}
 	if (m_questQueue.front()->ClearCheck()) {
 		NextQuest();
+		SoundManager::GetInstance().Play(SoundId::kOnQuestEndSe);
 	}
 }
 

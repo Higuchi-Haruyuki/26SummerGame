@@ -31,7 +31,7 @@ public:
 	/// 現在のステートを変更する
 	/// </summary>
 	/// <param name="newState"></param>
-	void ChangeState(const CharactorState& newState);
+	bool ChangeState(const CharactorState& newState);
 
 	/// <summary>
 	/// 設定された最低時間を無視して現在のステートを変更する

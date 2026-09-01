@@ -19,6 +19,7 @@
 #include "Inserter.h"
 #include "MiningMachine.h"
 #include "Furnace.h"
+#include "SoundManager.h"
 
 namespace
 {
@@ -84,6 +85,9 @@ void TitleScene::Init()
 	PutOnFactoryObject(kFactoryObjectStartPos + VectorInt{-2,0,-3}, kBeltConveyorCount + 2);
 
 	PutOnFactoryObject(kFactoryObjectStartPos + VectorInt{-5,0,4 }, kBeltConveyorCount + 10);
+
+	//Bgm
+	SoundManager::GetInstance().PlayLoop(SoundId::kTitleBGM);
 }
 
 void TitleScene::Update()
@@ -91,6 +95,11 @@ void TitleScene::Update()
 	Scene::Update();
 
 	UpdateUI();
+}
+
+void TitleScene::Finalize()
+{
+	SoundManager::GetInstance().StopLoop(SoundId::kTitleBGM);
 }
 
 void TitleScene::BuildUI()

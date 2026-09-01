@@ -87,7 +87,7 @@ void Scene::Draw() const
 	}
 
 	//デバック用のログを描画
-	//Debug::Draw();
+	Debug::Draw();
 }
 void Scene::Finalize()
 {

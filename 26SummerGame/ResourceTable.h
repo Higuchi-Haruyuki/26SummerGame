@@ -119,7 +119,12 @@ namespace ResourceTable
 	};
 
 	inline const std::array<SoundInfo, static_cast<size_t>(SoundId::kCount)> kSoundTable = { {
-		{ SoundId::kMiningSound,     "sound/se/mining.mp3",      0.5f},
+		{ SoundId::kMiningSe,     "sound/se/mining.mp3",      0.5f},
+		{ SoundId::kClickSe,     "sound/se/click.mp3",      0.5f},
+		{ SoundId::kOnQuestEndSe,     "sound/se/quest_end.mp3",      0.5f},
+		{ SoundId::kEnterInstallationModeSe,     "sound/se/enter_installation_mode.mp3",      0.5f },
+		{ SoundId::kEnterDestroyModeSe,     "sound/se/enter_destroy_mode.mp3",      0.5f },
+		{SoundId::kTitleBGM,         "sound/bgm/title2.mp3",      0.2f },
 		{ SoundId::kMainBGM,         "sound/bgm/main1.mp3",       0.2f }
 } };
 

@@ -14,15 +14,17 @@ FactoryManager& FactoryManager::GetInstance()
 	// TODO: return ステートメントをここに挿入します
 }
 
-void FactoryManager::AddToFactoryComponents(std::shared_ptr<FactoryComponent> f)
+void FactoryManager::AddToFactoryComponents(std::weak_ptr<FactoryComponent> f)
 {
+	const auto& safeFactoryComponent = f.lock();
+	if (!safeFactoryComponent) return;
 	//親オブジェクトがシーンの管理下におかれていないなら追加しない。
-	if (!SceneManager::GetInstance().GetCurrentScene()->HasSceneObjects(f->GetParentObject())) return;
+	if (!SceneManager::GetInstance().GetCurrentScene()->HasSceneObjects(safeFactoryComponent->GetParentObject())) return;
 
 	//すでにもっているときは処理をしない
 	for (const auto& factoryComponent : m_factoryComponents)
 	{
-		if (factoryComponent == f) return;
+		if (factoryComponent.lock() == safeFactoryComponent) return;
 	}
 	m_factoryComponents.push_back(f);
 }
@@ -35,9 +37,10 @@ std::weak_ptr<FactoryComponent> FactoryManager::GetComponentAtGridPos(const Vect
 {
 	for (const auto& com : m_factoryComponents)
 	{
+		if (com.lock() == nullptr) continue;
 		if (IsReservedRemove(com)) continue;
-		if (!com->GetParentObject().lock()) continue;
-		if (com->GetParentObject().lock()->GetGridPosition() == gridPos) return com;
+		if (!com.lock()->GetParentObject().lock()) continue;
+		if (com.lock()->GetParentObject().lock()->GetGridPosition() == gridPos) return com;
 	}
 	return std::weak_ptr<FactoryComponent>();
 }
@@ -46,8 +49,9 @@ bool FactoryManager::IsManageFactoryComponent(std::weak_ptr<FactoryComponent> f)
 {
 	for (const auto& com : m_factoryComponents)
 	{
+		if (com.lock() == nullptr) continue;
 		if (IsReservedRemove(com)) continue;
-		if (com == f.lock()) return true;
+		if (com.lock() == f.lock()) return true;
 	}
 	return false;
 }
@@ -56,7 +60,8 @@ bool FactoryManager::IsReservedRemove(std::weak_ptr<FactoryComponent> f)
 {
 	for (const auto& com : m_removeFactoryComponents)
 	{
-		if (com == f.lock()) return true;
+		if (f.lock() == nullptr) continue;
+		if (com.lock() == f.lock()) return true;
 	}
 	return false;
 }
@@ -71,7 +76,9 @@ void FactoryManager::RemoveFactoryComponents()
 {
 	for (const auto& com : m_removeFactoryComponents)
 	{
-		m_factoryComponents.erase(std::find(m_factoryComponents.begin(), m_factoryComponents.end(), com));
+		const auto& safeCom = com.lock();
+		if (!safeCom) continue;
+		std::erase_if(m_factoryComponents, [&safeCom](const std::weak_ptr<FactoryComponent>& f) { return f.lock() == safeCom; });
 	}
 	m_removeFactoryComponents.clear();
 }

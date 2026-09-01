@@ -14,6 +14,7 @@ class Model;
 class Animation3D;
 class CharactorStateManager;
 class PlayerUI;
+class SoundManager;
 class MiningSystem;
 
 enum class CharactorState;
@@ -64,7 +65,7 @@ private:
 	
 	void OpenInventoryUI();
 
-	void ChangeState(const CharactorState& newState);
+	bool ChangeState(const CharactorState& newState);
 
 	void MiningAction();
 
@@ -80,6 +81,7 @@ private:
 private:
 	//
 	PlayerInput& m_playerInput;
+	SoundManager& m_soundManager;
 
 	bool isMiningLastFrame = false;
 

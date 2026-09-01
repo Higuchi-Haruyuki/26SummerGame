@@ -8,6 +8,7 @@
 #include "ItemManager.h"
 #include "ItemType.h"
 #include "ItemStackFactory.h"
+#include "SoundManager.h"
 
 namespace
 {
@@ -270,6 +271,7 @@ void UIManager::MouseLeftProcess(const Vector& nowPos,
 			else
 			{
 				captured->OnClick(nowPos);
+				SoundManager::GetInstance().Play(SoundId::kClickSe);
 			}
 		}
 

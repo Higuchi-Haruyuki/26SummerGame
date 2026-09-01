@@ -90,7 +90,14 @@ enum class ModelId
 enum class SoundId
 {
 	kNone = -1,
-	kMiningSound,
+	//SE
+	kMiningSe,
+	kClickSe,
+	kOnQuestEndSe,
+	kEnterInstallationModeSe,
+	kEnterDestroyModeSe,
+	//BGM
+	kTitleBGM,
 	kMainBGM,
 	kCount
 };

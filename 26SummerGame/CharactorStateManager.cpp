@@ -24,11 +24,11 @@ void CharactorStateManager::SetStateMinTime(const std::map<CharactorState, int> 
 	}
 }
 
-void CharactorStateManager::ChangeState(const CharactorState& newState)
+bool CharactorStateManager::ChangeState(const CharactorState& newState)
 {
 
 	//引数で与えられたステートが現在のステートと同じ時処理をしない
-	if (m_currentState == newState) return;
+	if (m_currentState == newState) return false;
 
 	//現在のステートの最低時間情報を持っているか
 	auto it = m_stateMinTime.find(m_currentState);
@@ -38,7 +38,7 @@ void CharactorStateManager::ChangeState(const CharactorState& newState)
 		//指定経過時間以下なら処理をしない
 		if (m_timer - m_stateStartTime <= m_stateMinTime[m_currentState]) 
 		{
-			return;
+			return false;
 		}
 	}
 	auto before = m_currentState;
@@ -48,6 +48,7 @@ void CharactorStateManager::ChangeState(const CharactorState& newState)
 	if(OnChangeState) OnChangeState(before, m_currentState);
 
 	m_stateStartTime = m_timer;
+	return true;
 }
 
 void CharactorStateManager::ChangeStateIgnoreMinTime(const CharactorState& newState)

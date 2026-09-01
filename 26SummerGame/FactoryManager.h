@@ -17,7 +17,7 @@ public:
 	// シングルトンのインスタンスを返します
 	static FactoryManager& GetInstance();
 
-	void AddToFactoryComponents(std::shared_ptr<FactoryComponent> f);
+	void AddToFactoryComponents(std::weak_ptr<FactoryComponent> f);
 
 	std::weak_ptr<FactoryComponent> GetComponentAtGridPos(const VectorInt& gridPos);
 
@@ -72,9 +72,9 @@ private:
 	FactoryManager& operator=(FactoryManager&&) = delete;
 
 private:
-	std::vector<std::shared_ptr<FactoryComponent>> m_factoryComponents;
+	std::vector<std::weak_ptr<FactoryComponent>> m_factoryComponents;
 
-	std::vector<std::shared_ptr<FactoryComponent>> m_removeFactoryComponents;
+	std::vector<std::weak_ptr<FactoryComponent>> m_removeFactoryComponents;
 
 	std::map<Item, unsigned int> m_itemMakeCount;
 };
