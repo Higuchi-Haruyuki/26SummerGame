@@ -54,10 +54,6 @@ namespace ResourceTable
 		{ GraphicId::kRockChestIcon,"assets/textures/icon/rock_chest.png"},
 		{ GraphicId::kAssemblingMachineIcon, "assets/textures/icon/assemblingMachine.png"},
 
-		{ GraphicId::kInserterTop, ResourceName::kInserterTop.c_str() },
-		{ GraphicId::kFurnaceTop,      ResourceName::kFurnaceTop.c_str() },
-		{ GraphicId::kMiningMachineTop,ResourceName::kMiningMachineTop.c_str()},
-
 		{ GraphicId::kButtonA, ResourceName::kButtonA.c_str() },
 		{ GraphicId::kButtonY, ResourceName::kButtonY.c_str() },
 		{ GraphicId::kButtonX, ResourceName::kButtonX.c_str() },

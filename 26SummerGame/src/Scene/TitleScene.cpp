@@ -20,6 +20,9 @@
 #include "MiningMachine.h"
 #include "Furnace.h"
 #include "SoundManager.h"
+#include "Furnace.h"
+#include "AssemblingMachine.h"
+#include "Chest.h"
 
 namespace
 {
@@ -179,7 +182,22 @@ void TitleScene::PutOnFactoryObject(const VectorInt& startPos,int beltconveyorCo
 	ObjectFactory::CreateObject<Inserter>(pos);
 	nextPos();
 
-	for (int i = 0; i < beltconveyorCount; i++)
+	for (int i = 0; i < beltconveyorCount / 2; i++)
+	{
+		ObjectFactory::CreateObject<BeltConveyor>(pos);
+		nextPos();
+	}
+	//インサータ
+	ObjectFactory::CreateObject<Inserter>(pos);
+	nextPos();
+
+	ObjectFactory::CreateObject<Furnace>(pos);
+	nextPos();
+
+	ObjectFactory::CreateObject<Inserter>(pos);
+	nextPos();
+
+	for (int i = 0; i < beltconveyorCount / 2; i++)
 	{
 		ObjectFactory::CreateObject<BeltConveyor>(pos);
 		nextPos();
@@ -189,7 +207,14 @@ void TitleScene::PutOnFactoryObject(const VectorInt& startPos,int beltconveyorCo
 	ObjectFactory::CreateObject<Inserter>(pos);
 	nextPos();
 
+	ObjectFactory::CreateObject<AssemblingMachine>(pos);
+	nextPos();
+
+	//インサータ
+	ObjectFactory::CreateObject<Inserter>(pos);
+	nextPos();
+
 	//採掘機
-	ObjectFactory::CreateObject<Furnace>(pos);
+	ObjectFactory::CreateObject<Chest>(pos);
 	nextPos();
 }

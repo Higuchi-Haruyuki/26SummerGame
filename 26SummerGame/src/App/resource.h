@@ -1,12 +1,14 @@
 ﻿//{{NO_DEPENDENCIES}}
-// Microsoft Visual C++ generated include file.
-// Used by DxLibComponent3D.rc
+// Microsoft Visual C++ で生成されたインクルード ファイル。
+// DxLibComponent3D.rc で使用
+//
+#define IDI_ICON1                       106
 
-// 新しいオブジェクトの次の既定値
+// Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED
 #ifndef APSTUDIO_READONLY_SYMBOLS
-#define _APS_NEXT_RESOURCE_VALUE        101
+#define _APS_NEXT_RESOURCE_VALUE        107
 #define _APS_NEXT_COMMAND_VALUE         40001
 #define _APS_NEXT_CONTROL_VALUE         1001
 #define _APS_NEXT_SYMED_VALUE           101

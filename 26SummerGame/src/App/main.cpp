@@ -8,27 +8,22 @@
 #include "TitleScene.h"
 #include <memory>
 #include "TitleScene.h"
+#include "resource.h"
 // プログラムは WinMain から始まります
 int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nCmdShow)
 {
 
-#if false
-	// exe自身のパスを取得し、そのディレクトリをカレントディレクトリに設定する。
-  // これにより「exeがどこに置かれても」相対パスでのアセット読み込みが安定する。
-	char exePath[MAX_PATH];
-	GetModuleFileNameA(nullptr, exePath, MAX_PATH);
+	SetWindowText("てのひらファクトリー");
+	SetGraphMode(static_cast<int>(Game::kDisplaySize.m_x), static_cast<int>(Game::kDisplaySize.m_y), 32);	// ウィンドウの大きさとカラービット数の指定
 
-	std::string exeDir(exePath);
-	size_t pos = exeDir.find_last_of("\\/");
-	if (pos != std::string::npos) {
-		exeDir = exeDir.substr(0, pos);
-	}
-	SetCurrentDirectoryA(exeDir.c_str());
+#if _DEBUG
+	ChangeWindowMode(1);
+#else
+	ChangeWindowMode(0);
 #endif
 
-	SetWindowText("夏制作");
-	SetGraphMode(static_cast<int>(Game::kDisplaySize.m_x), static_cast<int>(Game::kDisplaySize.m_y), 32);	// ウィンドウの大きさとカラービット数の指定
-	ChangeWindowMode(true);
+	SetWindowIconID(IDI_ICON1);
+
 	if (DxLib_Init() == -1)		// ＤＸライブラリ初期化処理
 	{
 		return -1;			// エラーが起きたら直ちに終了

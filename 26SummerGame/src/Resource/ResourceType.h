@@ -31,10 +31,6 @@ enum class GraphicId
 	kRockChestIcon,
 	kAssemblingMachineIcon,
 
-	kFurnaceTop,
-	kMiningMachineTop,
-	kInserterTop,
-
 	kButtonA,
 	kButtonY,
 	kButtonX,

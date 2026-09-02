@@ -15,9 +15,6 @@ namespace ResourceName
 	const std::string kBeltConveyorGraph = "assets/textures/icon/beltconveyor.png";
 	const std::string kFurnaceGraph = "assets/textures/icon/furnace.png";
 	const std::string kMiningMachineGraph = "assets/textures/icon/miningMachine.png";
-	const std::string kFurnaceTop = "assets/textures/furnace_top.png";
-	const std::string kMiningMachineTop = "assets/textures/miningMachine_top.png";
-	const std::string kInserterTop = "assets/textures/inserter_top.png";
 
 	const std::string kButtonA = "assets/textures/icon/key/button_A.png";
 	const std::string kButtonY = "assets/textures/icon/key/button_Y.png";
