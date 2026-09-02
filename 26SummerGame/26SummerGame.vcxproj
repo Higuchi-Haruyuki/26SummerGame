@@ -303,9 +303,7 @@
     <None Include="docs\ClassDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Image Include="..\..\..\..\Downloads\66bddb16-5798-4f25-9d17-516e03d4d935.ico" />
     <Image Include="assets\textures\app_icon.ico" />
-    <Image Include="assets\textures\tenohira_factory.ico" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
