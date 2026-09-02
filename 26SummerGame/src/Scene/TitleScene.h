@@ -44,7 +44,7 @@ private:
  
     std::weak_ptr<Object> m_skyDome;
 
-    const static int kChoiceCount = 2;
+    const static int kChoiceCount = 1;
     std::array<std::pair<std::weak_ptr<UISquare>, std::weak_ptr<UIText>>, kChoiceCount> m_choiceBox;
 };
 

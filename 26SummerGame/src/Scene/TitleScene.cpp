@@ -43,7 +43,7 @@ namespace
 	const Vector kTitleUISize = { 1000,500 };
 
 	const Vector kChoiceBoxSize = { 200,50 };
-	const Vector kChoiceBoxFirstPos = { Game::kDisplaySize.m_x * 0.5f,Game::kDisplaySize.m_y * 0.6f };
+	const Vector kChoiceBoxFirstPos = { Game::kDisplaySize.m_x * 0.5f,Game::kDisplaySize.m_y * 0.65f };
 	const Vector kChoiceBoxOffset = { 0,Game::kDisplaySize.m_y * 0.07f };
 
 	const Color kChoiceBoxNormalColor = Color::kMainColor;
@@ -141,13 +141,14 @@ void TitleScene::BuildUI()
 
 	{
 		const auto& [square, text] = m_choiceBox.at(0);
-		text.lock()->SetText("はじめから");
+		text.lock()->SetText("プレイ");
 	}
 
-	{
-		const auto& [square, text] = m_choiceBox.at(1);
-		text.lock()->SetText("つづきから");
-	}
+	/*{
+
+			const auto& [square, text] = m_choiceBox.at(1);
+			text.lock()->SetText("つづきから");
+	}*/
 
 }
 

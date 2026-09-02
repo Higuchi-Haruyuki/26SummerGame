@@ -9,19 +9,19 @@ namespace
 	{ 
 		{
 			Item::kCoalOre,
-			{ 0.05f,3,5 }
+			{ 0.07f,3,5 }
 		},
 		{
 			Item::kIronOre,
-			{ 0.03f,3,5 }
+			{ 0.05f,3,5 }
 		},
 		{
 			Item::kRockOre,
-			{ 0.03f,3,5 }
+			{ 0.05f,3,5 }
 		},
 		{
 			Item::kCopperOre,
-			{ 0.03f,3,5 }
+			{ 0.05f,3,5 }
 		},
 
 	};
