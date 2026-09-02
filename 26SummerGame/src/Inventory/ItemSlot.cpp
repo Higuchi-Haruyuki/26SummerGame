@@ -1,5 +1,6 @@
 ﻿#include "ItemSlot.h"
 #include "ItemStack.h"
+#include "SaveData.h"
 
 ItemSlot::ItemSlot(int itemCount)
 {
@@ -120,6 +121,33 @@ bool ItemSlot::CanAddItem(Item checkItem, int checkCount) const
 
 	}
 	return false;
+}
+
+std::vector<save_data::ItemStack> ItemSlot::Save() const
+{
+	std::vector<save_data::ItemStack> result;
+	result.reserve(m_items.size());
+
+	for (int i = 0; i < GetSlotCount(); i++)
+	{
+		result.push_back(SaveItemStack(i));
+	}
+
+	return result;
+}
+
+save_data::ItemStack ItemSlot::SaveItemStack(int index) const
+{
+	save_data::ItemStack result;
+
+	const auto& item = m_items.at(index);
+	if(item)
+	{
+		result.SlotIndex = index;
+		result.ItemType = item->GetItemType();
+		result.Count = item->GetItemCount();
+	}
+	return result;
 }
 
 std::map<Item, int> ItemSlot::SumItemCount() const

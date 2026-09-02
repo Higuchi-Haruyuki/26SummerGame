@@ -168,7 +168,7 @@ void PlayerController::InputAction()
 		ExitDestroyMode();
 	}
 
-	if (m_playerInput.GetAction("RightClick")->GetPhase() == ButtonPhase::kPressed)
+	if (m_playerInput.GetAction("RightClick")->GetPhase() == ButtonPhase::kPressed && IsIdleState())
 	{
 		MiningAction();
 		if (!isMiningLastFrame)

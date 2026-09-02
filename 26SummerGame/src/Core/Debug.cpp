@@ -9,8 +9,10 @@ std::vector<std::string> Debug::m_debugLog;
 int Debug::m_debugLogMaxLine = 32;
 void Debug::Draw()
 {
+#if _DEBUG
 	DrawDebugLog();
 	DrawLine();
+#endif
 }
 void Debug::DrawLine()
 {

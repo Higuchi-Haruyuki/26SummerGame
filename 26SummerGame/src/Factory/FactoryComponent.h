@@ -7,6 +7,7 @@
 #include <functional>
 #include <string>
 #include "ItemType.h"
+#include "SaveData.h"
 
 class Timer;
 class ItemStack;
@@ -25,6 +26,12 @@ class ItemSlot;
 class UIPanel;
 class UIManager;
 
+namespace save_data
+{
+	struct FactoryObject;
+	struct ItemStack;
+}
+
 using Radian = float;
 using Second = float;
 
@@ -32,7 +39,7 @@ class FactoryComponent :
 	public Component
 {
 public:
-	
+
 	using ItemContainer = std::vector<std::pair<std::shared_ptr<ItemStack>, int>>;
 
 	FactoryComponent(std::weak_ptr<Object> parentObject);
@@ -66,6 +73,10 @@ public:
 	/// </summary>
 	/// <param name="result"></param>
 	virtual void GetAllItemOwnership(ItemContainer* result);
+
+	virtual save_data::FactoryObject Save() const;
+
+	virtual std::vector<save_data::ItemStack> SaveFuelItems() const { return {}; }
 
 	//SETTER
 

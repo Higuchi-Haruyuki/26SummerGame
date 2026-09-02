@@ -20,6 +20,7 @@
 #include <cmath>
 #include "ItemManager.h"
 #include "UIPanel.h"
+#include "SaveData.h"
 
 namespace
 {
@@ -120,6 +121,21 @@ void FactoryComponent::GetAllItemOwnership(ItemContainer* result)
 		auto itemCount = item->GetItemCount();
 		result->push_back(std::make_pair(std::move(item), itemCount));
 	}
+}
+
+save_data::FactoryObject FactoryComponent::Save() const
+{
+	save_data::FactoryObject factoryObject =
+	{
+	m_itemType,
+	GetParentObject().lock()->GetGridPosition(),
+	GetRotationAngle(),
+	m_inputSlot->Save(),
+	m_outputSlot->Save(),
+	SaveFuelItems()
+	};
+
+	return factoryObject;
 }
 
 void FactoryComponent::SetRotationAngle(Radian angle)

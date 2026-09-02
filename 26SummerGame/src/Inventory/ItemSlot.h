@@ -7,6 +7,11 @@
 class ItemStack;
 enum class Item;
 
+namespace save_data
+{
+	struct ItemStack;
+}
+
 class ItemSlot
 {
 public:
@@ -104,6 +109,11 @@ public:
 	/// <returns></returns>
 	bool CanAddItem(Item checkItem, int checkCount) const;
 
+	std::vector<save_data::ItemStack> Save() const;
+
+private:
+
+	save_data::ItemStack SaveItemStack(int index) const;
 private:
 	std::vector<std::shared_ptr<ItemStack>> m_items;
 };
