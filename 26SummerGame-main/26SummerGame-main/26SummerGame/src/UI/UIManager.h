@@ -100,6 +100,8 @@ private:
 
 	void ResetRightDrag();
 private:
+	void MouseHoverCheck(const Vector& nowPos,
+		const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens);
 
 	void MouseLeftProcess(const Vector& nowPos, 
 		const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens);

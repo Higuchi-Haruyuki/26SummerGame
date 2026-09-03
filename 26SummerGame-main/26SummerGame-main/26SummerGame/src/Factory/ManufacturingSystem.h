@@ -77,6 +77,9 @@ private:
 
     RecipeType m_allowRecipeType = RecipeType::kNone;
 
+    //タイトルラベル用のアイテムボックス保存配列
+    std::vector < std::shared_ptr<UIItemBox>> m_itemBoxes;
+
     //レシピ設定用のパネル
     std::shared_ptr<UIPanel> m_uiPanel;
 

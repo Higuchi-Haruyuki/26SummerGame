@@ -77,6 +77,10 @@ private:
 	PlayerInput(PlayerInput&&) = delete;
 	PlayerInput& operator = (PlayerInput&&) = delete;
 
+private:
+
+	bool IsExistAction(const std::string& name) const;
+
 	void UpdateActiveDevice();
 
 private:

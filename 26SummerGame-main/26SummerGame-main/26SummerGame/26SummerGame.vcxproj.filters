@@ -147,9 +147,6 @@
     <ClCompile Include="src\Input\PlayerInput.cpp">
       <Filter>Input</Filter>
     </ClCompile>
-    <ClCompile Include="src\Inventory\Chest.cpp">
-      <Filter>Inventory</Filter>
-    </ClCompile>
     <ClCompile Include="src\Inventory\ItemSlot.cpp">
       <Filter>Inventory</Filter>
     </ClCompile>
@@ -191,9 +188,6 @@
     </ClCompile>
     <ClCompile Include="src\Quest\QuestManager.cpp">
       <Filter>Quest</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Resource\ResourceGenerator.cpp">
-      <Filter>Resource</Filter>
     </ClCompile>
     <ClCompile Include="src\Resource\ResourceManager.cpp">
       <Filter>Resource</Filter>
@@ -244,6 +238,13 @@
       <Filter>World</Filter>
     </ClCompile>
     <ClCompile Include="src\Save\SaveManager.cpp" />
+    <ClCompile Include="src\World\ResourceGenerator.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\Chest.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UITextLabel.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\App\Game.h">
@@ -372,9 +373,6 @@
     <ClInclude Include="src\Input\PlayerInput.h">
       <Filter>Input</Filter>
     </ClInclude>
-    <ClInclude Include="src\Inventory\Chest.h">
-      <Filter>Inventory</Filter>
-    </ClInclude>
     <ClInclude Include="src\Inventory\ItemManager.h">
       <Filter>Inventory</Filter>
     </ClInclude>
@@ -425,9 +423,6 @@
     </ClInclude>
     <ClInclude Include="src\Quest\QuestManager.h">
       <Filter>Quest</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Resource\ResourceGenerator.h">
-      <Filter>Resource</Filter>
     </ClInclude>
     <ClInclude Include="src\Resource\ResourceManager.h">
       <Filter>Resource</Filter>
@@ -506,6 +501,13 @@
     </ClInclude>
     <ClInclude Include="src\Save\SaveData.h" />
     <ClInclude Include="src\Save\SaveManager.h" />
+    <ClInclude Include="src\World\ResourceGenerator.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\Chest.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UITextLabel.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="src\App\DxLibComponent3D.rc">

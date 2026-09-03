@@ -27,8 +27,7 @@ void UIManager::Update(float deltaTime)
 
 	MouseRightProcess(nowPos, orderedScreens);
 
-	if (FindHitElement(orderedScreens, nowPos)) m_isPointerOverUI = true;
-	else m_isPointerOverUI = false;
+	MouseHoverCheck(nowPos,orderedScreens);
 
 	for (const auto& [name, screen] : m_screens)
 	{
@@ -222,6 +221,22 @@ void UIManager::ResetRightDrag()
 	m_isRightDragging = false;
 }
 
+void UIManager::MouseHoverCheck(const Vector& nowPos, const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens)
+{
+	const auto& hitElement = FindHitElement(orderedScreens, nowPos);
+
+	if (hitElement)
+	{
+		hitElement->OnHoverUI();
+		m_isPointerOverUI = true;
+	}
+	else 
+	{
+
+		m_isPointerOverUI = false;
+	}
+}
+
 void UIManager::MouseLeftProcess(const Vector& nowPos,
 	const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens)
 {
@@ -284,7 +299,6 @@ void UIManager::MouseRightProcess(const Vector& nowPos,
 	const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens)
 {
 	const auto& hitElement = FindHitElement(orderedScreens, nowPos);
-	if(hitElement)	hitElement->OnHoverUI();
 
 	//押した瞬間に最前面をキャプチャする。
 	if (m_pointer.IsRightButtonTrigger())

@@ -181,12 +181,12 @@ void ManufacturingSystem::BuildUIPanel()
 	//Windowの生成
 	UIFactory::MakeUIToPanel<UISquare>(m_uiPanel, kWindowPos, kWindowSize, kWindowColor, kWindowAlpha);
 
-	const auto closeSize = Vector{ 30,30 };
-	const auto closeOffset = Vector{ -10,10 };
-	const auto closePos = kWindowPos + Vector{ kWindowSize.m_x * 0.5f , -kWindowSize.m_y * 0.5f } + Vector{ -closeSize.m_x * 0.5f, closeSize.m_y * 0.5f} + closeOffset;
+	//const auto closeSize = Vector{ 30,30 };
+	//const auto closeOffset = Vector{ -10,10 };
+	//const auto closePos = kWindowPos + Vector{ kWindowSize.m_x * 0.5f , -kWindowSize.m_y * 0.5f } + Vector{ -closeSize.m_x * 0.5f, closeSize.m_y * 0.5f} + closeOffset;
 
-	const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_uiPanel, closePos, closeSize, GraphicId::kUIClose);
-	close.lock()->SubscribeOnClick([this]() {m_uiPanel->SetVisible(false); });
+	//const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_uiPanel, closePos, closeSize, GraphicId::kUIClose);
+	//close.lock()->SubscribeOnClick([this]() {m_uiPanel->SetVisible(false); });
 
 	auto index = 0;
 
@@ -221,6 +221,13 @@ void ManufacturingSystem::BuildUIPanel()
 
 void ManufacturingSystem::UpdateUIPanel()
 {
+
+	//アイテムラベルを全部非表示にする。
+	for (const auto& itemBox : m_itemBoxes)
+	{
+		itemBox->SetLabelVisible(false);
+	}
+
 	const auto& safeRecipe = m_currentRecipe.lock();
 	if (!safeRecipe) return;
 
@@ -263,21 +270,32 @@ void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Reci
 
 		itemBox->SetGraphicID(graphicID);
 		itemBox->SetText(StringUtil::IntToString(outputs.at(i).second));
+		itemBox->SetLabelText(ItemTable::ItemTypeToDisplayName(outputs.at(i).first));
+
+		itemBox->SetOnClickEvent(
+			[this, recipe]()
+			{
+				m_currentRecipe = recipe;
+			});
+
+		m_itemBoxes.push_back(itemBox);
 
 		if ((i + 1) < outputs.size())
 		{
 			auto plusPos = pos + Vector{ kItemBoxOffset * 0.75f };
-			UIFactory::MakeUIToPanel<UIImage>(
+			const auto& plusImage = UIFactory::MakeUIToPanel<UIImage>(
 				m_uiPanel, plusPos, kItemBoxSize * 0.9f, GraphicId::kPlus, kRecipeAlpha
 			);
+			plusImage.lock()->SetIsHitTarget(false);
 		}
 	}
 
 	auto arrowPos = pos + Vector{ kItemBoxOffset * 0.75f };
 
-	UIFactory::MakeUIToPanel<UIImage>(
+	const auto& arrowImage = UIFactory::MakeUIToPanel<UIImage>(
 		m_uiPanel, arrowPos, kItemBoxSize * 1.5f, GraphicId::kArrow,kRecipeAlpha
 	);
+	arrowImage.lock()->SetIsHitTarget(false);
 
 	for (int i = 0; i < inputs.size(); i++)
 	{
@@ -289,13 +307,23 @@ void ManufacturingSystem::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Reci
 
 		itemBox->SetGraphicID(graphicID);
 		itemBox->SetText(StringUtil::IntToString(inputs.at(i).second));
+		itemBox->SetLabelText(ItemTable::ItemTypeToDisplayName(inputs.at(i).first));
+
+		itemBox->SetOnClickEvent(
+			[this, recipe]()
+			{
+				m_currentRecipe = recipe;
+			});
+
+		m_itemBoxes.push_back(itemBox);
 
 		if ((i + 1) < inputs.size())
 		{
 			auto plusPos = pos + Vector{ kItemBoxOffset * 0.75f };
-			UIFactory::MakeUIToPanel<UIImage>(
+			const auto& plusImage = UIFactory::MakeUIToPanel<UIImage>(
 				m_uiPanel, plusPos, kItemBoxSize * 0.9f, GraphicId::kPlus, kRecipeAlpha
 			);
+			plusImage.lock()->SetIsHitTarget(false);
 		}
 	}
 }

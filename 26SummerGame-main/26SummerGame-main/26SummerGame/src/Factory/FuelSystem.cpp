@@ -80,9 +80,9 @@ bool FuelSystem::AddFuel(std::shared_ptr<ItemStack> item)
 
 bool FuelSystem::UseFuel()
 {
-	if (!GetFuelRemain()) return false;
-
 	if (!IsEqualFuelType(m_fuelSlot->GetItem(0)->GetItemType())) return false;
+	
+	if (!GetFuelRemain()) return false;
 
 	m_useCount++;
 	if (m_useCount % kConsumeItemPerUse) return false;

@@ -136,18 +136,29 @@ void AssemblingMachine::GetAllItemOwnership(FactoryComponent::ItemContainer* res
 
 void AssemblingMachine::UpdateUIPanel()
 {
+	for (const auto& input : m_inputUIs)
+	{
+		input->SetLabelVisible(false);
+	}
+	m_outputItemUI->SetLabelVisible(false);
+	m_fuelItemUI->SetLabelVisible(false);
+
 	const auto recipe = m_manufacturingSystem.lock()->GetCurrentRecipe().lock();
 
 	for (int i = 0; i < m_inputUIs.size(); i++)
 	{
 		const auto input = GetInputItemStack(i);
 
+		//入力にアイテムが入っているとき
 		if (input)
 		{
 			m_inputUIs.at(i)->SetGraphicID(input->GetItemIconGraphicID());
 			m_inputUIs.at(i)->SetText("x{}", input->GetItemCount());
 			m_inputUIs.at(i)->SetImageAlpha(255);
+			m_inputUIs.at(i)->SetLabelText(ItemTable::ItemTypeToDisplayName(input->GetItemType()));
+
 		}
+		//レシピがセットされているときで、インデックスがレシピの入力個数以下(out of range防止)のとき
 		else if (recipe && i < recipe->GetRecipeInput().size())
 		{
 			auto currentRecipe = recipe->GetRecipeInput().at(i);
@@ -155,11 +166,13 @@ void AssemblingMachine::UpdateUIPanel()
 			m_inputUIs.at(i)->SetGraphicID(graphicId);
 			m_inputUIs.at(i)->SetText("");
 			m_inputUIs.at(i)->SetImageAlpha(50);
+			m_inputUIs.at(i)->SetLabelText(ItemTable::ItemTypeToDisplayName(currentRecipe.first) + "が必要");
 		}
 		else
 		{
 			m_inputUIs.at(i)->SetGraphicID(GraphicId::kNone);
 			m_inputUIs.at(i)->SetText("");
+			m_inputUIs.at(i)->SetLabelText("入力");
 		}
 
 	}
@@ -170,6 +183,7 @@ void AssemblingMachine::UpdateUIPanel()
 		m_outputItemUI->SetGraphicID(output->GetItemIconGraphicID());
 		m_outputItemUI->SetText("x{}", output->GetItemCount());
 		m_outputItemUI->SetImageAlpha(255);
+		m_outputItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(output->GetItemType()));
 	}
 	else if (recipe)
 	{
@@ -178,11 +192,13 @@ void AssemblingMachine::UpdateUIPanel()
 		m_outputItemUI->SetGraphicID(graphicId);
 		m_outputItemUI->SetText("");
 		m_outputItemUI->SetImageAlpha(50);
+		m_outputItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(currentRecipe.first) + "ができる");
 	}
 	else
 	{
 		m_outputItemUI->SetGraphicID(GraphicId::kNone);
 		m_outputItemUI->SetText("");
+		m_outputItemUI->SetLabelText("出力");
 	}
 
 	const auto& fuel = m_fuelSystem.lock()->GetFuelSlot().lock()->GetItem(0);
@@ -198,6 +214,7 @@ void AssemblingMachine::UpdateUIPanel()
 		m_fuelItemUI->SetGraphicID(ItemTable::GetGraphicID(kFuelItemType));
 		m_fuelItemUI->SetImageAlpha(100);
 		m_fuelItemUI->SetText("");
+		m_fuelItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(kFuelItemType) + "が必要");
 	}
 }
 
@@ -223,7 +240,8 @@ void AssemblingMachine::BuildUIPanel()
 
 		inputUI->SetOnSelectHalfItem(GetInputItemSlot(), i);
 		inputUI->SetOnMoveHalfItem(GetInputItemSlot(), i);
-		
+		inputUI->SetNotVisibleWhenNoGraphic(false);
+
 		m_inputUIs.push_back(inputUI);
 
 		pos += Vector{ kUISize.m_x * 0.5f } + kInputUIOffset;
@@ -233,6 +251,7 @@ void AssemblingMachine::BuildUIPanel()
 	m_outputItemUI->SetOnSelectItem(GetOutputItemSlot(), 0);
 
 	m_outputItemUI->SetOnSelectHalfItem(GetOutputItemSlot(), 0);
+	m_outputItemUI->SetNotVisibleWhenNoGraphic(false);
 
 	m_fuelItemUI = std::make_shared<UIItemBox>(m_uiPanel, kFuelUIPos, kUISize);
 	m_fuelItemUI->SetEnableFilterItem(true);
@@ -242,6 +261,7 @@ void AssemblingMachine::BuildUIPanel()
 
 	m_fuelItemUI->SetOnSelectHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 	m_fuelItemUI->SetOnMoveHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
+	m_fuelItemUI->SetNotVisibleWhenNoGraphic(false);
 
 	m_uiPanel->AddChild(m_manufacturingSystem.lock()->GetOrBuidUIPanel());
 

@@ -50,6 +50,20 @@ private:
 	MapManager(MapManager&&) = delete;
 	MapManager& operator=(MapManager&&) = delete;
 
+private:
+
+	/// <summary>
+	/// 資源の個数が1つもないときに全体を再生成する。
+	/// </summary>
+	void CheckAndGenerateResource();
+
+	/// <summary>
+	///	資源が存在するかを返す。
+	/// </summary>
+	/// <param name="item"></param>
+	/// <returns></returns>
+	bool IsExistResource(Item item) const;
+
 	/// <summary>
 /// ステージオブジェクトを作る関数
 /// </summary>

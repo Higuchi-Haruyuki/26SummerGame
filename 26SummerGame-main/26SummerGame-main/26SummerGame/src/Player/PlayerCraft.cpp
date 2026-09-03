@@ -202,7 +202,7 @@ void PlayerCraft::BuildUIPanel()
 
 		m_recipeSquares.emplace(recipe.second->GetRecipeName(), recipeSquare);
 
-		BuildRecipeUI(leftUpPos, recipe.second);
+		BuildRecipeUI(leftUpPos,recipe.first, recipe.second);
 		index++;
 	}
 
@@ -218,7 +218,7 @@ void PlayerCraft::BuildUIPanel()
 	BuildCraftQueueUI();
 }
 
-void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe)
+void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, RecipeName recipeName , std::weak_ptr<Recipe> recipe)
 {
 	const auto& safeRecipe = recipe.lock();
 	const auto& outputs = safeRecipe->GetRecipeOutput();
@@ -240,21 +240,33 @@ void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> reci
 
 		itemBox->SetGraphicID(graphicID);
 		itemBox->SetText(StringUtil::IntToString(outputs.at(i).second));
+		itemBox->SetLabelText(ItemTable::ItemTypeToDisplayName(outputs.at(i).first));
+
+		itemBox->SetOnClickEvent(
+			[this, recipeName, safeRecipe]()
+			{
+				if (CanAddCraftQueue(recipeName))
+					AddCraftQueue(safeRecipe);
+			});
+
+		m_itemBoxes.push_back(itemBox);
 
 		if ((i + 1) < outputs.size())
 		{
 			auto plusPos = pos + Vector{ kItemBoxOffset * 0.75f };
-			UIFactory::MakeUIToPanel<UIImage>(
+			const auto& plus = UIFactory::MakeUIToPanel<UIImage>(
 				m_uiPanel, plusPos, kItemBoxSize * 0.9f, GraphicId::kPlus, kRecipeAlpha
 			);
+			plus.lock()->SetIsHitTarget(false);
 		}
 	}
 
 	auto arrowPos = pos + Vector{ kItemBoxOffset * 0.75f };
 
-	UIFactory::MakeUIToPanel<UIImage>(
+	const auto& arrow = UIFactory::MakeUIToPanel<UIImage>(
 		m_uiPanel, arrowPos, kItemBoxSize * 1.5f, GraphicId::kArrow, kRecipeAlpha
 	);
+	arrow.lock()->SetIsHitTarget(false);
 
 	for (int i = 0; i < inputs.size(); i++)
 	{
@@ -266,13 +278,24 @@ void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> reci
 
 		itemBox->SetGraphicID(graphicID);
 		itemBox->SetText(StringUtil::IntToString(inputs.at(i).second));
+		itemBox->SetLabelText(ItemTable::ItemTypeToDisplayName(inputs.at(i).first));
+
+		itemBox->SetOnClickEvent(
+			[this, recipeName, safeRecipe]()
+			{
+				if (CanAddCraftQueue(recipeName))
+					AddCraftQueue(safeRecipe);
+			});
+
+		m_itemBoxes.push_back(itemBox);
 
 		if ((i + 1) < inputs.size())
 		{
 			auto plusPos = pos + Vector{ kItemBoxOffset * 0.75f };
-			UIFactory::MakeUIToPanel<UIImage>(
+			const auto& plus = UIFactory::MakeUIToPanel<UIImage>(
 				m_uiPanel, plusPos, kItemBoxSize * 0.9f, GraphicId::kPlus, kRecipeAlpha
 			);
+			plus.lock()->SetIsHitTarget(false);
 		}
 	}
 }
@@ -289,8 +312,10 @@ void PlayerCraft::BuildCraftQueueUI()
 		//一番左端のUIだけ
 			int idx = i;
 			itemBoxUI->SetOnClickEvent([this, idx]() {RemoveCraftQueue(idx); });
+			itemBoxUI->SetLabelText("クリックでキャンセル");
 
 		m_craftQueueUI.at(i) = itemBoxUI;
+		m_itemBoxes.push_back(itemBoxUI);
 
 		pos += Vector{ kCraftQueueOffset.m_x + kItemBoxSize.m_x };
 	}
@@ -310,7 +335,12 @@ void PlayerCraft::BuildCraftQueueUI()
 void PlayerCraft::UpdateUIPanel()
 {
 	//レシピ部分の更新処理
-	//クラフトキューの更新処理
+
+	//テキストラベルを一括で非表示する。
+	for (const auto& itemBox : m_itemBoxes)
+	{
+		itemBox->SetLabelVisible(false);
+	}
 
 	for (const auto& [recipeName, ui] : m_recipeSquares)
 	{

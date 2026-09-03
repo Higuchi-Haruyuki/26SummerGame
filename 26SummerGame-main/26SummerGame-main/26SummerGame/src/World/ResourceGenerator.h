@@ -37,8 +37,8 @@ struct GridResource
 class ResourceGenerator
 {
 public:
-	ResourceGenerator() {};
-	~ResourceGenerator() {};
+	ResourceGenerator() = default;
+	~ResourceGenerator() = default;
 
 	const std::unordered_map<Item, ResourceSetting>& GetResourceSettingMap() const ; 
 

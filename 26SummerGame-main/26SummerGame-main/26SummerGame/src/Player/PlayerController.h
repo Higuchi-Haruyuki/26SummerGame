@@ -65,10 +65,11 @@ private:
 	/// </summary>
 	void InputAction();
 
-
 	bool ChangeState(const CharactorState& newState);
 
-	void MiningAction();
+	bool MiningAction();
+
+	void UpdateResourceUIOnMouseCursor();
 
 	/*ステートの確認*/
 	bool IsInstallationState() const;
