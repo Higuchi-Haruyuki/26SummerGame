@@ -1,0 +1,311 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Debug|x64">
+      <Configuration>Debug</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|x64">
+      <Configuration>Release</Configuration>
+      <Platform>x64</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <VCProjectVersion>18.0</VCProjectVersion>
+    <Keyword>Win32Proj</Keyword>
+    <ProjectGuid>{880ebf4a-5bb7-4bcf-bd05-6b340bdae084}</ProjectGuid>
+    <RootNamespace>_26SummerGame</RootNamespace>
+    <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>26SummerGame</ProjectName>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>true</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <UseDebugLibraries>false</UseDebugLibraries>
+    <PlatformToolset>v145</PlatformToolset>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <CharacterSet>MultiByte</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Label="Shared">
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\App;$(ProjectDir)src\Audio;$(ProjectDir)src\Core;$(ProjectDir)src\Crafting;$(ProjectDir)src\Factory;$(ProjectDir)src\Graphics;$(ProjectDir)src\Input;$(ProjectDir)src\Inventory;$(ProjectDir)src\Physics;$(ProjectDir)src\Player;$(ProjectDir)src\Quest;$(ProjectDir)src\Resource;$(ProjectDir)src\Scene;$(ProjectDir)src\UI;$(ProjectDir)src\Utility;$(ProjectDir)src\World;"C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>"C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\App;$(ProjectDir)src\Audio;$(ProjectDir)src\Core;$(ProjectDir)src\Crafting;$(ProjectDir)src\Factory;$(ProjectDir)src\Graphics;$(ProjectDir)src\Input;$(ProjectDir)src\Inventory;$(ProjectDir)src\Physics;$(ProjectDir)src\Player;$(ProjectDir)src\Quest;$(ProjectDir)src\Resource;$(ProjectDir)src\Scene;$(ProjectDir)src\UI;$(ProjectDir)src\Utility;$(ProjectDir)src\World;"C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用";%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>"C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\Save;$(ProjectDir)src\App;$(ProjectDir)src\Audio;$(ProjectDir)src\Core;$(ProjectDir)src\Crafting;$(ProjectDir)src\Factory;$(ProjectDir)src\Graphics;$(ProjectDir)src\Input;$(ProjectDir)src\Inventory;$(ProjectDir)src\Physics;$(ProjectDir)src\Player;$(ProjectDir)src\Quest;$(ProjectDir)src\Resource;$(ProjectDir)src\Scene;$(ProjectDir)src\UI;$(ProjectDir)src\Utility;$(ProjectDir)src\World;C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>"C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
+    <ClCompile>
+      <WarningLevel>Level3</WarningLevel>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <IntrinsicFunctions>true</IntrinsicFunctions>
+      <SDLCheck>true</SDLCheck>
+      <PreprocessorDefinitions>NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <AdditionalIncludeDirectories>$(ProjectDir)src\Save;$(ProjectDir)src\App;$(ProjectDir)src\Audio;$(ProjectDir)src\Core;$(ProjectDir)src\Crafting;$(ProjectDir)src\Factory;$(ProjectDir)src\Graphics;$(ProjectDir)src\Input;$(ProjectDir)src\Inventory;$(ProjectDir)src\Physics;$(ProjectDir)src\Player;$(ProjectDir)src\Quest;$(ProjectDir)src\Resource;$(ProjectDir)src\Scene;$(ProjectDir)src\UI;$(ProjectDir)src\Utility;$(ProjectDir)src\World;C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WholeProgramOptimization>true</WholeProgramOptimization>
+    </ClCompile>
+    <Link>
+      <SubSystem>Windows</SubSystem>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalLibraryDirectories>"C:\DxLib_VC\プロジェクトに追加すべきファイル_VC用";%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Save\SaveManager.cpp" />
+    <ClCompile Include="src\Graphics\Animation3D.cpp" />
+    <ClCompile Include="src\Factory\AssemblingMachine.cpp" />
+    <ClCompile Include="src\Quest\Base_Quest.cpp" />
+    <ClCompile Include="src\Factory\BeltConveyor.cpp" />
+    <ClCompile Include="src\Graphics\Camera.cpp" />
+    <ClCompile Include="src\Player\CharactorStateManager.cpp" />
+    <ClCompile Include="src\Inventory\Chest.cpp" />
+    <ClCompile Include="src\Physics\Collider.cpp" />
+    <ClCompile Include="src\Core\Component.cpp" />
+    <ClCompile Include="src\Core\Debug.cpp" />
+    <ClCompile Include="src\Factory\DestroyMode.cpp" />
+    <ClCompile Include="src\Factory\FactoryComponent.cpp" />
+    <ClCompile Include="src\Factory\FactoryManager.cpp" />
+    <ClCompile Include="src\Factory\FuelSystem.cpp" />
+    <ClCompile Include="src\Factory\Furnace.cpp" />
+    <ClCompile Include="src\Input\GamepadDevice.cpp" />
+    <ClCompile Include="src\Input\InputAction.cpp" />
+    <ClCompile Include="src\Factory\Inserter.cpp" />
+    <ClCompile Include="src\Factory\InstallationMode.cpp" />
+    <ClCompile Include="src\Inventory\ItemSlot.cpp" />
+    <ClCompile Include="src\Inventory\ItemStack.cpp" />
+    <ClCompile Include="src\Input\KeyBoardDevice.cpp" />
+    <ClCompile Include="src\Factory\ManufacturingSystem.cpp" />
+    <ClCompile Include="src\World\MapManager.cpp" />
+    <ClCompile Include="src\Factory\MiningMachine.cpp" />
+    <ClCompile Include="src\Factory\MiningSystem.cpp" />
+    <ClCompile Include="src\Graphics\Model.cpp" />
+    <ClCompile Include="src\Input\MouseDevice.cpp" />
+    <ClCompile Include="src\Player\PlayerController.cpp" />
+    <ClCompile Include="src\Player\PlayerCraft.cpp" />
+    <ClCompile Include="src\Input\PlayerInput.cpp" />
+    <ClCompile Include="src\App\main.cpp" />
+    <ClCompile Include="src\Core\Object.cpp" />
+    <ClCompile Include="src\Scene\MainScene.cpp" />
+    <ClCompile Include="src\Player\PlayerItem.cpp" />
+    <ClCompile Include="src\Player\PlayerUI.cpp" />
+    <ClCompile Include="src\Quest\QuestManager.cpp" />
+    <ClCompile Include="src\Quest\Quest_MakeItem.cpp" />
+    <ClCompile Include="src\Physics\Ray.cpp" />
+    <ClCompile Include="src\Physics\RayCastResult.cpp" />
+    <ClCompile Include="src\Crafting\Recipe.cpp" />
+    <ClCompile Include="src\Crafting\RecipeManager.cpp" />
+    <ClCompile Include="src\Resource\ResourceGenerator.cpp" />
+    <ClCompile Include="src\Resource\ResourceManager.cpp" />
+    <ClCompile Include="src\Scene\Scene.cpp" />
+    <ClCompile Include="src\Scene\SceneManager.cpp" />
+    <ClCompile Include="src\Graphics\Shape.cpp" />
+    <ClCompile Include="src\Audio\SoundManager.cpp" />
+    <ClCompile Include="src\Graphics\Square3D.cpp" />
+    <ClCompile Include="src\Physics\SquareCollider3D.cpp" />
+    <ClCompile Include="src\Core\Timer.cpp" />
+    <ClCompile Include="src\Scene\TitleScene.cpp" />
+    <ClCompile Include="src\Factory\TransportSystem.cpp" />
+    <ClCompile Include="src\UI\UIImage.cpp" />
+    <ClCompile Include="src\UI\UIItemBox.cpp" />
+    <ClCompile Include="src\UI\UIKeyPrompt.cpp" />
+    <ClCompile Include="src\UI\UIManager.cpp" />
+    <ClCompile Include="src\UI\UIPanel.cpp" />
+    <ClCompile Include="src\UI\UIPointer.cpp" />
+    <ClCompile Include="src\UI\UIProgressBar.cpp" />
+    <ClCompile Include="src\UI\UISquare.cpp" />
+    <ClCompile Include="src\UI\UIText.cpp" />
+    <ClCompile Include="src\Utility\VectorInt.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Save\SaveManager.h" />
+    <ClInclude Include="src\Graphics\Animation3D.h" />
+    <ClInclude Include="src\Factory\AssemblingMachine.h" />
+    <ClInclude Include="src\Quest\Base_Quest.h" />
+    <ClInclude Include="src\Factory\BeltConveyor.h" />
+    <ClInclude Include="src\Graphics\Camera.h" />
+    <ClInclude Include="src\Player\CharactorStateManager.h" />
+    <ClInclude Include="src\Inventory\Chest.h" />
+    <ClInclude Include="src\Physics\Collider.h" />
+    <ClInclude Include="src\Graphics\Color.h" />
+    <ClInclude Include="src\Core\Component.h" />
+    <ClInclude Include="src\Save\SaveData.h" />
+    <ClInclude Include="src\Utility\ContainerUtil.h" />
+    <ClInclude Include="src\Core\Debug.h" />
+    <ClInclude Include="src\Factory\DestroyMode.h" />
+    <ClInclude Include="src\Graphics\DrawText.h" />
+    <ClInclude Include="src\Core\Event.h" />
+    <ClInclude Include="src\Factory\FactoryComponent.h" />
+    <ClInclude Include="src\Factory\FactoryManager.h" />
+    <ClInclude Include="src\Factory\FuelSystem.h" />
+    <ClInclude Include="src\Factory\Furnace.h" />
+    <ClInclude Include="src\App\Game.h" />
+    <ClInclude Include="src\Input\GamepadDevice.h" />
+    <ClInclude Include="src\App\GAMINGMOJI.h" />
+    <ClInclude Include="src\Core\HitPoint.h" />
+    <ClInclude Include="src\Input\InputAction.h" />
+    <ClInclude Include="src\Input\InputDevice.h" />
+    <ClInclude Include="src\Input\InputValue.h" />
+    <ClInclude Include="src\Factory\Inserter.h" />
+    <ClInclude Include="src\Factory\InstallationMode.h" />
+    <ClInclude Include="src\Inventory\ItemManager.h" />
+    <ClInclude Include="src\Inventory\ItemSlot.h" />
+    <ClInclude Include="src\Inventory\ItemStack.h" />
+    <ClInclude Include="src\Inventory\ItemStackFactory.h" />
+    <ClInclude Include="src\Inventory\ItemType.h" />
+    <ClInclude Include="src\Input\KeyBoardDevice.h" />
+    <ClInclude Include="src\Factory\ManufacturingSystem.h" />
+    <ClInclude Include="src\World\Map.h" />
+    <ClInclude Include="src\World\MapManager.h" />
+    <ClInclude Include="src\Factory\MiningMachine.h" />
+    <ClInclude Include="src\Factory\MiningSystem.h" />
+    <ClInclude Include="src\Graphics\Model.h" />
+    <ClInclude Include="src\Input\MouseCursorPoint.h" />
+    <ClInclude Include="src\Input\MouseDevice.h" />
+    <ClInclude Include="src\Player\PlayerController.h" />
+    <ClInclude Include="src\Player\PlayerCraft.h" />
+    <ClInclude Include="src\Player\PlayerItem.h" />
+    <ClInclude Include="src\Player\PlayerUI.h" />
+    <ClInclude Include="src\Quest\QuestManager.h" />
+    <ClInclude Include="src\Quest\Quest_MakeItem.h" />
+    <ClInclude Include="src\Physics\Ray.h" />
+    <ClInclude Include="src\Physics\RayCastResult.h" />
+    <ClInclude Include="src\Crafting\Recipe.h" />
+    <ClInclude Include="src\Crafting\RecipeManager.h" />
+    <ClInclude Include="src\Crafting\RecipeRegister.h" />
+    <ClInclude Include="src\App\resource.h" />
+    <ClInclude Include="src\Resource\ResourceGenerator.h" />
+    <ClInclude Include="src\Resource\ResourceName.h" />
+    <ClInclude Include="src\Core\ObjectFactory.h" />
+    <ClInclude Include="src\Input\PlayerInput.h" />
+    <ClInclude Include="src\Scene\MainScene.h" />
+    <ClInclude Include="src\Core\Object.h" />
+    <ClInclude Include="src\Resource\ResourceManager.h" />
+    <ClInclude Include="src\Resource\ResourceTable.h" />
+    <ClInclude Include="src\Resource\ResourceType.h" />
+    <ClInclude Include="src\Scene\Scene.h" />
+    <ClInclude Include="src\Scene\SceneManager.h" />
+    <ClInclude Include="src\Graphics\Shape.h" />
+    <ClInclude Include="src\Audio\SoundManager.h" />
+    <ClInclude Include="src\Graphics\Square3D.h" />
+    <ClInclude Include="src\Physics\SquareCollider3D.h" />
+    <ClInclude Include="src\UI\Base_UIElement.h" />
+    <ClInclude Include="src\Utility\StringUtil.h" />
+    <ClInclude Include="src\Core\Timer.h" />
+    <ClInclude Include="src\Scene\TitleScene.h" />
+    <ClInclude Include="src\Factory\TransportSystem.h" />
+    <ClInclude Include="src\UI\UIFactory.h" />
+    <ClInclude Include="src\UI\UIImage.h" />
+    <ClInclude Include="src\UI\UIItemBox.h" />
+    <ClInclude Include="src\UI\UIKeyPrompt.h" />
+    <ClInclude Include="src\UI\UIManager.h" />
+    <ClInclude Include="src\UI\UIPanel.h" />
+    <ClInclude Include="src\UI\UIPointer.h" />
+    <ClInclude Include="src\UI\UIProgressBar.h" />
+    <ClInclude Include="src\UI\UISquare.h" />
+    <ClInclude Include="src\UI\UIText.h" />
+    <ClInclude Include="src\Utility\vector.h" />
+    <ClInclude Include="src\Utility\VectorInt.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\App\DxLibComponent3D.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="docs\ClassDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\app_icon.ico" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>

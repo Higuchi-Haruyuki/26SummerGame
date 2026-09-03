@@ -1,0 +1,494 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Animation3D" Collapsed="true">
+    <Position X="5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgUMAIADIAABIAAAAAAAAAAAAAEAgAAAowACEAAAIAE=</HashCode>
+      <FileName>Animation3D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Base_Quest" Collapsed="true">
+    <Position X="3.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAABAAAAAAAAEAAIAAAAgAAAAAAAABAAAACCoBAAAA=</HashCode>
+      <FileName>Base_Quest.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Base_UIElement" Collapsed="true">
+    <Position X="9.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AASCAAAAACBIAgCAAABYIAAAAAAoAgARGACQAQIAAAA=</HashCode>
+      <FileName>Base_UIElement.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="BeltConveyor" Collapsed="true">
+    <Position X="20.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgQEBAgAAAAAAAAAAAAAAAAAAACAgAAAAAACAAAAAAI=</HashCode>
+      <FileName>BeltConveyor.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Camera" Collapsed="true">
+    <Position X="6.75" Y="12" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQWAAAAAAACgAAAQiAIEAAEBAAAAAaAgAKiBAACAAA=</HashCode>
+      <FileName>Camera.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="CharactorStateManager" Collapsed="true">
+    <Position X="7.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AEAABAAAAEAABQAAAAAAAAACACKACAAAAAAAAAACAAA=</HashCode>
+      <FileName>CharactorStateManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Collider" Collapsed="true">
+    <Position X="11.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQQAAAEEAIAGkgqAiIAKIHwEAEAAsFQYADQGBCQAEiA=</HashCode>
+      <FileName>Collider.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Component" Collapsed="true">
+    <Position X="18.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQhAAQAAAAAAAAAAAEAIAgAAAAAgAAMAABCAAAAAQQ=</HashCode>
+      <FileName>Component.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Debug" Collapsed="true">
+    <Position X="34.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAgAAAAAAAAAAhCAAgAAAIAAAAggAAAAAEAAAAAAAgA=</HashCode>
+      <FileName>Debug.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FactoryComponent" Collapsed="true">
+    <Position X="20.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQMmEAGIEAAhBAAQAgASJBhACBQ20CYEREKAMLYEMY=</HashCode>
+      <FileName>FactoryComponent.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="FactoryManager" Collapsed="true">
+    <Position X="36.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CQAAEBAAACAAAAEAAAAAAABABCAggAAEAAgoAAAAAAg=</HashCode>
+      <FileName>FactoryManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Furnace" Collapsed="true">
+    <Position X="23" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQEAAAAAAAAAAQAAAIAIAAAAAAAgAAAAAACAAAAEAI=</HashCode>
+      <FileName>Furnace.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GamepadDevice" Collapsed="true">
+    <Position X="8.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAEAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>GamepadDevice.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="HitPoint" Collapsed="true">
+    <Position X="38" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAEAAAAAAAAAAEAEBCAAERIAAAAgAAAABEAAAAA=</HashCode>
+      <FileName>HitPoint.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="IInputDevice" Collapsed="true">
+    <Position X="6.25" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQACAAAAAAEAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>InputDevice.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InputAction" Collapsed="true">
+    <Position X="39.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQAACAEICAAAAAAAAAAAAIAQAAEQAAAAQAAAAAAAAA=</HashCode>
+      <FileName>InputAction.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="InputValue" Collapsed="true">
+    <Position X="41.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAAAAAQAAIAAAAAAAAAAABA=</HashCode>
+      <FileName>InputValue.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ItemStack" Collapsed="true">
+    <Position X="34.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EIAAICEAAAAAgCEIBAAACAMggQwYACQAACACAAAAAIA=</HashCode>
+      <FileName>ItemStack.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="KeyBoardDevice" Collapsed="true">
+    <Position X="6.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAEAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>KeyBoardDevice.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MainScene" Collapsed="true">
+    <Position X="11.75" Y="9" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAQAAEAAEAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>MainScene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Map" Collapsed="true">
+    <Position X="36.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAACQAABAAAAAAAAAAAAEgAAAAAAAEAAAYAAAAAAA=</HashCode>
+      <FileName>Map.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MapManager" Collapsed="true">
+    <Position X="38" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAEADAgAAAEAEAAAAJAAAAAAAAAAiAIAAAAA=</HashCode>
+      <FileName>MapManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MiningMachine" Collapsed="true">
+    <Position X="18.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAREAAAAEAAAAAAAAAAAEAAAAAAAgAAAAAAKAAAAEAI=</HashCode>
+      <FileName>MiningMachine.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Model" Collapsed="true">
+    <Position X="27.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AQQgAAAACAAAhgAAAEAAAAACAAQAgCAAAAgCAAAAAAA=</HashCode>
+      <FileName>Model.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="MouseDevice" Collapsed="true">
+    <Position X="4" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAQAAAAAAAAEAAIAMAAAAAAAAEAAAQAA=</HashCode>
+      <FileName>MouseDevice.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Object" Collapsed="true">
+    <Position X="6.75" Y="10.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>MAQBAAQAESBIAAAhAAAhJBgAAgPAggAMAERCAEAAAQQ=</HashCode>
+      <FileName>Object.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerController" Collapsed="true">
+    <Position X="32" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAUAAAACAAAhBAAAQgAwACAERAAAQAhBAQACIAAEAKQ=</HashCode>
+      <FileName>PlayerController.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerInput" Collapsed="true">
+    <Position X="39.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAUAQAAAAJBQAAAAAQAAIAAARAkAAAQBAAAiAAAAAAA=</HashCode>
+      <FileName>PlayerInput.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerItem" Collapsed="true">
+    <Position X="9.5" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>RwQAAkAMAAABACAIAAAMQAAEAAAAAABQAAACAQACAAA=</HashCode>
+      <FileName>PlayerItem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="PlayerUI" Collapsed="true">
+    <Position X="14" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>hEQoIMAEQBABAgKiIG0OKOgQKAACqAFQAAECBEARgEs=</HashCode>
+      <FileName>PlayerUI.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Quest_MakeItem" Collapsed="true">
+    <Position X="3.75" Y="11.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAIBBAAAAAAAAIAAAgAAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>Quest_MakeItem.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="QuestManager" Collapsed="true">
+    <Position X="41.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAQIABAAAAACAAAABRAAAAAABAgAAAAAAAAiAAAAEAA=</HashCode>
+      <FileName>QuestManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Ray" Collapsed="true">
+    <Position X="34.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAABAAABAAAAgAAAAAAAMAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Ray.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RayCastResult" Collapsed="true">
+    <Position X="36.25" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAADEAAAABAAIAEAAAQAAAAAAgAAgAAACAAAAAAg=</HashCode>
+      <FileName>RayCastResult.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Recipe" Collapsed="true">
+    <Position X="38" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAhDgAQAAAAAAAAAAAIAABAAgAAKAACRAAAAAAAA=</HashCode>
+      <FileName>Recipe.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RecipeManager" Collapsed="true">
+    <Position X="39.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAABAAIAEAEAAAABCAAABAAAAAgAAAAAAA=</HashCode>
+      <FileName>RecipeManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RecipeRegister" Collapsed="true">
+    <Position X="41.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAACAAAAAAA=</HashCode>
+      <FileName>RecipeRegister.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResourceGenerator" Collapsed="true">
+    <Position X="34.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAACAAAAgAAAAQAIAAAFIAACA=</HashCode>
+      <FileName>ResourceGenerator.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ResourceManager" Collapsed="true">
+    <Position X="36.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AIAAAAAAAAAABIAAAAAIkAAABAAAgAAAACkiAAAIBQA=</HashCode>
+      <FileName>ResourceManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Scene" Collapsed="true">
+    <Position X="11.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAQUAEABhCAAwgAAgIIJYAIgAAAAgAgQAgDCIEAFAAQ=</HashCode>
+      <FileName>Scene.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SceneManager" Collapsed="true">
+    <Position X="38" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACCAAAAAAAAEAgAAAAAAAABBABAAQAAAAgEAAAAgQ=</HashCode>
+      <FileName>SceneManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Shape" Collapsed="true">
+    <Position X="28.75" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQEAAEAAAAAEiAAAAAIAAADAAAAgAAYMBgCAggAAAA=</HashCode>
+      <FileName>Shape.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Square3D" Collapsed="true">
+    <Position X="29.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gBQIAACAIAAAAgCBAEIIAAJAAAQAkgCAAAACAFAAAAQ=</HashCode>
+      <FileName>Square3D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="SquareCollider3D" Collapsed="true">
+    <Position X="11.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gBAIAAAAAAAAAgABACAIAABAAAQAAgCAAAAAAFAAAAQ=</HashCode>
+      <FileName>SquareCollider3D.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIButton" Collapsed="true">
+    <Position X="8.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACAAAABAAAIEgAgAAAAAAAAAAChAAKAAAAAAQIAAAA=</HashCode>
+      <FileName>UIButton.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIImage" Collapsed="true">
+    <Position X="11" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAAAAAgAAAABKAgACAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>UIImage.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIKeyPrompt" Collapsed="true">
+    <Position X="13.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gUSAAAAAAEAIEgAAA4ACAAAAAACgQAAgAIAAgSBAwAg=</HashCode>
+      <FileName>UIKeyPrompt.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIManager" Collapsed="true">
+    <Position X="39.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAIAIggAAgAAAAAAFAAABAAAAEAgAIAAAAA=</HashCode>
+      <FileName>UIManager.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIPanel" Collapsed="true">
+    <Position X="15.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAIAAABAEgAAAAAAAAAAAAqAAAIAAgAAAAAAAAA=</HashCode>
+      <FileName>UIPanel.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIPointer" Collapsed="true">
+    <Position X="41.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAACAICICAACAAAAAAgBAAQAAAAAAAAAAAAAQAgA=</HashCode>
+      <FileName>UIPointer.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UISquare" Collapsed="true">
+    <Position X="4.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gESAgAEAAEAIEwAAAAAAAAACAACgQAAAAIgAgSgAwAg=</HashCode>
+      <FileName>UISquare.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="UIText" Collapsed="true">
+    <Position X="6.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAEAIIABggAAAIACAYACAEDAAAABBABAAAAAABA=</HashCode>
+      <FileName>UIText.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Vector" Collapsed="true">
+    <Position X="34.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAASAAAAAAAAIAEEAEAAQBASIAAAQBAAEAgAAEAAAA=</HashCode>
+      <FileName>vector.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="VectorInt" Collapsed="true">
+    <Position X="36.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAISAAAAAAAAIAEEAEAAQBASIAEAQBAAAAgAAAAAAA=</HashCode>
+      <FileName>VectorInt.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="component::InstallationMode" Collapsed="true">
+    <Position X="16.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAQBABAAoAAAAgKCEAECAAQDgQABASCAAEAAA=</HashCode>
+      <FileName>InstallationMode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="component::DestroyMode" Collapsed="true">
+    <Position X="25.25" Y="2" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQBAAAEQAADAAICAACAAAAAAAACQACQAAACCAAAAAA=</HashCode>
+      <FileName>DestroyMode.h</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Struct Name="AnimationInfo" Collapsed="true">
+    <Position X="34.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAEAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAA=</HashCode>
+      <FileName>Animation3D.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="BindingSource" Collapsed="true">
+    <Position X="36.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAACAAAAAA=</HashCode>
+      <FileName>InputAction.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="GridResource" Collapsed="true">
+    <Position X="38" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAABAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ResourceGenerator.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="Resource" Collapsed="true">
+    <Position X="39.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAIAAAEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ResourceManager.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="ResourceSetting" Collapsed="true">
+    <Position X="41.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAQAAAAAAgAIAAAAAAAAAAAAA=</HashCode>
+      <FileName>ResourceGenerator.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="TextArgs" Collapsed="true">
+    <Position X="36.25" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABEAAAAAAAAAAAgAAAAAAAAAAAAABQAAAAECAAAAAA=</HashCode>
+      <FileName>UIText.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Struct Name="GAMINGMOJI::RGB" Collapsed="true">
+    <Position X="34.5" Y="6.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAQABAAAAAAA=</HashCode>
+      <FileName>GAMINGMOJI.h</FileName>
+    </TypeIdentifier>
+  </Struct>
+  <Enum Name="ButtonPhase" Collapsed="true">
+    <Position X="34.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAAAEAAAAAAAAAAAAABAAAAAAAAAAAABAAAAAAAAAAA=</HashCode>
+      <FileName>InputAction.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="CharactorState" Collapsed="true">
+    <Position X="36.25" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AJAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAI=</HashCode>
+      <FileName>CharactorStateManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="DeviceType" Collapsed="true">
+    <Position X="38" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAQAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>PlayerInput.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="InputValueType" Collapsed="true">
+    <Position X="39.75" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACAQ=</HashCode>
+      <FileName>InputValue.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="MapResource" Collapsed="true">
+    <Position X="41.5" Y="8" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAgAAEAAAA=</HashCode>
+      <FileName>ResourceGenerator.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="TextPivot" Collapsed="true">
+    <Position X="34.5" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAABAAAAAAAAAAAAAAAAAAAAAAAAAAAIEAAIAAA=</HashCode>
+      <FileName>UIText.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Enum Name="UILayer" Collapsed="true">
+    <Position X="36.25" Y="8.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>UIManager.h</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Yu Gothic UI" Size="9" />
+</ClassDiagram>

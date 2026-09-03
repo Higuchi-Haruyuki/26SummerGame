@@ -1,0 +1,523 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="App">
+      <UniqueIdentifier>{ca2a195b-885d-427f-846b-369f1aa55826}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Audio">
+      <UniqueIdentifier>{7965e06c-e3de-427c-a73a-ef3e39d7bae4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Core">
+      <UniqueIdentifier>{429944c4-a96d-4928-9eb6-a1532efc2c0d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Crafting">
+      <UniqueIdentifier>{1295b5bb-78d0-4844-a4fd-8dec8b80b3b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Factory">
+      <UniqueIdentifier>{9a5c7b73-c587-4a4c-a1e2-fafda823bdc5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Graphics">
+      <UniqueIdentifier>{a5a3f15f-89e5-4241-9b55-1ccfc3e0c408}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Input">
+      <UniqueIdentifier>{8f464fd1-58ec-4b46-88c7-1ecd66962d7a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Inventory">
+      <UniqueIdentifier>{12187c79-bb3d-4d06-a693-5bbe3a17666f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Physics">
+      <UniqueIdentifier>{95e834ad-04b9-49e6-afc6-d1390995aae5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Player">
+      <UniqueIdentifier>{80f02762-9d6e-49c9-9ac7-0624850f6dea}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Quest">
+      <UniqueIdentifier>{77ca35e0-6cd4-412f-867e-3a32ea17764c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Resource">
+      <UniqueIdentifier>{1d0c7f2f-0231-44d7-b936-e2bab951ec21}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Scene">
+      <UniqueIdentifier>{ae6d404d-7c42-4de4-aece-882b680cf33c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="UI">
+      <UniqueIdentifier>{eaafb16c-fe22-4ce8-a9ea-e811c92c90e0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Utility">
+      <UniqueIdentifier>{6d9e84fb-ab0f-47fe-be06-8bda73d532e2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="World">
+      <UniqueIdentifier>{fa54990b-8224-406d-8575-43ef57a36899}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Docs">
+      <UniqueIdentifier>{0be1e16e-7ef5-4ad4-afe9-fc56fc2779e5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\App\main.cpp">
+      <Filter>App</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Audio\SoundManager.cpp">
+      <Filter>Audio</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Component.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Debug.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Object.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Core\Timer.cpp">
+      <Filter>Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Crafting\Recipe.cpp">
+      <Filter>Crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Crafting\RecipeManager.cpp">
+      <Filter>Crafting</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\AssemblingMachine.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\BeltConveyor.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\DestroyMode.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\FactoryComponent.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\FactoryManager.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\FuelSystem.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\Furnace.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\Inserter.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\InstallationMode.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\ManufacturingSystem.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\MiningMachine.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\MiningSystem.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Factory\TransportSystem.cpp">
+      <Filter>Factory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Animation3D.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Camera.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Model.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Shape.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Graphics\Square3D.cpp">
+      <Filter>Graphics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\GamepadDevice.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\InputAction.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\KeyBoardDevice.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\MouseDevice.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Input\PlayerInput.cpp">
+      <Filter>Input</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\Chest.cpp">
+      <Filter>Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\ItemSlot.cpp">
+      <Filter>Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Inventory\ItemStack.cpp">
+      <Filter>Inventory</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Collider.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\Ray.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\RayCastResult.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Physics\SquareCollider3D.cpp">
+      <Filter>Physics</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\CharactorStateManager.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\PlayerController.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\PlayerCraft.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\PlayerItem.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\PlayerUI.cpp">
+      <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Quest\Base_Quest.cpp">
+      <Filter>Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Quest\Quest_MakeItem.cpp">
+      <Filter>Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Quest\QuestManager.cpp">
+      <Filter>Quest</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\ResourceGenerator.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Resource\ResourceManager.cpp">
+      <Filter>Resource</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\MainScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\Scene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\SceneManager.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene\TitleScene.cpp">
+      <Filter>Scene</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIImage.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIItemBox.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIKeyPrompt.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIManager.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIPanel.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIPointer.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIProgressBar.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UISquare.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\UI\UIText.cpp">
+      <Filter>UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Utility\VectorInt.cpp">
+      <Filter>Utility</Filter>
+    </ClCompile>
+    <ClCompile Include="src\World\MapManager.cpp">
+      <Filter>World</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Save\SaveManager.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\App\Game.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\GAMINGMOJI.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\App\resource.h">
+      <Filter>App</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Audio\SoundManager.h">
+      <Filter>Audio</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Component.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Debug.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Event.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\HitPoint.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Object.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\ObjectFactory.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Core\Timer.h">
+      <Filter>Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Crafting\Recipe.h">
+      <Filter>Crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Crafting\RecipeManager.h">
+      <Filter>Crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Crafting\RecipeRegister.h">
+      <Filter>Crafting</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\AssemblingMachine.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\BeltConveyor.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\DestroyMode.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\FactoryComponent.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\FactoryManager.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\FuelSystem.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\Furnace.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\Inserter.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\InstallationMode.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\ManufacturingSystem.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\MiningMachine.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\MiningSystem.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Factory\TransportSystem.h">
+      <Filter>Factory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Animation3D.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Camera.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Color.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\DrawText.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Model.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Shape.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Graphics\Square3D.h">
+      <Filter>Graphics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\GamepadDevice.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\InputAction.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\InputDevice.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\InputValue.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\KeyBoardDevice.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\MouseCursorPoint.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\MouseDevice.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Input\PlayerInput.h">
+      <Filter>Input</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\Chest.h">
+      <Filter>Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\ItemManager.h">
+      <Filter>Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\ItemSlot.h">
+      <Filter>Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\ItemStack.h">
+      <Filter>Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\ItemStackFactory.h">
+      <Filter>Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Inventory\ItemType.h">
+      <Filter>Inventory</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\Collider.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\Ray.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\RayCastResult.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Physics\SquareCollider3D.h">
+      <Filter>Physics</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\CharactorStateManager.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\PlayerController.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\PlayerCraft.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\PlayerItem.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\PlayerUI.h">
+      <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Quest\Base_Quest.h">
+      <Filter>Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Quest\Quest_MakeItem.h">
+      <Filter>Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Quest\QuestManager.h">
+      <Filter>Quest</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\ResourceGenerator.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\ResourceManager.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\ResourceName.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\ResourceTable.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Resource\ResourceType.h">
+      <Filter>Resource</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\MainScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\Scene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\SceneManager.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Scene\TitleScene.h">
+      <Filter>Scene</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\Base_UIElement.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIFactory.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIImage.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIItemBox.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIKeyPrompt.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIManager.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIPanel.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIPointer.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIProgressBar.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UISquare.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\UI\UIText.h">
+      <Filter>UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utility\ContainerUtil.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utility\StringUtil.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utility\vector.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Utility\VectorInt.h">
+      <Filter>Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\Map.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\World\MapManager.h">
+      <Filter>World</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Save\SaveData.h" />
+    <ClInclude Include="src\Save\SaveManager.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="src\App\DxLibComponent3D.rc">
+      <Filter>App</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="docs\ClassDiagram.cd">
+      <Filter>Docs</Filter>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\textures\app_icon.ico" />
+  </ItemGroup>
+</Project>
