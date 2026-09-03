@@ -9,6 +9,7 @@ namespace
 	constexpr unsigned int kBoxColor = static_cast<unsigned int>(Color::kMainColor);
 	constexpr unsigned int kCharColor = static_cast<unsigned int>(Color::kMainCharColor);
 	constexpr unsigned int kCharEdgeColor = static_cast<unsigned int>(Color::kSubCharColor);
+	constexpr FontId kDefaultFontId = FontId::kFactoryUIText;
 }
 
 
@@ -17,7 +18,8 @@ UIKeyPrompt::UIKeyPrompt(const Vector& position, const Vector& size, GraphicId r
 	m_resourceManager(ResourceManager::GetInstance()),
 	m_resourceId(resourceId),
 	m_text(text),
-	m_color(kBoxColor)
+	m_color(kBoxColor),
+	m_fontID(kDefaultFontId)
 {
 }
 
@@ -37,13 +39,13 @@ void UIKeyPrompt::Draw() const
 		static_cast<int>(m_position.m_x + halfWidth - m_innerOffset),
 		static_cast<int>(m_position.m_y),
 		kCharColor, kCharEdgeColor,
-		m_resourceManager.GetHandle(FontId::kFactoryUIText),
+		m_resourceManager.GetHandle(m_fontID),
 		"{}", m_text);
 
 	DrawRotaGraph(
-		static_cast<int>(m_position.m_x - halfWidth + 15 + m_innerOffset),
-		static_cast<int>(m_position.m_y - halfHeight + 15 + m_innerOffset),
-		0.3, 0, m_resourceManager.GetHandle(m_resourceId), true);
+		static_cast<int>(m_position.m_x - halfWidth + m_imagePositionOffset.m_x + m_innerOffset),
+		static_cast<int>(m_position.m_y - halfHeight + m_imagePositionOffset.m_y + m_innerOffset),
+		m_keyImageExRate, 0, m_resourceManager.GetHandle(m_resourceId), true);
 }
 
 bool UIKeyPrompt::OnClick(const Vector& screenPos)

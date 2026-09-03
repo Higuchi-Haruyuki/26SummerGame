@@ -31,6 +31,7 @@ void PlayerInput::Init()
 	//<操作>
 	AddActionMouseAndGamepad("Decide", InputValueType::kButton, MOUSE_INPUT_LEFT, XINPUT_BUTTON_A);
 	AddActionKeyboardAndGamepad("Cancel", InputValueType::kButton, KEY_INPUT_C, XINPUT_BUTTON_B);
+	AddActionKeyboardAndGamepad("Cancel", InputValueType::kButton, KEY_INPUT_ESCAPE, -1);
 	AddActionKeyboardAndGamepad("OpenInventory", InputValueType::kButton, KEY_INPUT_TAB, XINPUT_BUTTON_DPAD_UP);
 	AddActionKeyboardAndGamepad("InstallationMode", InputValueType::kButton, KEY_INPUT_Z, XINPUT_BUTTON_Y);
 	AddActionKeyboardAndGamepad("DestroyMode", InputValueType::kButton, KEY_INPUT_X, XINPUT_BUTTON_X);
@@ -71,6 +72,14 @@ void PlayerInput::LateUpdate()
 
 void PlayerInput::AddActionKeyboardAndGamepad(const std::string& actionName, InputValueType inputType, int keyboardCode, int gamepadCode)
 {
+	//すでに同じ名前のActionが存在する場合は、バインディングを追加するだけにする。
+	if (IsExistAction(actionName))
+	{
+		GetAction(actionName)->AddBinding({ &m_keyboardDevice,keyboardCode });
+		GetAction(actionName)->AddBinding({ &m_gamepadDevice ,gamepadCode });
+		return;
+	}
+
 	auto moveLeft = std::make_unique<InputAction>(actionName, inputType);
 	moveLeft->AddBinding({ &m_keyboardDevice,keyboardCode });
 	moveLeft->AddBinding({ &m_gamepadDevice ,gamepadCode });
@@ -83,6 +92,11 @@ void PlayerInput::AddActionMouseAndGamepad(const std::string& actionName, InputV
 	moveLeft->AddBinding({ &m_mouseDevice,mouseCode });
 	moveLeft->AddBinding({ &m_gamepadDevice ,gamepadCode });
 	m_actions.emplace(actionName, std::move(moveLeft));
+}
+
+bool PlayerInput::IsExistAction(const std::string& name) const
+{
+	return m_actions.find(name) != m_actions.end();
 }
 
 void PlayerInput::UpdateActiveDevice()

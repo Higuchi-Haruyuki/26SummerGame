@@ -103,8 +103,28 @@ void MapManager::GenerateMapResource()
 
 		//このチャンクにランダムで資源を設定する。
 		m_resourceGenerator->GenerateChunk({ chunkX,0,chunkZ }, &m_gridResources);
-
 	}
+	CheckAndGenerateResource();
+}
+
+void MapManager::CheckAndGenerateResource()
+{
+	for (const auto& [item, resourceSetting] : m_resourceGenerator->GetResourceSettingMap())
+	{
+		if (IsExistResource(item)) continue;
+		GenerateMapResource();
+		break;
+	}
+
+}
+
+bool MapManager::IsExistResource(Item item) const
+{
+	for (const auto& gridResource : m_gridResources)
+	{
+		if (gridResource.m_mapResource == item) return true;
+	}
+	return false;
 }
 
 void MapManager::CreateStageObject(const Vector& pos, const Vector& siz, unsigned int col)

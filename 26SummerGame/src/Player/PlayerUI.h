@@ -32,6 +32,7 @@ class QuestManager;
 class UIItemBox;
 class PlayerCraft;
 class UIProgressBar;
+class UITextLabel;
 
 /// <summary>
 /// UI表示を行う。
@@ -45,9 +46,13 @@ public:
 
 	void Init() override;
 	void Update() override;
+	/*外部から呼び出して更新してもらう*/
 
 	void UpdateMiningProgressBar(float progress);
 	void SetVisibleMiningProgressBar(bool visible);
+
+	void UpdateResourceUIOnMouseCursor(Item item, const Vector& cursorPos);
+	void SetVisibleResourceUIOnMouseCursor(bool visible);
 
 private:
 
@@ -151,11 +156,6 @@ private:
 	/// アイテムバーUIの更新処理
 	/// </summary>
 	void UpdateItemBar();
-
-	/// <summary>
-	/// アイテム取得時のUIの更新処理
-	/// </summary>
-	void UpdateItemGetUI();
 
 	/// <summary>
 	/// インベントリUIの更新処理
@@ -268,6 +268,9 @@ private:
 
 	//資源採掘ゲージ
 	std::weak_ptr<UIProgressBar> m_miningProgressBar;
+
+	//マウスカーソルの近くに表示される資源アイテムのUI
+	std::weak_ptr<UIKeyPrompt> m_resourceMiningUI;
 
 	//取得アイテムの表示
 	std::pair<std::weak_ptr<UIImage>, std::weak_ptr<UIText>> m_getItemUI;

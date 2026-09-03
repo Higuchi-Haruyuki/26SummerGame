@@ -7,6 +7,8 @@ class MapManager;
 class ItemStack;
 class CharactorStateManager;
 
+enum class Item;
+
 class MiningSystem:
 	public Component
 {
@@ -17,6 +19,7 @@ public:
 	void Init() override;
 	void Update() override;
 
+	Item GetResourceAtMousePointer() const;
 	std::shared_ptr<ItemStack> Mining(int count) const;
 
 private:

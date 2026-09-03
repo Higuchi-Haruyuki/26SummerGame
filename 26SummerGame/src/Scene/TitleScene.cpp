@@ -126,7 +126,7 @@ void TitleScene::BuildUI()
 				m_uiManager.RemoveScreen("titleSceneMain");
 				m_sceneManager.SetNextScene(std::make_shared<MainScene>());
 			});
-		square.lock()->SubscribeHover([this,&square]()
+		square.lock()->SubscribeOnHover([this,&square]()
 			{
 				square.lock()->SetAlpha(255);
 			});

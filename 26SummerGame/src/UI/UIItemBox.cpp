@@ -7,6 +7,7 @@
 #include "ResourceType.h"
 #include "UIManager.h"
 #include "Color.h"
+#include "UITextLabel.h"
 
 namespace
 {
@@ -26,6 +27,8 @@ UIItemBox::UIItemBox(std::weak_ptr<UIPanel> addPanel, const Vector& position, co
 	m_image = UIFactory::MakeUIToPanel<UIImage>(addPanel, position, size,GraphicId::kNone );
 
 	m_previewImage = UIFactory::MakeUIToPanel<UIImage>(addPanel, position, size, GraphicId::kNone,kPreviewAlpha);
+
+	m_textLabel = std::make_shared<UITextLabel>(addPanel, position - Vector{0,size.m_y * 0.5f + 17}, "アイテム名");
 
 	const auto& sharedImage = m_image.lock();
 
@@ -63,6 +66,18 @@ UIItemBox::UIItemBox(std::weak_ptr<UIPanel> addPanel, const Vector& position, co
 		{
 			sharedPreviewImage->SetVisible(false);
 		});
+	sharedImage->SubscribeOnHover([this]()
+		{
+			if (!m_isNotVisibleWhenNoGraphic)
+			{
+				SetLabelVisible(true);
+				return;
+			}
+			const auto& safeImage = m_image.lock();
+			if (!safeImage) return;
+			if (safeImage->GetGraphicID() != GraphicId::kNone)
+				SetLabelVisible(true);
+		});
 
 	auto textPos = position + size / 2;
 
@@ -84,6 +99,18 @@ void UIItemBox::SetVisible(bool isVisible)
 	m_image.lock()->SetVisible(isVisible);
 	m_text.lock()->SetVisible(isVisible);
 	if (!isVisible) m_previewImage.lock()->SetVisible(false);
+}
+
+void UIItemBox::SetLabelVisible(bool visible)
+{
+	m_textLabel->SetVisible(visible);
+}
+
+void UIItemBox::SetHitTarget(bool isEnable)
+{
+	m_square.lock()->SetIsHitTarget(isEnable);
+	m_image.lock()->SetIsHitTarget(isEnable);
+	m_text.lock()->SetIsHitTarget(isEnable);
 }
 
 void UIItemBox::SetPosition(const Vector & pos)
@@ -125,6 +152,11 @@ void UIItemBox::SetText(const std::string & text)
 	m_text.lock()->SetText(text);
 }
 
+void UIItemBox::SetLabelText(const std::string& text)
+{
+	m_textLabel->SetText(text);
+}
+
 void UIItemBox::SetOnSelectItem(std::weak_ptr<ItemSlot> itemSlot, int index)
 {
 	SetOnDragBeginEvent(
@@ -144,6 +176,7 @@ void UIItemBox::SetOnMoveItem(std::weak_ptr<ItemSlot> itemSlot, int index)
 			if (m_isEnableFilterItem)
 			{
 				if (m_filterItem != m_uiManager.GetSelectedItemType()) return;
+			
 			}
 			m_uiManager.MoveItem(itemSlot, index);
 		}
@@ -167,7 +200,7 @@ void UIItemBox::SetOnMoveHalfItem(std::weak_ptr<ItemSlot> itemSlot, int index)
 		{
 			if (m_isEnableFilterItem)
 			{
-				if (m_filterItem != m_uiManager.GetSelectedItemType()) return;
+				if (m_filterItem != m_uiManager.GetSelectedHalfItemType()) return;
 			}
 			m_uiManager.MoveHalfItem(itemSlot, index);
 		}

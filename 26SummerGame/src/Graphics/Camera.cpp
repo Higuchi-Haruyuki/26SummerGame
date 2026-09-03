@@ -44,9 +44,13 @@ namespace
 
 	constexpr float kMaxPitch = DX_PI_F / 2 - 0.001f;
 
+	constexpr float kStartPitch = 0.6127591f;
+	
+	constexpr float kStartYaw = 0.7645824f;
+
 	//カメラ座標の限界値(暫定)
 
-	const Vector kStartCameraPos = { 7900,1000,7900 };
+	const Vector kStartCameraPos = { 3891,3000,3512 };
 
 	const Vector kMinCameraPos = { 500,400,500 };
 
@@ -68,6 +72,12 @@ void Camera::Init() {
 
 	SetPosition(kStartCameraPos);
 	m_targetPos = kStartCameraPos;
+
+	m_cameraPitch = kStartPitch;
+	m_targetCameraPitch = kStartPitch;
+
+	m_cameraYaw = kStartYaw;
+	m_targetCameraYaw = kStartYaw;
 
 }
 

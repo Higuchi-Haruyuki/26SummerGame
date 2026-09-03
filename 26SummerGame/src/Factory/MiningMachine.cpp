@@ -141,17 +141,23 @@ void MiningMachine::GetAllItemOwnership(FactoryComponent::ItemContainer* result)
 
 void MiningMachine::UpdateUIPanel()
 {
+	//テキストラベルを一括で非表示にする
+	m_itemUI->SetLabelVisible(false);
+	m_fuelItemUI->SetLabelVisible(false);
+
 	const auto item = GetOutputItemStack(0);
 
 	if (item)
 	{
 		m_itemUI->SetGraphicID(item->GetItemIconGraphicID());
 		m_itemUI->SetText("x{}", item->GetItemCount());
+		m_itemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(item->GetItemType()));
 	}
 	else
 	{
 		m_itemUI->SetGraphicID(GraphicId::kNone);
 		m_itemUI->SetText("");
+		m_itemUI->SetLabelText("鉱石の出力");
 	}
 
 
@@ -162,12 +168,14 @@ void MiningMachine::UpdateUIPanel()
 		m_fuelItemUI->SetGraphicID(fuel->GetItemIconGraphicID());
 		m_fuelItemUI->SetImageAlpha(255);
 		m_fuelItemUI->SetText("x{}", fuel->GetItemCount());
+		m_fuelItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(fuel->GetItemType()));
 	}
 	else
 	{
 		m_fuelItemUI->SetGraphicID(ItemTable::GetGraphicID(kFuelItemType));
 		m_fuelItemUI->SetImageAlpha(100);
 		m_fuelItemUI->SetText("");
+		m_fuelItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(kFuelItemType) +"が必要");
 	}
 
 }
@@ -180,7 +188,9 @@ void MiningMachine::BuildUIPanel()
 
 	m_itemUI->SetOnSelectHalfItem(GetOutputItemSlot(), 0);
 	m_itemUI->SetOnMoveHalfItem(GetOutputItemSlot(), 0);
-
+	m_itemUI->SetNotVisibleWhenNoGraphic(false);
+	
+	
 	m_fuelItemUI = std::make_shared<UIItemBox>(m_uiPanel, kFuelUIPos, kUISize);
 	m_fuelItemUI->SetEnableFilterItem(true);
 	m_fuelItemUI->SetFilterItem(kFuelItemType);
@@ -189,5 +199,6 @@ void MiningMachine::BuildUIPanel()
 
 	m_fuelItemUI->SetOnSelectHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 	m_fuelItemUI->SetOnMoveHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
+	m_fuelItemUI->SetNotVisibleWhenNoGraphic(false);
 
 }

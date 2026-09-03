@@ -12,7 +12,7 @@ public:
 		/// <param name="position">位置</param>
 		/// <param name="size">ここで指定した大きさに合わせて描画される。</param>
 		/// <param name="imageResourceName">ResourceManagerで管理される画像リソースの名前</param>
-		/// <param name="alpha">透明度 (0-255)</param>
+		/// <param name="kAlpha">透明度 (0-255)</param>
 	UIProgressBar(const Vector& position, const Vector& size, unsigned int color, int alpha = 255);
 	virtual ~UIProgressBar() = default;
 

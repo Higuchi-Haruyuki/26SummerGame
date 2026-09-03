@@ -42,7 +42,7 @@ public:
 private:
 	void BuildUIPanel();
 
-	void BuildRecipeUI(Vector leftUpDrawPos, std::weak_ptr<Recipe> recipe);
+	void BuildRecipeUI(Vector leftUpDrawPos,RecipeName recipeName , std::weak_ptr<Recipe> recipe);
 
 	void BuildCraftQueueUI();
 
@@ -109,6 +109,8 @@ private:
 
 	std::deque<std::pair<std::weak_ptr<Recipe>, int>> m_craftQueue;
 
+	//アイテムラベルの非表示処理用に保存しておく
+	std::vector<std::shared_ptr<UIItemBox>> m_itemBoxes;
 
 	//UI要素
 	std::map<RecipeName,std::weak_ptr<UISquare>> m_recipeSquares;

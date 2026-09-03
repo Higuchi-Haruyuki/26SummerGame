@@ -73,6 +73,7 @@ void PlayerController::Update()
 	if (!m_isEnable) return;
 
 	InputAction();
+	UpdateResourceUIOnMouseCursor();
 
 	//プレイヤーの状態をデバックログで描画
 	Debug::Log(std::format("PlayerState: {}", m_state.lock()->CurrentStateToString()));
@@ -168,16 +169,10 @@ void PlayerController::InputAction()
 		ExitDestroyMode();
 	}
 
-	if (m_playerInput.GetAction("RightClick")->GetPhase() == ButtonPhase::kPressed && IsIdleState())
-	{
-		MiningAction();
-		if (!isMiningLastFrame)
-		{
-			SoundManager::GetInstance().PlayLoop(kMiningSe);
-			isMiningLastFrame = true;
-		}
-	}
-	else
+	bool isPressedRightClick = m_playerInput.GetAction("RightClick")->GetPhase() == ButtonPhase::kPressed;
+	bool isSuccessMiningAction = isPressedRightClick && IsIdleState() && MiningAction();
+
+	if (!isSuccessMiningAction)
 	{
 		m_miningTimer.ResetStartTime();
 		m_playerUI.lock()->SetVisibleMiningProgressBar(false);
@@ -269,8 +264,12 @@ bool PlayerController::ChangeState(const CharactorState& newState)
 	return safeState->ChangeState(newState);
 }
 
-void PlayerController::MiningAction()
+bool PlayerController::MiningAction()
 {
+	const auto item = m_miningSystem.lock()->GetResourceAtMousePointer();
+
+	if (item == Item::kNone) return false;
+
 	m_playerUI.lock()->UpdateMiningProgressBar( 
 		m_miningTimer.GetElapsedTime() / m_miningTimer.GetDuration());
 	
@@ -289,6 +288,26 @@ void PlayerController::MiningAction()
 		m_miningTimer.ResetStartTime();
 	}
 
+	if (!isMiningLastFrame)
+	{
+		SoundManager::GetInstance().PlayLoop(kMiningSe);
+		isMiningLastFrame = true;
+	}
+	return true;
+
+}
+
+void PlayerController::UpdateResourceUIOnMouseCursor()
+{
+	const auto item = m_miningSystem.lock()->GetResourceAtMousePointer();
+	const auto mousePos = MouseCursorPoint::GetCurrentMousePos();
+	if (item == Item::kNone)
+	{
+		m_playerUI.lock()->SetVisibleResourceUIOnMouseCursor(false);
+		return;
+	}
+	m_playerUI.lock()->SetVisibleResourceUIOnMouseCursor(true);
+	m_playerUI.lock()->UpdateResourceUIOnMouseCursor(item, mousePos);
 }
 
 bool PlayerController::IsInstallationState() const

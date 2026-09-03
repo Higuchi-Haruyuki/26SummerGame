@@ -51,6 +51,10 @@ public:
 
 	void ExitDestroyMode();
 
+	void OpenFactoryComponentUI();
+	
+	void OpenInventoryUI();
+
 	void CloseFactoryComponentUI();
 	
 	void CloseInventoryUI();
@@ -61,13 +65,11 @@ private:
 	/// </summary>
 	void InputAction();
 
-	void OpenFactoryComponentUI();
-	
-	void OpenInventoryUI();
-
 	bool ChangeState(const CharactorState& newState);
 
-	void MiningAction();
+	bool MiningAction();
+
+	void UpdateResourceUIOnMouseCursor();
 
 	/*ステートの確認*/
 	bool IsInstallationState() const;

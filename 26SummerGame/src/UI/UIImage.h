@@ -19,11 +19,13 @@ public:
 	/// <param name="position">位置</param>
 	/// <param name="size">ここで指定した大きさに合わせて描画される。</param>
 	/// <param name="imageResourceName">ResourceManagerで管理される画像リソースの名前</param>
-	/// <param name="alpha">透明度 (0-255)</param>
+	/// <param name="kAlpha">透明度 (0-255)</param>
 	UIImage(const Vector& position, const Vector& size, GraphicId imageResourceName, int alpha = 255);
 	virtual ~UIImage() = default;
 
 	void Draw() const override;
+
+	GraphicId GetGraphicID() const { return m_imageGraphicId; }
 
 	bool OnClick(const Vector& screenPos) override;
 	bool OnDrop(const Vector& screenPos) override;

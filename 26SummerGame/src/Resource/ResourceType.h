@@ -60,6 +60,7 @@ enum class GraphicId
 	kKeyboardTab,
 
 	kMouseLeft,
+	kMouseRight,
 
 	kUIClose,
 	kArrow,

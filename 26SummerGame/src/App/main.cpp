@@ -80,7 +80,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 		while ((GetNowHiPerformanceCount() - startTime) <= Game::kTimePerFrame) continue;
 
 		if (ProcessMessage() == -1) break;	// Windowsから情報を受けとり、エラーが起きたら終了
-		if (CheckHitKey(KEY_INPUT_ESCAPE) == 1) break;
+		if (CheckHitKey(KEY_INPUT_F1) == 1) break;
 	}				
 	sceneManager.GetCurrentScene()->Finalize();
 	resourceManager.Finalize();

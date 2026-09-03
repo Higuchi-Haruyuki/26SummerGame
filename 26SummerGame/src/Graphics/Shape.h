@@ -33,7 +33,7 @@ public:
 	/// <summary>
 	/// 不透明度を設定。最大値は255。
 	/// </summary>
-	/// <param name="alpha"></param>
+	/// <param name="kAlpha"></param>
 	void SetAlpha(int alpha) { m_alpha = alpha; }
 protected:
 	bool m_isVisible = true;

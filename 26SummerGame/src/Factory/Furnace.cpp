@@ -144,17 +144,23 @@ void Furnace::GetAllItemOwnership(std::vector<std::pair<std::shared_ptr<ItemStac
 
 void Furnace::UpdateUIPanel()
 {
+	m_inputItemUI->SetLabelVisible(false);
+	m_outputItemUI->SetLabelVisible(false);
+	m_fuelItemUI->SetLabelVisible(false);
+
 	const auto input = GetInputItemStack(0);
 
 	if (input)
 	{
 		m_inputItemUI->SetGraphicID(input->GetItemIconGraphicID());
 		m_inputItemUI->SetText("x{}", input->GetItemCount());
+		m_inputItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(input->GetItemType()));
 	}
 	else
 	{
 		m_inputItemUI->SetGraphicID(GraphicId::kNone);
 		m_inputItemUI->SetText("");
+		m_inputItemUI->SetLabelText("焼きたいもの");
 	}
 
 	const auto output = GetOutputItemStack(0);
@@ -163,11 +169,13 @@ void Furnace::UpdateUIPanel()
 	{
 		m_outputItemUI->SetGraphicID(output->GetItemIconGraphicID());
 		m_outputItemUI->SetText("x{}", output->GetItemCount());
+		m_outputItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(output->GetItemType()));
 	}
 	else
 	{
 		m_outputItemUI->SetGraphicID(GraphicId::kNone);
 		m_outputItemUI->SetText("");
+		m_outputItemUI->SetLabelText("出力");
 	}
 
 	const auto& fuel = m_fuelSystem.lock()->GetFuelSlot().lock()->GetItem(0);
@@ -177,12 +185,14 @@ void Furnace::UpdateUIPanel()
 		m_fuelItemUI->SetGraphicID(fuel->GetItemIconGraphicID());
 		m_fuelItemUI->SetImageAlpha(255);
 		m_fuelItemUI->SetText("x{}", fuel->GetItemCount());
+		m_fuelItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(fuel->GetItemType()));
 	}
 	else
 	{
 		m_fuelItemUI->SetGraphicID(ItemTable::GetGraphicID(kFuelItemType));
 		m_fuelItemUI->SetImageAlpha(100);
 		m_fuelItemUI->SetText("");
+		m_fuelItemUI->SetLabelText(ItemTable::ItemTypeToDisplayName(kFuelItemType) + "が必要");
 	}
 
 }
@@ -192,6 +202,7 @@ void Furnace::BuildUIPanel()
 	m_inputItemUI = std::make_shared<UIItemBox>(m_uiPanel, kInputUIPos, kUISize);
 	m_inputItemUI->SetOnSelectItem(GetInputItemSlot(), 0);
 	m_inputItemUI->SetOnMoveItem(GetInputItemSlot(), 0);
+	m_inputItemUI->SetNotVisibleWhenNoGraphic(false);
 
 	m_inputItemUI->SetOnSelectHalfItem(GetInputItemSlot(), 0);
 	m_inputItemUI->SetOnMoveHalfItem(GetInputItemSlot(), 0);
@@ -200,13 +211,17 @@ void Furnace::BuildUIPanel()
 	m_outputItemUI->SetOnSelectItem(GetOutputItemSlot(), 0);
 
 	m_outputItemUI->SetOnSelectHalfItem(GetOutputItemSlot(), 0);
+	m_outputItemUI->SetNotVisibleWhenNoGraphic(false);
 
 	m_fuelItemUI = std::make_shared<UIItemBox>(m_uiPanel, kFuelUIPos, kUISize);
 	m_fuelItemUI->SetEnableFilterItem(true);
 	m_fuelItemUI->SetFilterItem(kFuelItemType);
+
 	m_fuelItemUI->SetOnSelectItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 	m_fuelItemUI->SetOnMoveItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 
 	m_fuelItemUI->SetOnSelectHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
 	m_fuelItemUI->SetOnMoveHalfItem(m_fuelSystem.lock()->GetFuelSlot(), 0);
+	m_fuelItemUI->SetNotVisibleWhenNoGraphic(false);
+
 }

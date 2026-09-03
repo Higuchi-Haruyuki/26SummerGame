@@ -48,17 +48,23 @@ Vector MiningSystem::GetHitPosFromMousePointer() const
 	return result.GetHitPoint();
 }
 
-std::shared_ptr<ItemStack> MiningSystem::Mining(int count) const
+Item MiningSystem::GetResourceAtMousePointer() const
 {
-	if (UIManager::GetInstance().IsPointerHoverUI()) return nullptr;
+	if (UIManager::GetInstance().IsPointerHoverUI()) return Item::kNone;
 
-	if (!m_stateManager.lock()->CheckCurrentState(CharactorState::IDLE)) return nullptr;
+	if (!m_stateManager.lock()->CheckCurrentState(CharactorState::IDLE)) return Item::kNone;
 
 	const auto hitPos = GetHitPosFromMousePointer();
 
 	const auto hitGridPos = Game::WorldPosToGridPos(hitPos);
 
 	const auto item = m_mapManager.GetResourceAtGridPos(hitGridPos);
+	return item;
+}
+
+std::shared_ptr<ItemStack> MiningSystem::Mining(int count) const
+{
+	const auto item = GetResourceAtMousePointer();
 
 	if (item == Item::kNone) return nullptr;
 

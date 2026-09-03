@@ -44,13 +44,24 @@ public:
 
 	virtual bool OnHoverUI()
 	{
-		m_onHoverUI.Invoke();
-		if (m_onHoverUI.GetListerCount())
+		m_onHover.Invoke();
+		if (m_onHover.GetListerCount())
 		{
 			return true;
 		}
 		return false;
 	}
+	virtual bool OnNotHover()
+	{
+		//購読者がいるときだけ発火(パフォーマンス的に)
+		if (m_onNotHover.GetListerCount())
+		{
+			m_onNotHover.Invoke();
+			return true;
+		}
+		return false;
+	}
+
 	/// <summary>
 	/// UI要素クリック時に呼ばれる。
 	/// </summary>
@@ -193,9 +204,13 @@ public:
 		m_onRightClickConnections.emplace_back(m_onRightClick.AddListener(onClick));
 	}
 
-	void SubscribeHover(const std::function<void()>& onClick)
+	void SubscribeOnHover(const std::function<void()>& onClick)
 	{
-		m_onHoverUIConnections.emplace_back(m_onHoverUI.AddListener(onClick));
+		m_onHoverConnections.emplace_back(m_onHover.AddListener(onClick));
+	}
+	void SubscribeOnNotHover(const std::function<void()>& onClick)
+	{
+		m_onNotHoverConnections.emplace_back(m_onNotHover.AddListener(onClick));
 	}
 
 	void SubscribeOnTimerFinished(const std::function<void()>& onFinished)
@@ -257,8 +272,11 @@ protected:
 	Event<> m_onRightClick;
 	std::vector<Event<>::Connection> m_onRightClickConnections;
 
-	Event<> m_onHoverUI;
-	std::vector<Event<>::Connection> m_onHoverUIConnections;
+	Event<> m_onHover;
+	std::vector<Event<>::Connection> m_onHoverConnections;
+
+	Event<> m_onNotHover;
+	std::vector<Event<>::Connection> m_onNotHoverConnections;
 
 protected:
 	/// <summary>

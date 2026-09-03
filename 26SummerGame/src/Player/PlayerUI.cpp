@@ -37,6 +37,7 @@
 #include "Color.h"
 #include "UIProgressBar.h"
 #include "MouseCursorPoint.h"
+#include "UITextLabel.h"
 
 namespace
 {
@@ -92,9 +93,9 @@ namespace
 	constexpr unsigned int kItemBarBoxHighlight = static_cast<unsigned int>(Color::kMainAccentColor);
 
 	/*資源採掘UI*/
-	const Vector kMiningProgressBarSize = Vector{ 80,10 };
-	constexpr unsigned int kMiningProgressBarColor = static_cast<unsigned int>(Color::kSubColor);
-	const Vector kMiningProgressBarOffset = Vector{0,20};
+	const Vector kMiningProgressBarSize = Vector{ 120,25 };
+	constexpr unsigned int kMiningProgressBarColor = static_cast<unsigned int>(Color::kMainAccentColor);
+	const Vector kMiningProgressBarOffset = Vector{20,20};
 
 	//アイテム取得UI
 	const Vector kItemGetUIPos = Vector{ 25,Game::kDisplaySize.m_y * 0.5f };
@@ -173,6 +174,25 @@ void PlayerUI::SetVisibleMiningProgressBar(bool visible)
 	safeBar->SetVisible(visible);
 }
 
+void PlayerUI::UpdateResourceUIOnMouseCursor(Item item, const Vector& cursorPos)
+{
+
+	if (const auto& safeUI = m_resourceMiningUI.lock())
+	{
+		safeUI->SetText(ItemTable::ItemTypeToDisplayName(item));
+		safeUI->SetPosition(cursorPos + kMiningProgressBarOffset);
+	}
+}
+
+void PlayerUI::SetVisibleResourceUIOnMouseCursor(bool visible)
+{
+
+	if (const auto& safeUI = m_resourceMiningUI.lock())
+	{
+		safeUI->SetVisible(visible);
+	}
+}
+
 void PlayerUI::GetComponentReference()
 {
 	if (!m_collider.lock())
@@ -217,6 +237,11 @@ void PlayerUI::InitUIPanel()
 
 void PlayerUI::InitIdleUIPanel()
 {
+	const auto& inventory = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, kKeyPromptDownLeftPos + Vector{ -1100 }, kKeyPromptSize, GraphicId::kKeyboardTab, "インベントリ");
+	inventory.lock()->SubscribeOnClick([this]() {
+		m_playerController.lock()->OpenInventoryUI();
+		});
+
 	const auto& installationMode = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, kKeyPromptDownLeftPos, kKeyPromptSize, GraphicId::kKeyboardZ, "設置モード");
 	installationMode.lock()->SubscribeOnClick([this]() {
 		m_playerController.lock()->EnterInstallationMode();
@@ -231,12 +256,21 @@ void PlayerUI::InitIdleUIPanel()
 		m_idleKeyPanel, 
 		kKeyPromptFactoryUIPos, kKeyPromptSize, GraphicId::kMouseLeft, "null");
 
-	//破壊ゲージ
 
+	//破壊ゲージ
 	m_miningProgressBar = UIFactory::MakeUIToPanel<UIProgressBar>(
-		m_idleKeyPanel, 
-		Vector{}, kMiningProgressBarSize,kMiningProgressBarColor,150 );
+		m_idleKeyPanel,
+		Vector{}, kMiningProgressBarSize, kMiningProgressBarColor, 200);
 	m_miningProgressBar.lock()->SetVisible(false);
+
+	//資源の表示
+	m_resourceMiningUI = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_idleKeyPanel, Vector{},kMiningProgressBarSize, GraphicId::kMouseRight, "null");
+	m_resourceMiningUI.lock()->SetFontID(FontId::kFactoryUITextMini);
+	m_resourceMiningUI.lock()->SetKeyImageExRate(0.2);
+	m_resourceMiningUI.lock()->SetImagePositionOffset({ 5.0f , 2.5f });
+
+
+
 }
 
 void PlayerUI::InitInstallationUIPanel()
@@ -256,9 +290,11 @@ void PlayerUI::InitInstallationUIPanel()
 		m_playerController.lock()->EnterDestroyMode();
 		});
 
-	UIFactory::MakeUIToPanel<UIKeyPrompt>(m_installationKeyPanel, kKeyPromptFactoryUIPos, kKeyPromptSize, GraphicId::kMouseLeft, "設置");
+	const auto& installationUI = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_installationKeyPanel, kKeyPromptFactoryUIPos, kKeyPromptSize, GraphicId::kMouseLeft, "設置");
+	installationUI.lock()->SetIsHitTarget(false);
 
-	UIFactory::MakeUIToPanel<UIKeyPrompt>(m_installationKeyPanel, kRotationKeyPromptUIPos, kKeyPromptSize, GraphicId::kKeyboardR, "回転");
+	const auto& rotationUI = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_installationKeyPanel, kRotationKeyPromptUIPos, kKeyPromptSize, GraphicId::kKeyboardR, "回転");
+	rotationUI.lock()->SetIsHitTarget(false);
 }
 
 void PlayerUI::InitDestroyUIPanel()
@@ -452,6 +488,12 @@ void PlayerUI::InitInventoryItemPanel()
 {
 	//アイテムバーの背景部分
 	UIFactory::MakeUIToPanel<UISquare>(m_inventoryUIPanel, kInventoryPos, kInventorySize, kInventoryColor, kInventoryAlpha);
+
+	const auto& inventoryClose = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_inventoryUIPanel, kKeyPromptDownLeftPos + Vector{ -1000 }, kKeyPromptSize, GraphicId::kKeyboardC, "閉じる");
+	inventoryClose.lock()->SubscribeOnClick([this]() {
+		m_playerController.lock()->CloseInventoryUI();
+		});
+
 
 	const auto& inventory = m_playerItem.lock()->GetInventory();
 	for (int i = 0; i < inventory.lock()->GetSlotCount(); i++)
@@ -656,13 +698,18 @@ void PlayerUI::UpdateItemBar()
 			m_itemBarBoxes.at(i)->SetText("x{}", itemStack->GetItemCount());
 	}
 
-	UpdateItemGetUI();
+	//アイテムラベルの表示
+	for (int i = 0; i < kItemBarItemCount; i++)
+	{
+		const auto& itemStack = m_playerItem.lock()->GetItemFromItemBar(i);
+
+		m_itemBarBoxes.at(i)->SetLabelVisible(false);
+		if (!itemStack) m_itemBarBoxes.at(i)->SetLabelText("");
+		else
+			m_itemBarBoxes.at(i)->SetLabelText(ItemTable::ItemTypeToDisplayName(itemStack->GetItemType()));
+	}
 }
 
-void PlayerUI::UpdateItemGetUI()
-{
-
-}
 
 void PlayerUI::UpdateInventory()
 {
@@ -694,7 +741,18 @@ void PlayerUI::UpdateInventory()
 			m_inventoryBoxes.at(i)->SetText("x{}", itemStack->GetItemCount());
 	}
 
+	//アイテムラベルの表示
+	for (int i = 0; i < inventorySize; i++)
+	{
+		const auto& itemStack = m_playerItem.lock()->GetItemFromInventory(i);
 
+		m_inventoryBoxes.at(i)->SetLabelVisible(false);
+
+		if (!itemStack)
+			m_inventoryBoxes.at(i)->SetLabelText("");
+		else
+			m_inventoryBoxes.at(i)->SetLabelText(ItemTable::ItemTypeToDisplayName(itemStack->GetItemType()));
+	}
 }
 
 void PlayerUI::UpdateQuestUI()

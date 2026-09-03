@@ -42,6 +42,8 @@ public:
 
 	Item GetSelectedItemType() const;
 
+	Item GetSelectedHalfItemType() const;
+
 	/// <summary>
 	/// 指定した名前のスクリーンを取得する。
 	/// 存在しなければ新規作成する。
@@ -100,6 +102,8 @@ private:
 
 	void ResetRightDrag();
 private:
+	void MouseHoverCheck(const Vector& nowPos,
+		const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens);
 
 	void MouseLeftProcess(const Vector& nowPos, 
 		const std::vector<std::pair<std::string, std::shared_ptr<UIPanel>>>& orderedScreens);

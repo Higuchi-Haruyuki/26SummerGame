@@ -15,7 +15,7 @@
 namespace
 {
 	// レイキャストのインタラクション可能な最大距離（要調整）
-	constexpr float kInteractRayMaxDistance = 4000.0f;
+	constexpr float kInteractRayMaxDistance = FLT_MAX;
 }
 void RayCastResult::RaycastFromScreenCenter()
 {

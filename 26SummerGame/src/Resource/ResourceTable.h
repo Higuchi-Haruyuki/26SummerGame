@@ -89,6 +89,7 @@ namespace ResourceTable
 		{ GraphicId::kTitleImage,"assets/textures/tenohira_factory_logo.png"},
 
 		{ GraphicId::kMouseLeft, ResourceName::kMouseLeft.c_str() },
+		{ GraphicId::kMouseRight, "assets/textures/icon/key/mouse_right.png" },
 	} };
 
 	struct ModelInfo
