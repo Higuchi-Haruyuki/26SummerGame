@@ -93,6 +93,7 @@ void MapManager::GenerateMap()
 
 void MapManager::GenerateMapResource()
 {
+	m_gridResources = {};
 	//チャンク単位での生成ループ
 	for (int i = 0; i < Map::kChunkCount; i++)
 	{

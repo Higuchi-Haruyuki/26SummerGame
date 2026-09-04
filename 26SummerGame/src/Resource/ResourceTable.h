@@ -116,13 +116,13 @@ namespace ResourceTable
 	};
 
 	inline const std::array<SoundInfo, static_cast<size_t>(SoundId::kCount)> kSoundTable = { {
-		{ SoundId::kMiningSe,     "assets/audio/se/mining.mp3",      0.5f},
-		{ SoundId::kClickSe,     "assets/audio/se/click.mp3",      0.5f},
-		{ SoundId::kOnQuestEndSe,     "assets/audio/se/quest_end.mp3",      0.5f},
-		{ SoundId::kEnterInstallationModeSe,     "assets/audio/se/enter_installation_mode.mp3",      0.5f },
-		{ SoundId::kEnterDestroyModeSe,     "assets/audio/se/enter_destroy_mode.mp3",      0.5f },
-		{SoundId::kTitleBGM,         "assets/audio/bgm/title2.mp3",      0.2f },
-		{ SoundId::kMainBGM,         "assets/audio/bgm/main1.mp3",       0.2f }
+		{ SoundId::kMiningSe,     "assets/audio/se/mining.wav",      0.5f},
+		{ SoundId::kClickSe,     "assets/audio/se/click.wav",      0.5f},
+		{ SoundId::kOnQuestEndSe,     "assets/audio/se/quest_end.wav",      0.5f},
+		{ SoundId::kEnterInstallationModeSe,     "assets/audio/se/enter_installation_mode.wav",      0.5f },
+		{ SoundId::kEnterDestroyModeSe,     "assets/audio/se/enter_destroy_mode.wav",      0.5f },
+		{SoundId::kTitleBGM,         "assets/audio/bgm/title2.wav",      0.2f },
+		{ SoundId::kMainBGM,         "assets/audio/bgm/main1.wav",       0.2f }
 } };
 
 }

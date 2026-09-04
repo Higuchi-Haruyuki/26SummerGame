@@ -56,7 +56,7 @@ bool SoundManager::PlayLoop(SoundId id) const
         return false;
     }
 
-    PlaySoundMem(handle,DX_PLAYTYPE_BACK);
+    PlaySoundMem(handle,DX_PLAYTYPE_LOOP);
     return true;
 }
 
