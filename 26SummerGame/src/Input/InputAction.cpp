@@ -46,6 +46,7 @@ void InputAction::Update()
 
 ButtonPhase InputAction::GetPhase() const
 {
+	if(!m_isInputEnable) return ButtonPhase::kNone;
 	if (m_currentButtonState && !m_previousButtonState) return ButtonPhase::kTrigger;
 	if (m_currentButtonState && m_previousButtonState) return ButtonPhase::kPressed;
 	if (!m_currentButtonState && m_previousButtonState) return ButtonPhase::kReleased;

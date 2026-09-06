@@ -33,9 +33,11 @@ public:
 
 	void Update();
 
-	const InputValue& GetValue() const { return m_currentValue; }
+	InputValue GetValue() const { return m_isInputEnable ? m_currentValue : InputValue{0.0f}; }
 
 	ButtonPhase GetPhase() const;
+
+	void SetInputEnable(bool enable) { m_isInputEnable = enable; }
 private:
 	std::string m_name;
 	InputValueType m_valueType;
@@ -50,5 +52,6 @@ private:
 	//前のフレームのボタンの状態
 	bool m_previousButtonState = false;
 
+	bool m_isInputEnable = false;
 };
 

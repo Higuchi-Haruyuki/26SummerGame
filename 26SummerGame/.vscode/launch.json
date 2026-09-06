@@ -10,8 +10,20 @@
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],
-            "console": "externalTerminal",
+            "console": "internalConsole",
             "preLaunchTask": "Build (Debug x64)"
+        },
+        {
+            "name": "Release (Win64)",
+            "type": "cppvsdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}\\x64\\Release\\26SummerGame.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}",
+            "environment": [],
+            "console": "internalConsole",
+            "preLaunchTask": "Build (Release x64)"
         }
     ]
 }

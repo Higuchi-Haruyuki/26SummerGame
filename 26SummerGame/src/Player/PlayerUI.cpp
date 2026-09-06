@@ -1,5 +1,4 @@
-﻿#include "Base_Quest.h"
-#include "Camera.h"
+﻿#include "Camera.h"
 #include "CharactorStateManager.h"
 #include "Collider.h"
 #include "Component.h"
@@ -7,11 +6,9 @@
 #include "DrawText.h"
 #include "FactoryComponent.h"
 #include "Game.h"
-#include "ItemStack.h"
 #include "Object.h"
 #include "PlayerController.h"
 #include "PlayerInput.h"
-#include "PlayerItem.h"
 #include "PlayerUI.h"
 #include "RayCastResult.h"
 #include "ResourceManager.h"
@@ -23,21 +20,19 @@
 #include "UIPanel.h"
 #include "UISquare.h"
 #include "UIText.h"
-#include "QuestManager.h"
+#include "UI/QuestUI.h"
+#include "UI/ItemBarUI.h"
+#include "UI/InventoryUI.h"
 #include "vector.h"
 #include <algorithm>
 #include <DxLib.h>
 #include <format>
 #include <memory>
 #include <string>
-#include "ItemManager.h"
-#include "UIItemBox.h"
-#include "PlayerCraft.h"
-#include "ItemSlot.h"
 #include "Color.h"
 #include "UIProgressBar.h"
 #include "MouseCursorPoint.h"
-#include "UITextLabel.h"
+#include "ItemManager.h"
 
 namespace
 {
@@ -51,83 +46,41 @@ namespace
 	//工業オブジェクトの名前と操作が出るUIの位置
 	const Vector kKeyPromptFactoryUIPos = Game::kDisplaySize / 2 + Vector{ 100,100 };
 
-	/*アイテムバーの定数*/
-	const Vector kItemBarPos =
-	{
-		Game::kDisplaySize.m_x / 2,
-		Game::kDisplaySize.m_y / 8 * 7 - 50
-	};
-	const Vector kItemBarSize = { 800,80 };
-	constexpr unsigned int kItemBarColor = static_cast<unsigned int>(Color::kMainColor);
-	constexpr int kItemBarAlpha = 100;
-
-	/*アイテムバーのアイテム表示に関する定数*/
-	constexpr int kItemBarItemCount = 10;
-	constexpr int kItemBarSlotOffsetX = 10;
-	const Vector kItemBarItemSlotSize = { (kItemBarSize.m_x - 100) / kItemBarItemCount , kItemBarSize.m_y - 10 };
-	constexpr unsigned int kItemBarItemSlotColor = static_cast<unsigned int>(Color::kSubColor);
-	constexpr int kItemBarItemSlotAlpha = 255;
-
 	/*設置モード中の定数*/
 	const Vector kRotationKeyPromptUIPos = Game::kDisplaySize / 2 + Vector{ 100,150 };
-
-	/*クエスト表示UIの定数*/
-	const Vector kQuestUIPos = { 150.0f, Game::kDisplaySize.m_y / 2 - 100 };
-	const Vector kQuestUISize = { 300.0f, 100.0f };
-
-	/*インベントリUIの定数*/
-	const Vector kInventoryPos =
-	{
-		Game::kDisplaySize.m_x / 4,
-		Game::kDisplaySize.m_y / 2.5f
-	};
-	const Vector kInventorySize = { 850,810 };
-	constexpr unsigned int kInventoryColor = static_cast<unsigned int>(Color::kMainColor);
-	constexpr int kInventoryAlpha = 130;
-
-	constexpr int kItemBoxCountWidth = 10;
-	constexpr int kItemBoxCountHeight = 10;
-	constexpr int kInventorySlotOffsetX = 10;
-	constexpr int kInventorySlotOffsetY = 10;
-
-	constexpr unsigned int kItemBarBoxHighlight = static_cast<unsigned int>(Color::kMainAccentColor);
 
 	/*資源採掘UI*/
 	const Vector kMiningProgressBarSize = Vector{ 120,25 };
 	constexpr unsigned int kMiningProgressBarColor = static_cast<unsigned int>(Color::kMainAccentColor);
 	const Vector kMiningProgressBarOffset = Vector{20,20};
 
-	//アイテム取得UI
-	const Vector kItemGetUIPos = Vector{ 25,Game::kDisplaySize.m_y * 0.5f };
-	constexpr Second kItemGetUIExistTime = 3.0f;
-	const Vector kItemGetUIImageSize = Vector{ 50,50 };
-	const Vector kItemGetUITextOffset = Vector{ 30.0f };
+
 }
 
 PlayerUI::PlayerUI(std::weak_ptr<Object> parentObject) :
 	Component(parentObject), m_input(PlayerInput::GetInstance()),
 	m_uiManager(UIManager::GetInstance()),
-	m_resourceManager(ResourceManager::GetInstance()),
-	m_questManager(QuestManager::GetInstance())
+	m_resourceManager(ResourceManager::GetInstance())
 {}
 
 void PlayerUI::Init()
 {
 	GetComponentReference();
 
-	//クラフト可能なレシピタイプを設定する。
-	m_playerCraft.lock()->SetAllowRecipeType(RecipeType::kPlayerCraft);
+	GetPanel();
 
-	CreatePanel();
+	const auto questUI = AddComponent<QuestUI>().lock();
+	const auto itemBarUI = AddComponent<ItemBarUI>().lock();
+	const auto inventoryUI = AddComponent<InventoryUI>().lock();
 
 	//ステートと有効なパネルの配列を初期化する。
 	m_activePanelByState =
 	{
-		{CharactorState::IDLE, {m_idleKeyPanel, m_itemBarUIPanel, m_questUIPanel} },
-		{CharactorState::INSTALLATION,{m_installationKeyPanel, m_itemBarUIPanel}},
-		{CharactorState::DESTROY,{m_destroyKeyPanel, m_itemBarUIPanel}},
-		{CharactorState::OPEN_FACTORYUI,{m_factoryUIPanel, m_itemBarUIPanel}},
-		{CharactorState::OPEN_INVENTORYUI,{m_itemBarUIPanel,m_inventoryUIPanel}}
+		{CharactorState::IDLE, {m_idleKeyPanel, itemBarUI->GetPanel(), questUI->GetPanel()} },
+		{CharactorState::INSTALLATION,{m_installationKeyPanel, itemBarUI->GetPanel()}},
+		{CharactorState::DESTROY,{m_destroyKeyPanel, itemBarUI->GetPanel()}},
+		{CharactorState::OPEN_FACTORYUI,{m_factoryUIPanel, itemBarUI->GetPanel()}},
+		{CharactorState::OPEN_INVENTORYUI,{itemBarUI->GetPanel(),inventoryUI->GetPanel()}}
 	};
 
 	//ステートの変更イベントを購読
@@ -199,23 +152,16 @@ void PlayerUI::GetComponentReference()
 		m_collider = GetComponent<Collider>();
 	if (!m_playerController.lock())
 		m_playerController = GetComponent<PlayerController>();
-	if (!m_playerItem.lock())
-		m_playerItem = GetComponent<PlayerItem>();
 	if (!m_state.lock())
 		m_state = GetComponent<CharactorStateManager>();
-	if (!m_playerCraft.lock())
-		m_playerCraft = GetComponent<PlayerCraft>();
 }
 
-void PlayerUI::CreatePanel()
+void PlayerUI::GetPanel()
 {
 	m_idleKeyPanel = m_uiManager.GetOrCreateScreen("idle", UILayer::Hud);
 	m_installationKeyPanel = m_uiManager.GetOrCreateScreen("installaction", UILayer::Hud);
 	m_destroyKeyPanel = m_uiManager.GetOrCreateScreen("destroy", UILayer::Hud);
 	m_factoryUIPanel = m_uiManager.GetOrCreateScreen("factoryUI", UILayer::Hud);
-	m_itemBarUIPanel = m_uiManager.GetOrCreateScreen("itemBar", UILayer::Hud);
-	m_questUIPanel = m_uiManager.GetOrCreateScreen("quest", UILayer::Hud);
-	m_inventoryUIPanel = m_uiManager.GetOrCreateScreen("inventory", UILayer::Hud);
 }
 
 void PlayerUI::InitUIPanel()
@@ -227,12 +173,6 @@ void PlayerUI::InitUIPanel()
 	InitDestroyUIPanel();
 
 	InitFactoryUIPanel();
-
-	InitItemBarUIPanel();
-
-	InitQuestUIPanel();
-
-	InitInventoryItemPanel();
 }
 
 void PlayerUI::InitIdleUIPanel()
@@ -354,232 +294,6 @@ void PlayerUI::InitFactoryUIPanel()
 
 }
 
-void PlayerUI::InitItemBarUIPanel()
-{
-	//アイテムバーの背景部分
-	UIFactory::MakeUIToPanel<UISquare>(m_itemBarUIPanel, kItemBarPos, kItemBarSize, kItemBarColor, kItemBarAlpha);
-
-	/*アイテムバーのアイテムスロットの部分*/
-	InitItemBarItemSlot();
-
-	/*アイテム取得のUI*/
-	InitItemGetUI();
-}
-
-void PlayerUI::InitItemGetUI()
-{
-	auto& [image, text] = m_getItemUI;
-
-		image = UIFactory::MakeUIToPanel<UIImage>(m_itemBarUIPanel,
-			kItemGetUIPos, kItemGetUIImageSize, GraphicId::kNone);
-
-		text = UIFactory::MakeUIToPanel<UIText>(m_itemBarUIPanel,
-			TextArgs{
-				kItemGetUIPos + kItemGetUITextOffset,
-				TextPivot::LeftCenter
-			});
-
-		image.lock()->SetTimerDuration(kItemGetUIExistTime);
-		image.lock()->SubscribeOnTimerFinished([this]()
-			{
-				auto& [image, text] = m_getItemUI;
-				m_lastGetItem = std::make_pair(Item::kNone,0);
-				image.lock()->SetVisible(false);
-				text.lock()->SetVisible(false);
-			});
-		m_playerItem.lock()->SubscribeOnAddItem([this](Item item, int count)
-			{
-				auto& [image, text] = m_getItemUI;
-				auto& [lastItem, lastCount] = m_lastGetItem;
-
-				if (lastItem != item)
-				{
-					lastCount = count;
-					lastItem = item;
-				}
-				else
-				{
-					lastCount += count;
-				}
-
-				image.lock()->ResetTimer();
-				image.lock()->SetVisible(true);
-				image.lock()->SetGraphicID(ItemTable::GetGraphicID(item));
-				text.lock()->SetVisible(true);
-				text.lock()->SetText("{}: x{}", ItemTable::ItemTypeToDisplayName(item), lastCount);
-			}
-		);
-
-}
-
-void PlayerUI::InitQuestUIPanel()
-{
-	UIFactory::MakeUIToPanel<UISquare>(m_questUIPanel, 
-		kQuestUIPos, kQuestUISize, 
-		static_cast<unsigned int>(Color::kMainColor), 200);
-
-	m_questText = UIFactory::MakeUIToPanel<UIText>(m_questUIPanel, TextArgs{
-				kQuestUIPos + Vector{0,kQuestUISize.m_y * 0.2f},
-				TextPivot::CenterBottom,
-				FontId::kQuestUIText,
-				"",
-				static_cast<unsigned int>(Color::kMainCharColor),
-				static_cast<unsigned int>(Color::kSubCharColor),
-				255
-		});
-	UIFactory::MakeUIToPanel<UIText>(m_questUIPanel, TextArgs{
-				kQuestUIPos - Vector{0,kQuestUISize.m_y * 0.4f},
-				TextPivot::CenterTop,
-				FontId::kFactoryUIText,
-				"<クエスト>",
-				static_cast<unsigned int>(Color::kSubCharColor),
-				static_cast<unsigned int>(Color::kMainCharColor),
-				255
-		});
-
-	const Vector kQuestProgressBarSize = {kQuestUISize.m_x,10};
-
-	m_questProgressBar = UIFactory::MakeUIToPanel<UIProgressBar>(m_questUIPanel, 
-		kQuestUIPos + Vector{0,kQuestUISize.m_y * 0.45f}, kQuestProgressBarSize,
-		static_cast<unsigned int>(Color::kMainAccentColor), 200);
-
-	m_questProgressText = UIFactory::MakeUIToPanel<UIText>(m_questUIPanel, 
-		TextArgs{
-			kQuestUIPos + Vector{kQuestUISize.m_x * 0.5f ,kQuestUISize.m_y * 0.5f},
-			TextPivot::RightBottom
-		});
-
-}
-
-void PlayerUI::InitItemBarItemSlot()
-{
-	for (int i = 0; i < kItemBarItemCount; i++)
-	{
-		const auto& itemBox = std::make_shared<UIItemBox>(m_itemBarUIPanel, CalcItemBarItemSlotPos(i), kItemBarItemSlotSize);
-		int index = i;
-
-		itemBox->SetOnClickEvent(
-			[this, index]
-			{
-				m_playerItem.lock()->SetItemBarChoiceIndex(index);
-			}
-		);
-		itemBox->SetOnDragBeginEvent(
-			[this, index]()
-			{
-				m_uiManager.ItemSelect(m_playerItem.lock()->GetItemBar().lock(), index);
-			}
-		);
-		itemBox->SetOnDropEvent(
-			[this, index]
-			{
-				m_uiManager.MoveItem(m_playerItem.lock()->GetItemBar(),index);
-			}
-		);
-		itemBox->SetOnSelectHalfItem(m_playerItem.lock()->GetItemBar(), index);
-		itemBox->SetOnMoveHalfItem(m_playerItem.lock()->GetItemBar(), index);
-
-		//配列に追加
-		m_itemBarBoxes.push_back(itemBox);
-	}
-}
-
-void PlayerUI::InitInventoryItemPanel()
-{
-	//アイテムバーの背景部分
-	UIFactory::MakeUIToPanel<UISquare>(m_inventoryUIPanel, kInventoryPos, kInventorySize, kInventoryColor, kInventoryAlpha);
-
-	const auto& inventoryClose = UIFactory::MakeUIToPanel<UIKeyPrompt>(m_inventoryUIPanel, kKeyPromptDownLeftPos + Vector{ -1000 }, kKeyPromptSize, GraphicId::kKeyboardC, "閉じる");
-	inventoryClose.lock()->SubscribeOnClick([this]() {
-		m_playerController.lock()->CloseInventoryUI();
-		});
-
-
-	const auto& inventory = m_playerItem.lock()->GetInventory();
-	for (int i = 0; i < inventory.lock()->GetSlotCount(); i++)
-	{
-		const auto& itemBox = std::make_shared<UIItemBox>(
-			m_inventoryUIPanel, CalcInventoryItemSlotPos(i), kItemBarItemSlotSize
-		);
-
-		int index = i;
-
-		itemBox->SetOnClickEvent(
-			[this, index]
-			{
-				m_playerItem.lock()->SetInventoryChoiceIndex(index);
-			}
-		);
-		itemBox->SetOnDragBeginEvent(
-			[this, inventory, index]()
-			{
-				m_uiManager.ItemSelect(inventory, index);
-			}
-		);
-		itemBox->SetOnDropEvent(
-			[this, inventory, index]
-			{
-				m_uiManager.MoveItem(inventory, index);
-			}
-		);
-
-		itemBox->SetOnSelectHalfItem(inventory, index);
-		itemBox->SetOnMoveHalfItem(inventory, index);
-
-		//配列に追加
-		m_inventoryBoxes.push_back(itemBox);
-	}
-
-	const auto basepos = kInventoryPos + Vector{ kInventorySize.m_x * 0.5f,-kInventorySize.m_y * 0.5f };
-	const auto size = Vector{ 30,30 };
-
-	const auto pos = basepos + Vector{ -size.m_x * 0.5f,size.m_y * 0.5f } + Vector{-10,10};
-
-	const auto& close = UIFactory::MakeUIToPanel<UIImage>(m_inventoryUIPanel, pos, size, GraphicId::kUIClose);
-	close.lock()->SubscribeOnClick([this]()
-		{
-			m_playerController.lock()->CloseInventoryUI();
-		}
-	);
-
-	m_inventoryUIPanel->AddChild(m_playerCraft.lock()->GetOrBuidUIPanel());
-}
-
-Vector PlayerUI::CalcItemBarItemSlotPos(int index) const
-{
-	//アイテムバーの左端の座標 (yは中心)
-	const Vector kItemBarLeftEdge = kItemBarPos - Vector{ kItemBarSize.m_x * 0.5f };
-	//アイテムバーのアイテムスロットの1つ目の左端の座標((kItemBarLeftEdge) + (スロット間のオフセット)の値)
-	const Vector kItemSlotLeftEdgeStartPos = kItemBarLeftEdge + Vector{ kItemBarSlotOffsetX };
-	//i個目のアイテムバーのアイテムスロットの左端の座標
-	const Vector kItemSlotLeftEdgePos = kItemSlotLeftEdgeStartPos + Vector{ (kItemBarItemSlotSize.m_x + kItemBarSlotOffsetX) * index };
-	//i個目のアイテムバーのアイテムスロットの中心座標
-	const Vector kItemSlotCenterPos = kItemSlotLeftEdgePos + Vector{ kItemBarItemSlotSize.m_x * 0.5f };
-
-	return kItemSlotCenterPos;
-}
-
-Vector PlayerUI::CalcInventoryItemSlotPos(int index) const
-{
-	int width = index % 10;
-	int height = index / 10;
-
-	//アイテムバーの左端の座標 (yは中心)
-	const Vector kItemBarLeftEdge = kInventoryPos - Vector{ kInventorySize.m_x * 0.5f , kInventorySize.m_y * 0.5f };
-	//アイテムバーのアイテムスロットの1つ目の左端の座標((kItemBarLeftEdge) + (スロット間のオフセット)の値)
-	const Vector kItemSlotLeftEdgeStartPos = kItemBarLeftEdge + Vector{ kInventorySlotOffsetX,kInventorySlotOffsetY };
-	//i個目のアイテムバーのアイテムスロットの左端の座標
-	const Vector kItemSlotLeftEdgePos = kItemSlotLeftEdgeStartPos + 
-		Vector{ 
-		(kItemBarItemSlotSize.m_x + kInventorySlotOffsetX) * width,
-		(kItemBarItemSlotSize.m_y + kInventorySlotOffsetY) * height 
-	};
-	//i個目のアイテムバーのアイテムスロットの中心座標
-	const Vector kItemSlotCenterPos = kItemSlotLeftEdgePos + Vector{ kItemBarItemSlotSize.m_x * 0.5f, kItemBarItemSlotSize.m_y * 0.5f };
-
-	return kItemSlotCenterPos;
-}
-
 void PlayerUI::SetChooseFactoryComponent(DeviceType currentDevice)
 {
 	if (!IsEnableSetChooseFactoryComponent()) return;
@@ -602,12 +316,6 @@ void PlayerUI::UpdateUIPanel()
 	UpdateFactoryUIKeyPrompt();
 
 	UpdateFactoryUIPanel();
-
-	UpdateItemBar();
-
-	UpdateQuestUI();
-
-	UpdateInventory();
 }
 
 void PlayerUI::UpdateDestroyUIPanel()
@@ -661,123 +369,6 @@ void PlayerUI::UpdateFactoryUIPanel()
 	m_factoryUITitleText.lock()->SetText(ItemTable::ItemTypeToDisplayName(safeFactory->GetItemType()));
 }
 
-void PlayerUI::UpdateItemBar()
-{
-	if (!m_playerItem.lock()) return;
-
-	int index = m_playerItem.lock()->GetItemBarChoiceIndex();
-
-	//選択時の色変更
-	for (int i = 0; i < kItemBarItemCount; i++)
-	{
-		if (i == index)
-			m_itemBarBoxes.at(i)->SetColor(kItemBarBoxHighlight);
-		else
-			m_itemBarBoxes.at(i)->SetDefaultColor();
-	}
-
-	//アイテムがあるときにそのアイコンを表示する
-	for (int i = 0; i < kItemBarItemCount; i++)
-	{
-		const auto& itemStack = m_playerItem.lock()->GetItemFromItemBar(i);
-
-		if (!itemStack)
-			m_itemBarBoxes.at(i)->SetGraphicID(GraphicId::kNone);
-		else
-			m_itemBarBoxes.at(i)->SetGraphicID(itemStack->GetItemIconGraphicID());
-	}
-
-	//アイテムがあるときにその数を表示する
-	for (int i = 0; i < kItemBarItemCount; i++)
-	{
-		const auto& itemStack = m_playerItem.lock()->GetItemFromItemBar(i);
-
-		if (!itemStack)
-			m_itemBarBoxes.at(i)->SetText("");
-		else
-			m_itemBarBoxes.at(i)->SetText("x{}", itemStack->GetItemCount());
-	}
-
-	//アイテムラベルの表示
-	for (int i = 0; i < kItemBarItemCount; i++)
-	{
-		const auto& itemStack = m_playerItem.lock()->GetItemFromItemBar(i);
-
-		m_itemBarBoxes.at(i)->SetLabelVisible(false);
-		if (!itemStack) m_itemBarBoxes.at(i)->SetLabelText("");
-		else
-			m_itemBarBoxes.at(i)->SetLabelText(ItemTable::ItemTypeToDisplayName(itemStack->GetItemType()));
-	}
-}
-
-
-void PlayerUI::UpdateInventory()
-{
-	if (!m_playerItem.lock()) return;
-
-	int index = m_playerItem.lock()->GetInventoryChoiceIndex();
-
-	int inventorySize = m_playerItem.lock()->GetInventory().lock()->GetSlotCount();
-
-	//アイテムがあるときにそのアイコンを表示する
-	for (int i = 0; i < inventorySize; i++)
-	{
-		const auto& itemStack = m_playerItem.lock()->GetItemFromInventory(i);
-
-		if (!itemStack)
-			m_inventoryBoxes.at(i)->SetGraphicID(GraphicId::kNone);
-		else
-			m_inventoryBoxes.at(i)->SetGraphicID(itemStack->GetItemIconGraphicID());
-	}
-
-	//アイテムがあるときにその数を表示する
-	for (int i = 0; i < inventorySize; i++)
-	{
-		const auto& itemStack = m_playerItem.lock()->GetItemFromInventory(i);
-
-		if (!itemStack)
-			m_inventoryBoxes.at(i)->SetText("");
-		else
-			m_inventoryBoxes.at(i)->SetText("x{}", itemStack->GetItemCount());
-	}
-
-	//アイテムラベルの表示
-	for (int i = 0; i < inventorySize; i++)
-	{
-		const auto& itemStack = m_playerItem.lock()->GetItemFromInventory(i);
-
-		m_inventoryBoxes.at(i)->SetLabelVisible(false);
-
-		if (!itemStack)
-			m_inventoryBoxes.at(i)->SetLabelText("");
-		else
-			m_inventoryBoxes.at(i)->SetLabelText(ItemTable::ItemTypeToDisplayName(itemStack->GetItemType()));
-	}
-}
-
-void PlayerUI::UpdateQuestUI()
-{
-	const auto& safeQuestDesc = m_questText.lock();
-	if (!safeQuestDesc) return;
-
-	const Base_Quest* quest = m_questManager.GetCurrentQuest();
-	if (quest)
-	{
-		safeQuestDesc->SetText(quest->GetDescription());
-
-		auto progress = quest->GetProgress();
-
-		m_questProgressBar.lock()->SetProgress(progress);
-		m_questProgressText.lock()->SetText("{} %", static_cast<int>(progress * 100.0f));
-	}
-	else
-	{
-		safeQuestDesc->SetText("楽しもう！！");
-		m_questProgressBar.lock()->SetVisible(false);
-		m_questProgressText.lock()->SetVisible(false);
-	}
-
-}
 
 void PlayerUI::ApplyUIVisibility(const CharactorState& state)
 {
@@ -809,12 +400,6 @@ void PlayerUI::SetUIVisible(const CharactorState& state, bool visible)
 		});
 }
 
-void PlayerUI::IsEnableCameraControll(bool enable) const
-{
-	/*Camera::GetInstance().SetEnableMovement(enable);
-	Camera::GetInstance().SetEnableRotation(enable);*/
-}
-
 bool PlayerUI::IsCurrentState(CharactorState state) const
 {
 	return m_state.lock()->CheckCurrentState(state);
@@ -841,19 +426,6 @@ void PlayerUI::ChangeCharactorState(const CharactorState& lastState, const Chara
 			m_state.lock()->ChangeState(CharactorState::IDLE);
 			return;
 		};
-
-		IsEnableCameraControll(false);
-
-		break;
-
-	case CharactorState::OPEN_INVENTORYUI:
-
-		IsEnableCameraControll(false);
-
-		break;
-	case CharactorState::IDLE:
-
-		IsEnableCameraControll(true);
 
 		break;
 

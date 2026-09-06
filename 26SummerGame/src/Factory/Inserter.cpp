@@ -8,6 +8,8 @@
 #include "UIText.h"
 #include "Game.h"
 #include "ItemStack.h"
+#include "Model.h"
+#include "Animation3D.h"
 
 namespace
 {
@@ -29,6 +31,8 @@ namespace
 	const Vector kInputUIPos = Game::kDisplaySize / 2;
 
 	const Vector kUISize = { Game::kDisplaySize.m_x / 20, Game::kDisplaySize.m_x / 20 };
+
+	const std::vector<AnimationInfo> kAnim = {{"Normal",0,0.833f}};
 }
 
 Inserter::Inserter(std::weak_ptr<Object> parentObject) :
@@ -41,16 +45,20 @@ void Inserter::Init()
 {
 	FactoryComponent::Init();
 
-	m_shape = GetComponent<Square3D>();
+	m_shape = GetComponent<Model>();
 	if (!m_shape.lock())
-		m_shape = AddComponent<Square3D>();
-
+		m_shape = AddComponent<Model>();
+		
 	m_transport = AddComponent<TransportSystem>();
-
-	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape.lock());
-	square3D->SetUVScrollTexHandle(GraphicId::kInserterIcon);
-	square3D->SetUVScrollOffset(1);
-
+		
+	const auto& model = std::static_pointer_cast<Model>(m_shape.lock());
+	model->SetModel(ModelId::kInserter);
+		
+	const auto& anim = AddComponent<Animation3D>();
+	anim.lock()->SetAnimNameAndIndex(kAnim);
+	anim.lock()->AttachAnim("Normal");
+	anim.lock()->Play();
+		
 	SetSizeAndColorAndMaxSlot(kSize, kColor, kMaxInputItemSlot, kMaxOutputItemSlot);
 	SetItemName(kItemType);
 

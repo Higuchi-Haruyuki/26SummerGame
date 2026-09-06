@@ -178,7 +178,11 @@
     <ClCompile Include="src\Scene\MainScene.cpp" />
     <ClCompile Include="src\Player\PlayerItem.cpp" />
     <ClCompile Include="src\Player\PlayerUI.cpp" />
+    <ClCompile Include="src\Player\UI\ItemBarUI.cpp" />
+    <ClCompile Include="src\Player\UI\InventoryUI.cpp" />
+    <ClCompile Include="src\Player\UI\QuestUI.cpp" />
     <ClCompile Include="src\Quest\QuestManager.cpp" />
+    <ClCompile Include="src\Quest\Quest_AxisInput.cpp" />
     <ClCompile Include="src\Quest\Quest_MakeItem.cpp" />
     <ClCompile Include="src\Physics\Ray.cpp" />
     <ClCompile Include="src\Physics\RayCastResult.cpp" />
@@ -256,7 +260,11 @@
     <ClInclude Include="src\Player\PlayerCraft.h" />
     <ClInclude Include="src\Player\PlayerItem.h" />
     <ClInclude Include="src\Player\PlayerUI.h" />
+    <ClInclude Include="src\Player\UI\ItemBarUI.h" />
+    <ClInclude Include="src\Player\UI\InventoryUI.h" />
+    <ClInclude Include="src\Player\UI\QuestUI.h" />
     <ClInclude Include="src\Quest\QuestManager.h" />
+    <ClInclude Include="src\Quest\Quest_AxisInput.h" />
     <ClInclude Include="src\Quest\Quest_MakeItem.h" />
     <ClInclude Include="src\Physics\Ray.h" />
     <ClInclude Include="src\Physics\RayCastResult.h" />

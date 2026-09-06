@@ -2,14 +2,7 @@
 #include "Component.h"
 #include <memory>
 #include <vector>
-#include <functional>
-#include <string>
-#include "Object.h"
-#include "Base_UIElement.h"
-#include "UIPanel.h"
 #include <map>
-#include <concepts>
-#include <type_traits>
 #include "ItemType.h"
 
 class FactoryComponent;
@@ -24,18 +17,11 @@ class CharactorStateManager;
 class Vector;
 class UIKeyPrompt;
 class UIPanel;
-class PlayerItem;
-class UISquare;
-class UIImage;
 class UIText;
-class QuestManager;
-class UIItemBox;
-class PlayerCraft;
 class UIProgressBar;
-class UITextLabel;
 
 /// <summary>
-/// UI表示を行う。
+/// 主に状態に応じて見せるUIPanelを変更する
 /// </summary>
 class PlayerUI :
     public Component
@@ -64,7 +50,7 @@ private:
 	/// <summary>
 	/// パネルを生成し、メンバ変数に格納する。
 	/// </summary>
-	void CreatePanel();
+	void GetPanel();
 
 	/// <summary>
 	/// すべてのパネルの初期設定をする
@@ -90,41 +76,6 @@ private:
 	/// FactoryUI(工業オブジェクトをクリック時に出るUI)の初期設定をする。
 	/// </summary>
 	void InitFactoryUIPanel();
-
-	/// <summary>
-	/// ItemBarパネルの初期設定をする
-	/// </summary>
-	void InitItemBarUIPanel();
-
-	/// <summary>
-	/// アイテム取得時のUIの初期設定をする
-	/// </summary>
-	void InitItemGetUI();
-
-	/// <summary>
-	/// QuestUIパネルの初期設定をする
-	/// </summary>
-	void InitQuestUIPanel();
-
-	/// <summary>
-	/// アイテムバーUIのアイテムスロットの初期化処理
-	/// </summary>
-	void InitItemBarItemSlot();
-
-	/// <summary>
-	/// インベントリUIのアイテムスロットの初期化処理
-	/// </summary>
-	void InitInventoryItemPanel();
-
-
-	/// <summary>
-	/// 指定番目のアイテムバーのアイテムスロットの位置を計算する。
-	/// </summary>
-	/// <param name="index">index番目</param>
-	/// <returns>位置</returns>
-	Vector CalcItemBarItemSlotPos(int index) const;
-
-	Vector CalcInventoryItemSlotPos(int index) const;
 
 	/// <summary>
 	/// 現在有効なデバイスタイプに応じてm_chooseFacComを設定する。
@@ -153,21 +104,6 @@ private:
 	void UpdateFactoryUIPanel();
 
 	/// <summary>
-	/// アイテムバーUIの更新処理
-	/// </summary>
-	void UpdateItemBar();
-
-	/// <summary>
-	/// インベントリUIの更新処理
-	/// </summary>
-	void UpdateInventory();
-
-	/// <summary>
-	/// クエストUIの更新処理
-	/// </summary>
-	void UpdateQuestUI();
-
-	/// <summary>
 	/// 指定したステートのUIのみを見えるようにする。
 	/// </summary>
 	/// <param name="state"></param>
@@ -185,12 +121,6 @@ private:
 	/// <param name="state"></param>
 	/// <param name="visible"></param>
 	void SetUIVisible(const CharactorState& state, bool visible);
-	
-	/// <summary>
-	/// カメラ操作の有効状態を設定する。
-	/// </summary>
-	/// <param name="enable"></param>
-	void IsEnableCameraControll(bool enable) const;
 
 	/// <summary>
 	/// 現在のステートならtrueを返し、そうでないならfalseを返す。
@@ -212,14 +142,11 @@ private:
 	PlayerInput& m_input;
 	UIManager& m_uiManager;
 	ResourceManager& m_resourceManager;
-	QuestManager& m_questManager;
 
 	//コンポーネントのポインタ
 	std::weak_ptr<Collider> m_collider;
 	std::weak_ptr<PlayerController> m_playerController;
 	std::weak_ptr<CharactorStateManager> m_state;
-	std::weak_ptr<PlayerItem> m_playerItem;
-	std::weak_ptr<PlayerCraft> m_playerCraft;
 
 	//現在選んでいるUIのFactoryComponent
 	std::weak_ptr<FactoryComponent> m_chooseFactory;
@@ -240,29 +167,14 @@ private:
 	std::shared_ptr<UIPanel> m_destroyKeyPanel;
 	//工業オブジェクトをクリック時にでるUIの基本のパネル
 	std::shared_ptr<UIPanel> m_factoryUIPanel;
-	//アイテムバーのUIのパネル
-	std::shared_ptr<UIPanel> m_itemBarUIPanel;
-	//クエストのUIパネル
-	std::shared_ptr<UIPanel> m_questUIPanel;
-	//インベントリのUIのパネル
-	std::shared_ptr<UIPanel> m_inventoryUIPanel;
 
 	/*パネル内のUI要素の変数*/
 	std::weak_ptr<UIKeyPrompt> m_destroyUIKeyPrompt;
 	
 	std::weak_ptr<UIText> m_factoryUITitleText;
 	
-	//クエスト関連
-	std::weak_ptr<UIText> m_questText;
-	std::weak_ptr<UIProgressBar> m_questProgressBar;
-	std::weak_ptr<UIText> m_questProgressText;
-
 	//工業オブジェクト特有のUIパネルのポインタ
 	std::weak_ptr<UIPanel> m_originalFactoryUIPanel;
-
-	std::vector<std::shared_ptr<UIItemBox>> m_itemBarBoxes;
-
-	std::vector<std::shared_ptr<UIItemBox>> m_inventoryBoxes;
 
 	std::map<CharactorState, std::vector<std::shared_ptr<UIPanel>>> m_activePanelByState;
 
@@ -272,9 +184,6 @@ private:
 	//マウスカーソルの近くに表示される資源アイテムのUI
 	std::weak_ptr<UIKeyPrompt> m_resourceMiningUI;
 
-	//取得アイテムの表示
-	std::pair<std::weak_ptr<UIImage>, std::weak_ptr<UIText>> m_getItemUI;
-	std::pair<Item,int> m_lastGetItem;
 };
 
 

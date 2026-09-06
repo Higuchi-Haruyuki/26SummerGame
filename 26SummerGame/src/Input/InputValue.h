@@ -39,6 +39,8 @@ public:
 		return *value;
 	}
 
+	std::variant<bool,float> GetValue() const { return m_value; }
+
 private:
 	std::variant<bool, float> m_value;
 };

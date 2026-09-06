@@ -66,6 +66,14 @@ public:
 	/// <param name="gamepadCode">コントローラーの入力コード(-1で無効)</param>
 	void AddActionMouseAndGamepad(const std::string& actionName, InputValueType inputType, int mouseCode, int gamepadCode);
 
+	/// @brief 現在入力が有効かを返す。
+	/// @return 
+	bool IsInputEnable() const { return m_isInputEnable;}
+
+	/// @brief 入力が有効か、無効かを設定する。
+	/// @param enable 
+	void SetInputEnable(bool enable);
+
 private:
 	//シングルトンの準備
 	PlayerInput() = default;
@@ -97,5 +105,8 @@ private:
 
 	//inputActionと名前の結び付け
 	std::unordered_map<std::string, std::unique_ptr<InputAction>> m_actions;
+
+	//入力が有効か無効か
+	bool m_isInputEnable = true;
 
 };

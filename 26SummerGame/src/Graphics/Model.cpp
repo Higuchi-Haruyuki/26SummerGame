@@ -19,6 +19,7 @@ void Model::Update()
 
 void Model::Finalize()
 {
+	MV1DeleteModel(m_modelHandle);
 	Shape::Finalize();
 }
 
@@ -57,7 +58,10 @@ void Model::Draw() const
 
 void Model::SetModel(ModelId id)
 {
-	m_modelHandle = ResourceManager::GetInstance().GetHandle(id);
+	auto baseHandle = ResourceManager::GetInstance().GetHandle(id);
+	auto baseScale = MV1GetScale(baseHandle);
+	m_modelHandle = MV1DuplicateModel(baseHandle);
+	MV1SetScale(m_modelHandle,baseScale);
 }
 
 void Model::TextureScroll()

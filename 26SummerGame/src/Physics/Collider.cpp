@@ -148,10 +148,7 @@ void Collider::CollisionAndPushBack()
 				isCollide(resultPos, mySquare, targetSquare);
 			}
 		}
-
-
 	}
-
 
 	//法線の向きが上向きのとき（地面に衝突しているといえるとき） かつ 速度ベクトルが下方向のときに落下速度を0にする
 	if (m_sumNormal.m_y > 0.0f && GetVelocity().m_y < 0.0f)

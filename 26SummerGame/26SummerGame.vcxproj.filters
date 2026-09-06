@@ -28,6 +28,9 @@
     <Filter Include="Physics">
       <UniqueIdentifier>{95e834ad-04b9-49e6-afc6-d1390995aae5}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Player\UI">
+      <UniqueIdentifier>{bc4d303a-2709-479f-b823-a1a70e838e96}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Player">
       <UniqueIdentifier>{80f02762-9d6e-49c9-9ac7-0624850f6dea}</UniqueIdentifier>
     </Filter>
@@ -176,6 +179,15 @@
     </ClCompile>
     <ClCompile Include="src\Player\PlayerItem.cpp">
       <Filter>Player</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\UI\ItemBarUI.cpp">
+      <Filter>Player\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\UI\InventoryUI.cpp">
+      <Filter>Player\UI</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Player\UI\QuestUI.cpp">
+      <Filter>Player\UI</Filter>
     </ClCompile>
     <ClCompile Include="src\Player\PlayerUI.cpp">
       <Filter>Player</Filter>
@@ -411,6 +423,15 @@
     </ClInclude>
     <ClInclude Include="src\Player\PlayerItem.h">
       <Filter>Player</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\UI\ItemBarUI.h">
+      <Filter>Player\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\UI\InventoryUI.h">
+      <Filter>Player\UI</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Player\UI\QuestUI.h">
+      <Filter>Player\UI</Filter>
     </ClInclude>
     <ClInclude Include="src\Player\PlayerUI.h">
       <Filter>Player</Filter>

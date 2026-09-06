@@ -78,13 +78,13 @@ float GamepadDevice::GetAxis(int code) const
 			return 0.0f;
 		break;
 	case GamepadCode::kXInputRightStickY:
-		value = -nowState.ThumbRY;
+		value = -1.0f * nowState.ThumbRY;
 		value /= 32767;
 		if (std::abs(value) < kStickDeadZone)
 			return 0.0f;
 		break;
 	case GamepadCode::kXInputTriggerAxis:
-		value = nowState.RightTrigger - nowState.LeftTrigger;
+		value = static_cast<float>(nowState.RightTrigger - nowState.LeftTrigger);
 		value /= 255;
 		break;
 	default:

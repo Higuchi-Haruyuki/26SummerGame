@@ -8,6 +8,7 @@ class Timer
 {
 public:
 	Timer(Second durationSec);
+	Timer();
 	~Timer() {};
 
 	bool IsTimeOver();
@@ -20,6 +21,10 @@ public:
 	{
 		return static_cast<float>(miliSec) * 0.001f;
 	}
+
+	void Start() { m_isEnable = true; }
+
+	void Stop() { m_isEnable = false; }
 
 	/// <summary>
 	/// 開始時間を今の時間に設定する。

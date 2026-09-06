@@ -18,7 +18,7 @@ public:
 	ItemSlot(int itemCount);
 	~ItemSlot() {};
 
-	int GetSlotCount() const { return m_items.size(); }
+	int GetSlotCount() const { return static_cast<int>(m_items.size()); }
 
 	ItemStack* GetItem(int index) const;
 	std::weak_ptr<ItemStack> GetItemReference(int index) const;

@@ -23,10 +23,9 @@ void Animation3D::Update()
 
 	if (!m_isPlaying) return;
 	m_animPlayTime += m_animSpeed;
-	Debug::Log(std::format("animName: {},animPlayTime: {}",m_attachAnimName,m_animPlayTime));
 	if (m_animPlayTime >= m_totalTime)
 	{
-		if (m_isLoop)m_animPlayTime = 0.0f;
+		if (m_isLoop) m_animPlayTime = 0.0f;
 		else Stop();
 	}
 	int modelHandle = m_model.lock()->GetModelHandle();
@@ -37,7 +36,9 @@ void Animation3D::Update()
 
 void Animation3D::Finalize()
 {
+	DettachAnim();
 	Component::Finalize();
+	
 }
 
 void Animation3D::AttachAnim(const std::string& animName)
@@ -58,7 +59,7 @@ void Animation3D::AttachAnim(const std::string& animName)
 void Animation3D::GetAttachAnimTotalTime()
 {
 	if (m_attachIndex == -1) return;
-	m_totalTime = MV1GetAttachAnimTotalTime(m_model.lock()->GetModelHandle(), m_attachIndex);
+	m_totalTime = static_cast<int>(MV1GetAttachAnimTotalTime(m_model.lock()->GetModelHandle(), m_attachIndex));
 }
 
 AnimationInfo Animation3D::GetAnimationInfoFromName(const std::string& animName)

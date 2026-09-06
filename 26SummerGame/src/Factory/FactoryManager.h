@@ -60,7 +60,7 @@ public:
 
 	int GetFactoryComponentCount() const
 	{
-		return m_factoryComponents.size();
+		return static_cast<int>(m_factoryComponents.size());
 	}
 
 private:

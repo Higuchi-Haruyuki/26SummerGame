@@ -53,9 +53,7 @@ void RayCastResult::RayCastCalc(Ray& ray)
 	{
 		const auto& obj = col->GetParentObject().lock();
 		if (!obj) continue;
-
-		if (obj->GetTag() == "Player") continue;
-
+		
 		const auto& squareCol = std::dynamic_pointer_cast<SquareCollider3D>(col);
 		if (!squareCol) continue;
 		if (!ray.RayIntersects(squareCol->GetMin(), squareCol->GetMax(),

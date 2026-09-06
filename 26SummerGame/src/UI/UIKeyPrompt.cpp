@@ -25,8 +25,8 @@ UIKeyPrompt::UIKeyPrompt(const Vector& position, const Vector& size, GraphicId r
 
 void UIKeyPrompt::Draw() const
 {
-	int halfWidth = m_size.m_x * 0.5f;
-	int halfHeight = m_size.m_y * 0.5f;
+	int halfWidth = static_cast<int>(m_size.m_x * 0.5f);
+	int halfHeight = static_cast<int>(m_size.m_y * 0.5f);
 
 	SetDrawBlendMode(DX_BLENDMODE_ALPHA, 100);
 	DrawBox(

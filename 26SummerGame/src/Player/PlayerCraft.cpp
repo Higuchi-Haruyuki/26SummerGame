@@ -187,7 +187,7 @@ void PlayerCraft::BuildUIPanel()
 
 	for (const auto& recipe : m_recipeList)
 	{
-		const auto pos = kRecipeListFirstpos + (Vector{ 0, kRecipeSize.m_y } + kRecipeOffset) * index;
+		const auto pos = kRecipeListFirstpos + (Vector{ 0, kRecipeSize.m_y } + kRecipeOffset) * static_cast<float>(index);
 		const auto leftUpPos = pos - kRecipeSize * 0.5f;
 
 		const auto& recipeSquare = UIFactory::MakeUIToPanel<UISquare>(
@@ -232,7 +232,7 @@ void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, RecipeName recipeName , st
 
 	for (int i = 0; i < outputs.size(); i++)
 	{
-		pos = startPos + (Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * i;
+		pos = startPos + (Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * static_cast<float>(i);
 
 		const auto& itemBox = std::make_shared<UIItemBox>(
 			m_uiPanel, pos, kItemBoxSize);
@@ -270,7 +270,7 @@ void PlayerCraft::BuildRecipeUI(Vector leftUpDrawPos, RecipeName recipeName , st
 
 	for (int i = 0; i < inputs.size(); i++)
 	{
-		pos = startPos + (Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * (i + outputs.size());
+		pos = startPos + (Vector{ kItemBoxSize.m_x ,0 } + kItemBoxOffset) * (i + static_cast<float>(outputs.size()));
 
 		const auto& itemBox = std::make_shared<UIItemBox>(
 			m_uiPanel, pos, kItemBoxSize);

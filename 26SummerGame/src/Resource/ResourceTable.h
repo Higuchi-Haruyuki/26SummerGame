@@ -81,6 +81,7 @@ namespace ResourceTable
 		{ GraphicId::kKeyboardTab, ResourceName::kKeyboardButtonTab.c_str() },
 		{ GraphicId::kKeyboardZ, "assets/textures/icon/key/keyboard_z.png" },
 		{ GraphicId::kKeyboardX, "assets/textures/icon/key/keyboard_x.png" },
+		{ GraphicId::kKeyboardWASD, "assets/textures/icon/key/keyboard_wasd.png"},
 
 		{ GraphicId::kUIClose, "assets/textures/icon/close.png" },
 		{ GraphicId::kArrow, "assets/textures/icon/arrow.png" },
@@ -90,6 +91,14 @@ namespace ResourceTable
 
 		{ GraphicId::kMouseLeft, ResourceName::kMouseLeft.c_str() },
 		{ GraphicId::kMouseRight, "assets/textures/icon/key/mouse_right.png" },
+		{ GraphicId::kMouseMoveWheel, "assets/textures/icon/key/mouse_move_wheel.png" },
+		{ GraphicId::kMouseScrollVertical, "assets/textures/icon/key/mouse_scroll_vertical.png" },
+
+		{ GraphicId::kHelpInventory, "assets/textures/inventory.jpg"},
+		{ GraphicId::kHelpCraft, "assets/textures/craft.jpg"},
+		{ GraphicId::kHelpClickToCancel, "assets/textures/click_to_cancel.jpg"},
+		{ GraphicId::kHelpInstallation0, "assets/textures/help_installation0.png"},
+		{ GraphicId::kHelpInstallation1, "assets/textures/help_installation1.png"},
 	} };
 
 	struct ModelInfo
@@ -104,6 +113,10 @@ namespace ResourceTable
 		{ ModelId::kIronPlate,    ResourceName::kIronPlateModel.c_str(),    0.3f },
 		{ ModelId::kCopperPlate,   "assets/models/copper_plate.mv1",    0.3f },
 		{ ModelId::kBeltConveyor, ResourceName::kBeltConveyorModel.c_str(), 1.0f },
+		{ ModelId::kMiningMachine, "assets/models/mining_machine.mv1", 1.0f },
+		{ ModelId::kAssemblingMachine, "assets/models/assembling_machine.mv1", 1.0f },
+		{ ModelId::kInserter, "assets/models/inserter.mv1", 1.0f },
+		{ ModelId::kFurnace, "assets/models/furnace.mv1", 1.0f },
 		{ ModelId::kSkyDome, "assets/models/skyDome.mv1",200.0f},
 		{ ModelId::kSkyBox, "assets/models/skyBox.mv1",80.0f }
 	} };
@@ -116,13 +129,13 @@ namespace ResourceTable
 	};
 
 	inline const std::array<SoundInfo, static_cast<size_t>(SoundId::kCount)> kSoundTable = { {
-		{ SoundId::kMiningSe,     "assets/audio/se/mining.wav",      0.5f},
-		{ SoundId::kClickSe,     "assets/audio/se/click.wav",      0.5f},
-		{ SoundId::kOnQuestEndSe,     "assets/audio/se/quest_end.wav",      0.5f},
-		{ SoundId::kEnterInstallationModeSe,     "assets/audio/se/enter_installation_mode.wav",      0.5f },
-		{ SoundId::kEnterDestroyModeSe,     "assets/audio/se/enter_destroy_mode.wav",      0.5f },
-		{SoundId::kTitleBGM,         "assets/audio/bgm/title2.wav",      0.2f },
-		{ SoundId::kMainBGM,         "assets/audio/bgm/main1.wav",       0.2f }
+		{ SoundId::kMiningSe,     "assets/audio/se/mining.wav",      1.0f},
+		{ SoundId::kClickSe,     "assets/audio/se/click.wav",      1.0f},
+		{ SoundId::kOnQuestEndSe,     "assets/audio/se/quest_end.wav",      1.0f},
+		{ SoundId::kEnterInstallationModeSe,     "assets/audio/se/enter_installation_mode.wav",      1.0f },
+		{ SoundId::kEnterDestroyModeSe,     "assets/audio/se/enter_destroy_mode.wav",      1.0f },
+		{SoundId::kTitleBGM,         "assets/audio/bgm/title2.wav",      0.5f },
+		{ SoundId::kMainBGM,         "assets/audio/bgm/main1.wav",       0.5f }
 } };
 
 }

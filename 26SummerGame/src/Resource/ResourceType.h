@@ -58,15 +58,24 @@ enum class GraphicId
 	kKeyboard1,
 	kKeyboard2,
 	kKeyboardTab,
+	kKeyboardWASD,
 
 	kMouseLeft,
 	kMouseRight,
+	kMouseMoveWheel,
+	kMouseScrollVertical,
 
 	kUIClose,
 	kArrow,
 	kPlus,
 
 	kTitleImage,
+	
+	kHelpInventory,
+	kHelpCraft,
+	kHelpClickToCancel,
+	kHelpInstallation0,
+	kHelpInstallation1,
 
 	kCount
 };
@@ -79,6 +88,10 @@ enum class ModelId
 	kIronPlate,
 	kCopperPlate,
 	kBeltConveyor,
+	kMiningMachine,
+	kAssemblingMachine,
+	kFurnace,
+	kInserter,
 	kSkyDome,
 	kSkyBox,
 	kCount

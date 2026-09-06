@@ -98,7 +98,7 @@ void MouseDevice::MousePosReflesh()
 
     if (isWheelClickPressed)
     {
-        SetMousePoint(Game::kDisplaySize.m_x / 2, Game::kDisplaySize.m_y / 2);
+        SetMousePoint(static_cast<int>(Game::kDisplaySize.m_x / 2), static_cast<int>(Game::kDisplaySize.m_y / 2));
         SetMouseDispFlag(false);
     }
     else

@@ -1,6 +1,7 @@
 ﻿#include "QuestManager.h"
 #include "Base_Quest.h"
 #include "Quest_MakeItem.h"
+#include "Quest_AxisInput.h"
 #include "Debug.h"
 #include <format>
 #include "ItemType.h"
@@ -51,6 +52,27 @@ void QuestManager::QuestClearCheck()
 
 void QuestManager::GenerateQuest()
 {
+	const auto inputActions1 = [](const std::string& input1)
+	{
+		std::vector<std::string> vec = {{input1}};
+		return vec;
+	};
+	const auto inputActions2 = [](const std::string& input1,const std::string& input2)
+	{
+		std::vector<std::string> vec = {{input1},{input2}};
+		return vec;
+	};
+
+	m_questQueue.push(std::make_unique<Quest_AxisInput>(
+		"tutorial_quest_0","カメラを動かしてみよう",
+		inputActions2("MoveHorizontal","MoveVertical"),300.0f));
+	m_questQueue.push(std::make_unique<Quest_AxisInput>(
+		"tutorial_quest_1","カメラを回転させてみよう",
+		inputActions2("CameraYaw","CameraPitch"),200.0f));
+	m_questQueue.push(std::make_unique<Quest_AxisInput>(
+		"tutorial_quest_2","カメラをズームしよう",
+		inputActions1("CameraZoom"),200.0f));
+
 	m_questQueue.push(std::make_unique<Quest_MakeItem>(
 		"quest_0", "石を5個採掘しよう",
 		Item::kRockOre, 5));

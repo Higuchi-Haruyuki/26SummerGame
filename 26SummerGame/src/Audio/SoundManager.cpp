@@ -34,10 +34,10 @@ bool SoundManager::Play(SoundId id, float volume) const
         return false;
     }
 
-    auto temp = 255 + std::clamp(volume, 0.0f, 1.0f) / 1.0f;
+    auto temp = 255 * std::clamp(volume, 0.0f, 1.0f) / 1.0f;
     auto beforeVolume = GetVolumeSoundMem2(handle);
 
-    ChangeVolumeSoundMem(temp, handle);
+    ChangeVolumeSoundMem(static_cast<int>(temp), handle);
 
     PlaySoundMem(handle, DX_PLAYTYPE_BACK);
 
@@ -85,7 +85,7 @@ bool SoundManager::ChangeVolume(SoundId id, float volume) const
     }
 
     auto temp = 255 + std::clamp(volume, 0.0f, 1.0f) / 1.0f;
-    ChangeVolumeSoundMem(temp, handle);
+    ChangeVolumeSoundMem(static_cast<int>(temp), handle);
 
     return true;
 }

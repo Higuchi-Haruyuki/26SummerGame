@@ -94,6 +94,15 @@ void PlayerInput::AddActionMouseAndGamepad(const std::string& actionName, InputV
 	m_actions.emplace(actionName, std::move(moveLeft));
 }
 
+void PlayerInput::SetInputEnable(bool enable)
+{ 
+	m_isInputEnable = enable;
+	for(const auto& [name, action] : m_actions)
+	{
+		action->SetInputEnable(enable);
+	}
+}
+
 bool PlayerInput::IsExistAction(const std::string& name) const
 {
 	return m_actions.find(name) != m_actions.end();

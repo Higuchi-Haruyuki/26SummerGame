@@ -8,6 +8,11 @@ Timer::Timer(Second durationSec):
 {
 }
 
+Timer::Timer():
+	Timer(0)
+{
+}
+
 bool Timer::IsTimeOver()
 {
 	if (!m_isEnable) return false;
