@@ -92,6 +92,7 @@ enum class ModelId
 	kAssemblingMachine,
 	kFurnace,
 	kInserter,
+	kStoneChest,
 	kSkyDome,
 	kSkyBox,
 	kCount

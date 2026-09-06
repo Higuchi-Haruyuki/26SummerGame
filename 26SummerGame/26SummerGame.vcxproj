@@ -148,7 +148,7 @@
     <ClCompile Include="src\Factory\BeltConveyor.cpp" />
     <ClCompile Include="src\Graphics\Camera.cpp" />
     <ClCompile Include="src\Player\CharactorStateManager.cpp" />
-    <ClCompile Include="src\Inventory\Chest.cpp" />
+    <ClCompile Include="src\Factory\Chest.cpp" />
     <ClCompile Include="src\Physics\Collider.cpp" />
     <ClCompile Include="src\Core\Component.cpp" />
     <ClCompile Include="src\Core\Debug.cpp" />
@@ -219,7 +219,7 @@
     <ClInclude Include="src\Factory\BeltConveyor.h" />
     <ClInclude Include="src\Graphics\Camera.h" />
     <ClInclude Include="src\Player\CharactorStateManager.h" />
-    <ClInclude Include="src\Inventory\Chest.h" />
+    <ClInclude Include="src\Factory\Chest.h" />
     <ClInclude Include="src\Physics\Collider.h" />
     <ClInclude Include="src\Graphics\Color.h" />
     <ClInclude Include="src\Core\Component.h" />

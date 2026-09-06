@@ -117,6 +117,7 @@ namespace ResourceTable
 		{ ModelId::kAssemblingMachine, "assets/models/assembling_machine.mv1", 1.0f },
 		{ ModelId::kInserter, "assets/models/inserter.mv1", 1.0f },
 		{ ModelId::kFurnace, "assets/models/furnace.mv1", 1.0f },
+		{ ModelId::kStoneChest, "assets/models/stone_box.mv1", 1.0f },
 		{ ModelId::kSkyDome, "assets/models/skyDome.mv1",200.0f},
 		{ ModelId::kSkyBox, "assets/models/skyBox.mv1",80.0f }
 	} };

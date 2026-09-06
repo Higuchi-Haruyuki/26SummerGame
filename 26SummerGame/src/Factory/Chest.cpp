@@ -5,6 +5,8 @@
 #include <cassert>
 #include "ItemSlot.h"
 #include "ItemStack.h"
+#include "ItemManager.h"
+#include "Model.h"
 
 namespace
 {
@@ -50,13 +52,12 @@ void Chest::Init()
 {
 	FactoryComponent::Init();
 
-	m_shape = GetComponent<Square3D>();
+	m_shape = GetComponent<Model>();
 	if (!m_shape.lock())
-		m_shape = AddComponent<Square3D>();
+		m_shape = AddComponent<Model>();
 
-	const auto& square3D = std::static_pointer_cast<Square3D>(m_shape.lock());
-	square3D->SetUVScrollTexHandle(GraphicId::kRockChestIcon);
-	square3D->SetUVScrollOffset(1);
+	const auto& model = std::static_pointer_cast<Model>(m_shape.lock());
+	model->SetModel(ModelId::kStoneChest);
 
 	SetSizeAndColorAndMaxSlot(kSize, kColor, kMaxInputItemSlot, kMaxOutputItemSlot);
 	SetItemName(kItemType);
@@ -77,6 +78,8 @@ void Chest::UpdateUIPanel()
 		const auto& itemBox = m_itemBoxUIs.at(i);
 		
 		const auto& item = m_inputSlot->GetItem(i);
+		
+		itemBox->SetLabelVisible(false);
 
 		if (!item)
 		{
@@ -87,6 +90,7 @@ void Chest::UpdateUIPanel()
 		{
 			itemBox->SetGraphicID(item->GetItemIconGraphicID());
 			itemBox->SetText("x{}",item->GetItemCount());
+			itemBox->SetLabelText(ItemTable::ItemTypeToDisplayName(item->GetItemType()));
 		}
 	}
 

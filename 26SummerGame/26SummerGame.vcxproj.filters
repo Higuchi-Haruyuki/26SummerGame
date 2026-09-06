@@ -253,7 +253,7 @@
     <ClCompile Include="src\World\ResourceGenerator.cpp">
       <Filter>World</Filter>
     </ClCompile>
-    <ClCompile Include="src\Inventory\Chest.cpp">
+    <ClCompile Include="src\Factory\Chest.cpp">
       <Filter>Factory</Filter>
     </ClCompile>
     <ClCompile Include="src\UI\UITextLabel.cpp" />
@@ -525,7 +525,7 @@
     <ClInclude Include="src\World\ResourceGenerator.h">
       <Filter>World</Filter>
     </ClInclude>
-    <ClInclude Include="src\Inventory\Chest.h">
+    <ClInclude Include="src\Factory\Chest.h">
       <Filter>Factory</Filter>
     </ClInclude>
     <ClInclude Include="src\UI\UITextLabel.h" />
