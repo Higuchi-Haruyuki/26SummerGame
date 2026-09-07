@@ -39,11 +39,11 @@ namespace
 	const VectorInt kFactoryObjectStartPos = { 12,0,12 };
 	constexpr int kBeltConveyorCount = 10;
 
-	const Vector kTitleUIPos = { Game::kDisplaySize.m_x * 0.5f,Game::kDisplaySize.m_y * 0.3f };
+	const Vector kTitleUIPos = { Game::kDisplaySize.m_x * 0.5f,Game::kDisplaySize.m_y * 0.33f };
 	const Vector kTitleUISize = { 1000,500 };
 
 	const Vector kChoiceBoxSize = { 200,50 };
-	const Vector kChoiceBoxFirstPos = { Game::kDisplaySize.m_x * 0.5f,Game::kDisplaySize.m_y * 0.65f };
+	const Vector kChoiceBoxFirstPos = { Game::kDisplaySize.m_x * 0.5f,Game::kDisplaySize.m_y * 0.7f };
 	const Vector kChoiceBoxOffset = { 0,Game::kDisplaySize.m_y * 0.07f };
 
 	const Color kChoiceBoxNormalColor = Color::kMainColor;
