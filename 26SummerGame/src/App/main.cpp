@@ -16,11 +16,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_ HINSTANCE hPrevInstance, _
 	SetWindowText("てのひらファクトリー");
 	SetGraphMode(static_cast<int>(Game::kDisplaySize.m_x), static_cast<int>(Game::kDisplaySize.m_y), 32);	// ウィンドウの大きさとカラービット数の指定
 
-#if _DEBUG
 	ChangeWindowMode(1);
-#else
-	ChangeWindowMode(0);
-#endif
 
 	SetWindowIconID(IDI_ICON1);
 

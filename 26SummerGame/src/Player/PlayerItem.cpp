@@ -64,15 +64,13 @@ void PlayerItem::Init()
 	m_inventory = std::make_shared<ItemSlot>(kInventoryWidthCount * kInventoryHeightCount);
 
 	m_itemSlot->AddItem(0, ItemStackFactory::Make(Item::kMiningMachine,4));
-	m_itemSlot->AddItem(1, ItemStackFactory::Make(Item::kBeltconveyor, 30));
-	m_itemSlot->AddItem(2, ItemStackFactory::Make(Item::kFurnace, 4));
+	m_itemSlot->AddItem(1, ItemStackFactory::Make(Item::kBeltconveyor, 4));
+	m_itemSlot->AddItem(2, ItemStackFactory::Make(Item::kFurnace, 2));
 	m_itemSlot->AddItem(3, ItemStackFactory::Make(Item::kInserter, 4));
-	m_itemSlot->AddItem(4, ItemStackFactory::Make(Item::kCopperPlate, 50));
-	m_itemSlot->AddItem(5, ItemStackFactory::Make(Item::kIronPlate, 50));
-	m_itemSlot->AddItem(6, ItemStackFactory::Make(Item::kRockOre, 50));
-	m_itemSlot->AddItem(7, ItemStackFactory::Make(Item::kIronOre, 50));
-	m_itemSlot->AddItem(8, ItemStackFactory::Make(Item::kCoalOre, 100));
-	m_itemSlot->AddItem(9, ItemStackFactory::Make(Item::kCoalOre, 100));
+	m_itemSlot->AddItem(4, ItemStackFactory::Make(Item::kCopperPlate, 10));
+	m_itemSlot->AddItem(5, ItemStackFactory::Make(Item::kIronPlate, 10));
+	m_itemSlot->AddItem(6, ItemStackFactory::Make(Item::kCoalOre, 100));
+	m_itemSlot->AddItem(7, ItemStackFactory::Make(Item::kCoalOre, 100));
 
 }
 

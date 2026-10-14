@@ -65,7 +65,6 @@ void RayCastResult::RayCastCalc(Ray& ray)
 			m_collider = squareCol;
 			m_hitPoint = ray.m_origin + ray.m_direction * minDistance;
 		}
-		int i = 0;
 	}
 }
 
